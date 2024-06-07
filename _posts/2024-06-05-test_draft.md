@@ -12,7 +12,7 @@ categories: software-engineering
 ### TODO List
 
 - [x] todo 1
-- [ ] todo 2
+- [x] todo 2
 - [x] todo 3
 - [ ] todo 4
 
