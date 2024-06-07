@@ -15,6 +15,7 @@ gem "jekyll", "~> 4.3.3"
 
 # minimal-mistakes theme related
 gem "minimal-mistakes-jekyll"
+
 gem 'jekyll-data'
 
 # If you want to use GitHub Pages, remove the "gem "jekyll"" above and
@@ -24,6 +25,7 @@ gem 'jekyll-data'
 # If you have any plugins, put them here!
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
+  gem "jekyll-archives"
 end
 
 # Add webrick gem
