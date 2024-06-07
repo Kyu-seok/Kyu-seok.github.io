@@ -15,7 +15,7 @@ gem "jekyll", "~> 4.3.3"
 
 # minimal-mistakes theme related
 gem "minimal-mistakes-jekyll"
-gem 'jekyll-data'
+# gem 'jekyll-data'
 
 
 # If you want to use GitHub Pages, remove the "gem "jekyll"" above and
