@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>/software-engineering/test_draft/</loc>
+<loc>/%EB%8F%85%ED%9B%84%EA%B0%90/%EC%9D%BC%EC%83%81/life/test_draft/</loc>
 <lastmod>2024-06-06T19:20:49+09:00</lastmod>
 </url>
 <url>
 <loc>/jekyll/update/welcome-to-jekyll/</loc>
 <lastmod>2024-06-06T19:20:49+09:00</lastmod>
+</url>
+<url>
+<loc>/test-wide/</loc>
+<lastmod>2024-06-07T00:00:00+09:00</lastmod>
 </url>
 <url>
 <loc>/about/</loc>
@@ -21,7 +25,25 @@
 <loc>/tags/</loc>
 </url>
 <url>
-<loc>/categories/software-engineering/</loc>
+<loc>/year-archive/</loc>
+</url>
+<url>
+<loc>/tags/test/</loc>
+</url>
+<url>
+<loc>/tags/software/</loc>
+</url>
+<url>
+<loc>/tags/java/</loc>
+</url>
+<url>
+<loc>/categories/%EB%8F%85%ED%9B%84%EA%B0%90/</loc>
+</url>
+<url>
+<loc>/categories/%EC%9D%BC%EC%83%81/</loc>
+</url>
+<url>
+<loc>/categories/life/</loc>
 </url>
 <url>
 <loc>/categories/jekyll/</loc>

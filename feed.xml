@@ -1,4 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-06-07T23:31:14+09:00</updated><id>/feed.xml</id><title type="html">Kyu’s blog</title><subtitle>IT 관련 지식과 경험을 공유해 드리는 블로그입니다. 주요 관심사로는 백엔드 엔지니어링, 자바, 데이터베이스, 네트워크, TDD, 리팩토링, 그리고 OOP와 FP 패러다임에 관심이 있습니다.</subtitle><author><name>염규석</name><email>yeumkyuseok@gmail.com</email></author><entry><title type="html">Test Draft Markdown post</title><link href="/software-engineering/test_draft/" rel="alternate" type="text/html" title="Test Draft Markdown post" /><published>2024-06-06T19:20:49+09:00</published><updated>2024-06-06T19:20:49+09:00</updated><id>/software-engineering/test_draft</id><content type="html" xml:base="/software-engineering/test_draft/"><![CDATA[<h1 id="test-draft">Test draft</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-06-08T17:25:54+09:00</updated><id>/feed.xml</id><title type="html">Kyu’s blog</title><subtitle>IT 관련 지식과 경험을 공유해 드리는 블로그입니다. 주요 관심사로는 백엔드 엔지니어링, 자바, 데이터베이스, 네트워크, TDD, 리팩토링, 그리고 OOP와 FP 패러다임에 관심이 있습니다.</subtitle><author><name>염규석</name><email>yeumkyuseok@gmail.com</email></author><entry><title type="html">Title of Your Post</title><link href="/test-wide/" rel="alternate" type="text/html" title="Title of Your Post" /><published>2024-06-07T00:00:00+09:00</published><updated>2024-06-07T00:00:00+09:00</updated><id>/test-wide</id><content type="html" xml:base="/test-wide/"><![CDATA[<h1 id="test">Test</h1>
+
+<h2 id="nested-and-mixed-lists-are-an-interesting-beast-its-a-corner-case-to-make-sure-that">Nested and mixed lists are an interesting beast. It’s a corner case to make sure that</h2>
+
+<h3 id="lists-within-lists-do-not-break-the-ordered-list-numbering-order">Lists within lists do not break the ordered list numbering order</h3>
+
+<p>Your list styles go deep enough.</p>
+
+<h4 id="ordered--unordered--orderedpermalink">Ordered – Unordered – OrderedPermalink</h4>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />ordered item</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />ordered item</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />unordered</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />unordered</li>
+</ul>
+
+<ol>
+  <li>ordered item</li>
+  <li>ordered item</li>
+  <li>ordered item</li>
+  <li>ordered item</li>
+</ol>
+
+<h4 id="ordered--unordered--unorderedpermalink">Ordered – Unordered – UnorderedPermalink</h4>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />ordered item</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />ordered item</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />unordered</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />unordered</li>
+</ul>
+
+<ol>
+  <li>ordered item</li>
+  <li>ordered item</li>
+  <li>ordered item</li>
+  <li>ordered item</li>
+</ol>
+
+<h3 id="test-2">Test 2</h3>
+
+<h4 id="unordered--ordered--unorderedpermalink">Unordered – Ordered – UnorderedPermalink</h4>
+
+<p>unordered item
+unordered item
+ordered
+ordered
+unordered item
+unordered item
+unordered item
+unordered item
+Unordered – Unordered – OrderedPermalink
+unordered item
+unordered item
+unordered
+unordered
+ordered item
+ordered item
+unordered item
+unordered item</p>]]></content><author><name>염규석</name><email>yeumkyuseok@gmail.com</email></author><summary type="html"><![CDATA[Test]]></summary></entry><entry><title type="html">Test Draft Markdown post</title><link href="/%EB%8F%85%ED%9B%84%EA%B0%90/%EC%9D%BC%EC%83%81/life/test_draft/" rel="alternate" type="text/html" title="Test Draft Markdown post" /><published>2024-06-06T19:20:49+09:00</published><updated>2024-06-06T19:20:49+09:00</updated><id>/%EB%8F%85%ED%9B%84%EA%B0%90/%EC%9D%BC%EC%83%81/life/test_draft</id><content type="html" xml:base="/%EB%8F%85%ED%9B%84%EA%B0%90/%EC%9D%BC%EC%83%81/life/test_draft/"><![CDATA[<h1 id="test-draft">Test draft</h1>
 
 <h2 id="hello-world">Hello world</h2>
 
@@ -18,7 +78,7 @@
   <li>is the</li>
   <li>test</li>
   <li>numberings</li>
-</ol>]]></content><author><name>염규석</name><email>yeumkyuseok@gmail.com</email></author><category term="software-engineering" /><summary type="html"><![CDATA[Test draft]]></summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="/jekyll/update/welcome-to-jekyll/" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2024-06-06T19:20:49+09:00</published><updated>2024-06-06T19:20:49+09:00</updated><id>/jekyll/update/welcome-to-jekyll</id><content type="html" xml:base="/jekyll/update/welcome-to-jekyll/"><![CDATA[<p>You’ll find this post in your <code class="language-plaintext highlighter-rouge">_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code class="language-plaintext highlighter-rouge">jekyll serve</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
+</ol>]]></content><author><name>염규석</name><email>yeumkyuseok@gmail.com</email></author><category term="독후감" /><category term="일상" /><category term="life" /><category term="test" /><category term="software" /><category term="java" /><summary type="html"><![CDATA[Test draft]]></summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="/jekyll/update/welcome-to-jekyll/" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2024-06-06T19:20:49+09:00</published><updated>2024-06-06T19:20:49+09:00</updated><id>/jekyll/update/welcome-to-jekyll</id><content type="html" xml:base="/jekyll/update/welcome-to-jekyll/"><![CDATA[<p>You’ll find this post in your <code class="language-plaintext highlighter-rouge">_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code class="language-plaintext highlighter-rouge">jekyll serve</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
 
 <p>Jekyll requires blog post files to be named according to the following format:</p>
 
