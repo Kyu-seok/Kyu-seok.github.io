@@ -115,7 +115,7 @@ analytics:
 author:
   name: '염규석'
   avatar: '/assets/images/profile.png'
-  bio: '소프트웨어 엔지니어'
+  bio: '그냥 재미로 하는 블로그'
   location: '서울'
   email: yeumkyuseok@gmail.com
   links:
@@ -266,34 +266,6 @@ whitelist:
   - jekyll-feed
   - jekyll-include-cache
 
-# Archives
-#  Type
-#  - GitHub Pages compatible archive pages built with Liquid ~> type: liquid (default)
-#  - Jekyll Archives plugin archive pages ~> type: jekyll-archives
-#  Path (examples)
-#  - Archive page should exist at path when using Liquid method or you can
-#    expect broken links (especially with breadcrumbs enabled)
-#  - <base_path>/tags/my-awesome-tag/index.html ~> path: /tags/
-#  - <base_path>/categories/my-awesome-category/index.html ~> path: /categories/
-#  - <base_path>/my-awesome-category/index.html ~> path: /
-# category_archive:
-#   type: liquid
-#   path: /categories/
-# tag_archive:
-#   type: liquid
-#   path: /tags/
-
-# https://github.com/jekyll/jekyll-archives
-# jekyll-archives:
-#   enabled:
-#     - categories
-#     - tags
-#   layouts:
-#     category: archive-taxonomy
-#     tag: archive-taxonomy
-#   permalinks:
-#     category: /categories/:name/
-#     tag: /tags/:name/
 category_archive:
   type: jekyll-archives
   path: /categories/

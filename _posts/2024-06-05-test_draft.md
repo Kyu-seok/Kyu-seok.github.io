@@ -2,7 +2,14 @@
 layout: single
 title: 'Test Draft Markdown post'
 date: 2024-06-06 19:20:49 +0900
-categories: software-engineering
+categories:
+  - 독후감
+  - 일상
+  - life
+tag:
+  - test
+  - software
+  - java
 ---
 
 # Test draft

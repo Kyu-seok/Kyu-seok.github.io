@@ -1,0 +1,39 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+search: false
+---
+
+@charset "utf-8";
+
+// Customize Width
+$right-sidebar-width-narrow: 100px !default; // default 200px
+$right-sidebar-width: 200px !default; // default 300px
+$right-sidebar-width-wide: 250px !default; // default 400px
+
+@import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
+@import 'minimal-mistakes'; // main partials
+
+// Customize Font Size
+html {
+  /* Apply a natural box layout model to all elements */
+  box-sizing: border-box;
+  background-color: $background-color;
+  font-size: 16px; // Default 16px;
+
+  @include breakpoint($medium) {
+    font-size: 16px; // Default 18px;
+  }
+
+  @include breakpoint($large) {
+    font-size: 16px; // Default 20px;
+  }
+
+  @include breakpoint($x-large) {
+    font-size: 16px; // Default 22px;
+  }
+}
+
+// Remove the underline in hyperlink
+a {
+  text-decoration: none; // 추가된 코드입니다.
+}
