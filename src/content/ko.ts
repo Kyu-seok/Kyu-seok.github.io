@@ -4,7 +4,7 @@ export const ko: Content = {
   ui: {
     wordmark: 'Kyu',
     greeting: '안녕하세요, 규석입니다 👋',
-    title: '백엔드 엔지니어',
+    title: '소프트웨어 엔지니어',
     placeholder: '무엇이든 물어보세요…',
     send: '보내기',
     chips: {

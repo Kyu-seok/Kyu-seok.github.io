@@ -4,7 +4,7 @@ export const en: Content = {
   ui: {
     wordmark: 'Kyu',
     greeting: "Hey, I'm Kyu-seok 👋",
-    title: 'Backend Engineer',
+    title: 'Software Engineer',
     placeholder: 'Ask me anything…',
     send: 'Send',
     chips: {
