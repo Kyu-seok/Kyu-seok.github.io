@@ -4,7 +4,7 @@ import type { Content, Lang } from './types';
 
 export const content: Record<Lang, Content> = { en, ko };
 
-export const AVATAR_SRC = '/avatar.svg';
+export const AVATAR_SRC = '/avatar.png';
 
 const STORAGE_KEY = 'kyu.lang';
 

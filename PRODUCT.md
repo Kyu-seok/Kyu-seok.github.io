@@ -34,7 +34,7 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 - Free-text input: keyword matching against the same answer set, bilingual synonyms, with an honest fallback that says the chat is scripted and lists what it can answer.
 - Language toggle KO/EN; initial language from the browser, remembered in localStorage.
 - No analytics, no cookies, no external scripts.
-- Avatar: user will export a memoji; the build ships a labeled placeholder at `public/avatar.svg` (swap the path in `src/content/index.ts`).
+- Avatar: the user's own memoji with transparent background at `public/avatar.png`, shown inside a peach circle.
 - Fun = kyu-rios second brain only (user decision). Book reviews from the old blog are not included.
 
 ## Brand Commitments
