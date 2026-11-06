@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T00:00:00Z",
+  "title": "Design System: Kyu-seok Yeum Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "accent": { "role": "primary", "displayName": "CodeBite Orange", "canonical": "#ea6a12", "tonalRamp": ["oklch(22% 0.06 45)", "oklch(32% 0.10 45)", "oklch(44% 0.14 45)", "oklch(55% 0.18 45)", "oklch(66% 0.19 45)", "oklch(78% 0.13 50)", "oklch(89% 0.07 55)", "oklch(96% 0.025 60)"] },
+      "accent-ink": { "role": "primary", "displayName": "Orange Ink", "canonical": "#b14d08" },
+      "accent-soft": { "role": "primary", "displayName": "Orange Paper", "canonical": "#fde9d8" },
+      "accent-soft-2": { "role": "primary", "displayName": "Orange Paper Edge", "canonical": "#fbd7b8" },
+      "ground": { "role": "neutral", "displayName": "Cool Paper", "canonical": "#f6f7f9", "tonalRamp": ["oklch(18% 0.012 240)", "oklch(28% 0.012 240)", "oklch(40% 0.012 240)", "oklch(52% 0.012 240)", "oklch(66% 0.010 240)", "oklch(80% 0.008 240)", "oklch(91% 0.005 240)", "oklch(97.5% 0.003 250)"] },
+      "surface": { "role": "neutral", "displayName": "Paper White", "canonical": "#ffffff" },
+      "surface-2": { "role": "neutral", "displayName": "Paper Shade", "canonical": "#f1f3f6" },
+      "line": { "role": "neutral", "displayName": "Hairline", "canonical": "#e2e6ec", "tonalRamp": ["oklch(20% 0.012 240)", "oklch(30% 0.012 240)", "oklch(42% 0.012 240)", "oklch(55% 0.012 240)", "oklch(68% 0.010 240)", "oklch(82% 0.008 240)", "oklch(92% 0.006 240)", "oklch(97% 0.003 240)"] },
+      "line-strong": { "role": "neutral", "displayName": "Hairline Strong", "canonical": "#cfd5de" },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#0f1419", "tonalRamp": ["oklch(15% 0.012 240)", "oklch(25% 0.012 240)", "oklch(38% 0.012 240)", "oklch(50% 0.012 240)", "oklch(64% 0.010 240)", "oklch(78% 0.008 240)", "oklch(90% 0.005 240)", "oklch(96% 0.003 240)"] },
+      "ink-2": { "role": "neutral", "displayName": "Ink Secondary", "canonical": "#525c6a" },
+      "ink-3": { "role": "neutral", "displayName": "Ink Tertiary", "canonical": "#66707e" },
+      "chip-amber": { "role": "tertiary", "displayName": "Amber (Me)", "canonical": "#d97706", "tonalRamp": ["oklch(22% 0.06 65)", "oklch(32% 0.09 65)", "oklch(44% 0.13 65)", "oklch(56% 0.16 65)", "oklch(68% 0.17 65)", "oklch(80% 0.12 70)", "oklch(90% 0.07 75)", "oklch(96% 0.03 80)"] },
+      "chip-green": { "role": "tertiary", "displayName": "Green (Projects)", "canonical": "#0f9d58", "tonalRamp": ["oklch(20% 0.05 155)", "oklch(30% 0.08 155)", "oklch(42% 0.12 155)", "oklch(52% 0.15 155)", "oklch(60% 0.16 155)", "oklch(75% 0.12 155)", "oklch(88% 0.07 155)", "oklch(96% 0.03 155)"] },
+      "chip-blue": { "role": "tertiary", "displayName": "Blue (Skills)", "canonical": "#2563eb", "tonalRamp": ["oklch(20% 0.08 265)", "oklch(30% 0.12 265)", "oklch(42% 0.17 265)", "oklch(50% 0.20 265)", "oklch(55% 0.22 265)", "oklch(70% 0.15 265)", "oklch(86% 0.08 265)", "oklch(96% 0.03 265)"] },
+      "chip-violet": { "role": "tertiary", "displayName": "Violet (Fun)", "canonical": "#7c3aed", "tonalRamp": ["oklch(20% 0.09 295)", "oklch(30% 0.14 295)", "oklch(42% 0.20 295)", "oklch(50% 0.24 295)", "oklch(56% 0.25 295)", "oklch(70% 0.17 295)", "oklch(86% 0.09 295)", "oklch(96% 0.03 295)"] },
+      "chip-red": { "role": "tertiary", "displayName": "Red (Contact)", "canonical": "#dc2626", "tonalRamp": ["oklch(20% 0.08 27)", "oklch(30% 0.12 27)", "oklch(42% 0.17 27)", "oklch(52% 0.20 27)", "oklch(58% 0.22 27)", "oklch(72% 0.15 27)", "oklch(87% 0.08 27)", "oklch(96% 0.03 27)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The hero title only." },
+      "headline": { "displayName": "Headline", "purpose": "Project card names." },
+      "title": { "displayName": "Title", "purpose": "Wordmark and fun card title." },
+      "stat": { "displayName": "Stat", "purpose": "Tabular numbers in the kyu-rios fun card." },
+      "body": { "displayName": "Body", "purpose": "Thread paragraphs (max 62ch), composer input, bubbles." },
+      "body-sm": { "displayName": "Body Small", "purpose": "Project taglines and descriptions, fact values, topic names." },
+      "label": { "displayName": "Label", "purpose": "Chip labels, large tags, group names, text buttons." },
+      "caption": { "displayName": "Caption", "purpose": "Tags, dl labels, dock note, lang toggle, status badge." }
+    },
+    "shadows": [
+      { "name": "shadow-card", "value": "0 1px 2px rgba(15, 20, 25, 0.04), 0 10px 28px -14px rgba(15, 20, 25, 0.22)", "purpose": "Resting shadow for cards, hero chips, composer, solid icon buttons." },
+      { "name": "shadow-float", "value": "0 2px 4px rgba(15, 20, 25, 0.05), 0 16px 40px -18px rgba(15, 20, 25, 0.28)", "purpose": "Hero avatar at rest; chips on hover; composer on focus-within." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "The one curve for movement: rises, lifts, the fold." },
+      { "name": "dur", "value": "420ms", "purpose": "Message rise and top bar hairline transition." },
+      { "name": "dur-fold", "value": "560ms", "purpose": "Hero collapse, hero-inner shrink, dock padding." },
+      { "name": "dur-lift", "value": "300ms", "purpose": "Hover translateY and shadow swaps." },
+      { "name": "dur-color", "value": "160ms ease", "purpose": "Background, border, and color hovers." },
+      { "name": "reply-delay", "value": "520ms", "purpose": "Typing indicator before a scripted answer; skipped under prefers-reduced-motion." },
+      { "name": "rise", "value": "from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none }", "purpose": "Keyframes for every new message." }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "480px", "purpose": "Chips wrap 3+2, skills rows stack, hero avatar 160px." },
+      { "name": "facts", "value": "520px", "purpose": "Facts grid stacks to one column." },
+      { "name": "column", "value": "672px", "purpose": "Max content width: 640px column plus 16px gutters." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink pill with an external-link icon; project and kyu-rios links.",
+      "html": "<a class=\"ds-btn\" href=\"#\">code-bite.com <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M14 5h5v5\"/><path d=\"M19 5 10 14\"/><path d=\"M19 13.5V18a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 18V7a1.5 1.5 0 0 1 1.5-1.5H11\"/></svg></a>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius-pill, 999px); background: var(--ink, #0f1419); color: #fff; font-family: var(--font, 'Pretendard Variable', sans-serif); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: transform 300ms var(--ease-out, cubic-bezier(0.16,1,0.3,1)), background-color 160ms ease; } .ds-btn:hover { transform: translateY(-1px); background: #232a33; } .ds-btn:focus-visible { outline: 2px solid var(--accent, #ea6a12); outline-offset: 2px; }"
+    },
+    {
+      "name": "Send Disc",
+      "kind": "button",
+      "refersTo": "button-send",
+      "description": "The only orange-filled control; lives at the right end of the composer.",
+      "html": "<button class=\"ds-send\" type=\"button\" aria-label=\"Send\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 19V5\"/><path d=\"m6 11 6-6 6 6\"/></svg></button>",
+      "css": ".ds-send { width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--accent, #ea6a12); color: #fff; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 300ms var(--ease-out, cubic-bezier(0.16,1,0.3,1)), background-color 160ms ease, opacity 160ms ease; } .ds-send:hover:not(:disabled) { transform: translateY(-1px); background: #d95f0e; } .ds-send:disabled { opacity: 0.4; cursor: default; } .ds-send:focus-visible { outline: 2px solid var(--accent, #ea6a12); outline-offset: 2px; }"
+    },
+    {
+      "name": "Icon Button (solid)",
+      "kind": "button",
+      "refersTo": "button-icon-solid",
+      "description": "36px surface circle with hairline and card shadow; carousel prev/next.",
+      "html": "<button class=\"ds-iconbtn ds-iconbtn-solid\" type=\"button\" aria-label=\"Next\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m13 6 6 6-6 6\"/></svg></button>",
+      "css": ".ds-iconbtn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: none; color: var(--ink-2, #525c6a); cursor: pointer; transition: background-color 160ms ease, color 160ms ease, transform 300ms var(--ease-out, cubic-bezier(0.16,1,0.3,1)); } .ds-iconbtn:hover { background: var(--surface-2, #f1f3f6); color: var(--ink, #0f1419); } .ds-iconbtn-solid { background: var(--surface, #fff); border: 1px solid var(--line, #e2e6ec); box-shadow: var(--shadow-card, 0 1px 2px rgba(15,20,25,0.04), 0 10px 28px -14px rgba(15,20,25,0.22)); color: var(--ink, #0f1419); } .ds-iconbtn-solid:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--line-strong, #cfd5de); } .ds-iconbtn-solid:disabled { opacity: 0.38; box-shadow: none; cursor: default; } .ds-iconbtn:focus-visible { outline: 2px solid var(--accent, #ea6a12); outline-offset: 2px; }"
+    },
+    {
+      "name": "Composer",
+      "kind": "input",
+      "refersTo": "composer",
+      "description": "Pill text field with the send disc inside; lifts to the float shadow on focus.",
+      "html": "<form class=\"ds-composer\" onsubmit=\"return false\"><input class=\"ds-composer-input\" type=\"text\" placeholder=\"Ask me anything…\" aria-label=\"Ask me anything\" /><button class=\"ds-composer-send\" type=\"submit\" aria-label=\"Send\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 19V5\"/><path d=\"m6 11 6-6 6 6\"/></svg></button></form>",
+      "css": ".ds-composer { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 20px; background: var(--surface, #fff); border: 1px solid var(--line, #e2e6ec); border-radius: var(--radius-pill, 999px); box-shadow: var(--shadow-card, 0 1px 2px rgba(15,20,25,0.04), 0 10px 28px -14px rgba(15,20,25,0.22)); font-family: var(--font, 'Pretendard Variable', sans-serif); transition: border-color 160ms ease, box-shadow 300ms var(--ease-out, cubic-bezier(0.16,1,0.3,1)); } .ds-composer:focus-within { border-color: var(--line-strong, #cfd5de); box-shadow: var(--shadow-float, 0 2px 4px rgba(15,20,25,0.05), 0 16px 40px -18px rgba(15,20,25,0.28)); } .ds-composer-input { flex: 1; min-width: 0; height: 40px; border: 0; background: transparent; outline: none; font: inherit; font-size: 1rem; color: var(--ink, #0f1419); caret-color: var(--accent, #ea6a12); } .ds-composer-input::placeholder { color: var(--ink-3, #66707e); } .ds-composer-send { flex: none; width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--accent, #ea6a12); color: #fff; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 300ms var(--ease-out, cubic-bezier(0.16,1,0.3,1)), background-color 160ms ease; } .ds-composer-send:hover { transform: translateY(-1px); background: #d95f0e; }"
+    },
+    {
+      "name": "Quick-action Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Hero chip: icon over label, one hue on the resting icon, orange when active.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip ds-chip-projects\" type=\"button\" aria-pressed=\"false\"><svg class=\"ds-chip-icon\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3\" y=\"7\" width=\"18\" height=\"13\" rx=\"2.5\"/><path d=\"M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7\"/><path d=\"M3 12h18\"/></svg><span>Projects</span></button><button class=\"ds-chip ds-chip-skills is-active\" type=\"button\" aria-pressed=\"true\"><svg class=\"ds-chip-icon\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m12 3 9 5-9 5-9-5 9-5Z\"/><path d=\"m3 12.5 9 5 9-5\"/><path d=\"m3 17 9 5 9-5\"/></svg><span>Skills</span></button></div>",
+      "css": ".ds-chips { display: flex; gap: 8px; } .ds-chip { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 104px; min-height: 72px; padding: 12px 8px; background: var(--surface, #fff); border: 1px solid var(--line, #e2e6ec); border-radius: 16px; font-family: var(--font, 'Pretendard Variable', sans-serif); font-size: 0.8125rem; font-weight: 600; color: var(--ink-2, #525c6a); box-shadow: var(--shadow-card, 0 1px 2px rgba(15,20,25,0.04), 0 10px 28px -14px rgba(15,20,25,0.22)); cursor: pointer; transition: transform 300ms var(--ease-out, cubic-bezier(0.16,1,0.3,1)), border-color 160ms ease, background-color 160ms ease, color 160ms ease, box-shadow 300ms var(--ease-out, cubic-bezier(0.16,1,0.3,1)); } .ds-chip:hover { transform: translateY(-2px); border-color: var(--line-strong, #cfd5de); color: var(--ink, #0f1419); box-shadow: var(--shadow-float, 0 2px 4px rgba(15,20,25,0.05), 0 16px 40px -18px rgba(15,20,25,0.28)); } .ds-chip.is-active { border-color: var(--accent-soft-2, #fbd7b8); background: var(--accent-soft, #fde9d8); color: var(--accent-ink, #b14d08); } .ds-chip-projects .ds-chip-icon { color: #0f9d58; } .ds-chip-skills .ds-chip-icon { color: #2563eb; } .ds-chip.is-active .ds-chip-icon { color: inherit; } .ds-chip:focus-visible { outline: 2px solid var(--accent, #ea6a12); outline-offset: 2px; }"
+    },
+    {
+      "name": "Compact Chip",
+      "kind": "chip",
+      "refersTo": "chip-compact",
+      "description": "Chat-mode chip: horizontal pill, 16px icon, no shadow, no lift.",
+      "html": "<button class=\"ds-chip-compact ds-chip-compact-contact\" type=\"button\"><svg class=\"ds-chip-icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2.5\"/><path d=\"m3.5 7 8.5 6 8.5-6\"/></svg><span>Contact</span></button>",
+      "css": ".ds-chip-compact { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px 8px 12px; background: var(--surface, #fff); border: 1px solid var(--line, #e2e6ec); border-radius: var(--radius-pill, 999px); font-family: var(--font, 'Pretendard Variable', sans-serif); font-size: 0.8125rem; font-weight: 600; color: var(--ink-2, #525c6a); cursor: pointer; transition: border-color 160ms ease, color 160ms ease, background-color 160ms ease; } .ds-chip-compact:hover { border-color: var(--line-strong, #cfd5de); color: var(--ink, #0f1419); } .ds-chip-compact.is-active { border-color: var(--accent-soft-2, #fbd7b8); background: var(--accent-soft, #fde9d8); color: var(--accent-ink, #b14d08); } .ds-chip-compact-contact .ds-chip-icon { color: #dc2626; } .ds-chip-compact.is-active .ds-chip-icon { color: inherit; } .ds-chip-compact:focus-visible { outline: 2px solid var(--accent, #ea6a12); outline-offset: 2px; }"
+    },
+    {
+      "name": "Project Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Surface + hairline + card shadow at 20px; cover, name with status badge, tagline, tags, link buttons.",
+      "html": "<article class=\"ds-pcard\"><div class=\"ds-pcard-cover\"></div><div class=\"ds-pcard-body\"><div class=\"ds-pcard-head\"><h3 class=\"ds-pcard-name\">CodeBite</h3><span class=\"ds-pcard-status\">Live</span></div><p class=\"ds-pcard-tagline\">An algorithm practice platform for deliberate practice.</p><ul class=\"ds-tags\"><li>Java</li><li>Spring Boot</li><li>Kafka</li></ul><div class=\"ds-pcard-links\"><a class=\"ds-btn\" href=\"#\">code-bite.com</a></div></div></article>",
+      "css": ".ds-pcard { width: 300px; display: flex; flex-direction: column; background: var(--surface, #fff); border: 1px solid var(--line, #e2e6ec); border-radius: var(--radius-card, 20px); box-shadow: var(--shadow-card, 0 1px 2px rgba(15,20,25,0.04), 0 10px 28px -14px rgba(15,20,25,0.22)); overflow: hidden; font-family: var(--font, 'Pretendard Variable', sans-serif); color: var(--ink, #0f1419); transition: border-color 160ms ease; } .ds-pcard.is-focus { border-color: var(--accent-soft-2, #fbd7b8); } .ds-pcard-cover { aspect-ratio: 16 / 10; background: var(--surface-2, #f1f3f6); border-bottom: 1px solid var(--line, #e2e6ec); } .ds-pcard-body { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px 16px; } .ds-pcard-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; } .ds-pcard-name { margin: 0; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; } .ds-pcard-status { flex: none; font-size: 0.6875rem; font-weight: 700; color: var(--accent-ink, #b14d08); background: var(--accent-soft, #fde9d8); border-radius: 999px; padding: 2px 8px; white-space: nowrap; } .ds-pcard-tagline { margin: 0; font-weight: 500; font-size: 0.9375rem; line-height: 1.5; } .ds-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; padding: 0; list-style: none; } .ds-tags li { font-size: 0.75rem; font-weight: 600; color: var(--ink-2, #525c6a); background: var(--surface-2, #f1f3f6); border-radius: 999px; padding: 3px 9px; } .ds-pcard-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; } .ds-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; background: var(--ink, #0f1419); color: #fff; font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: transform 300ms var(--ease-out, cubic-bezier(0.16,1,0.3,1)), background-color 160ms ease; } .ds-btn:hover { transform: translateY(-1px); background: #232a33; }"
+    },
+    {
+      "name": "Tag",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Flat surface-2 pill for stack and skill names; no border, no shadow.",
+      "html": "<ul class=\"ds-tags\"><li>PostgreSQL</li><li>Redis</li><li>Docker</li></ul>",
+      "css": ".ds-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; font-family: var(--font, 'Pretendard Variable', sans-serif); } .ds-tags li { font-size: 0.75rem; font-weight: 600; color: var(--ink-2, #525c6a); background: var(--surface-2, #f1f3f6); border-radius: 999px; padding: 3px 9px; }"
+    },
+    {
+      "name": "User Bubble",
+      "kind": "custom",
+      "refersTo": "bubble-user",
+      "description": "The visitor's question: orange paper with a hairline and a 6px corner at bottom-right.",
+      "html": "<div class=\"ds-bubble-user\"><p>Show me your projects</p></div>",
+      "css": ".ds-bubble-user { display: inline-block; max-width: 480px; padding: 10px 16px; background: var(--accent-soft, #fde9d8); color: var(--ink, #0f1419); border: 1px solid var(--accent-soft-2, #fbd7b8); border-radius: 20px 20px 6px 20px; font-family: var(--font, 'Pretendard Variable', sans-serif); font-size: 1rem; font-weight: 500; line-height: 1.6; } .ds-bubble-user p { margin: 0; }"
+    },
+    {
+      "name": "Top Bar",
+      "kind": "nav",
+      "refersTo": "lang-toggle",
+      "description": "Wordmark left; KO/EN pill toggle and GitHub/LinkedIn icon buttons right.",
+      "html": "<header class=\"ds-topbar\"><div class=\"ds-topbar-left\"><button class=\"ds-wordmark\" type=\"button\">Kyu</button></div><div class=\"ds-topbar-right\"><button class=\"ds-langtoggle\" type=\"button\" aria-label=\"Switch language\"><span class=\"on\">KO</span><span class=\"ds-langtoggle-sep\" aria-hidden=\"true\"></span><span>EN</span></button><a class=\"ds-iconbtn\" href=\"#\" aria-label=\"GitHub\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.4 6.8 9.7.5.1.7-.2.7-.5v-1.9c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.8-.1-.2-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.5.1 2.7.6.7 1 1.6 1 2.8 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4-1.3 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2Z\"/></svg></a></div></header>",
+      "css": ".ds-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 56px; padding: 0 16px; background: var(--bg, #f6f7f9); border-bottom: 1px solid var(--line, #e2e6ec); font-family: var(--font, 'Pretendard Variable', sans-serif); } .ds-topbar-left, .ds-topbar-right { display: flex; align-items: center; gap: 6px; } .ds-wordmark { border: 0; background: none; cursor: pointer; font: inherit; font-weight: 700; font-size: 1.125rem; letter-spacing: -0.02em; color: var(--ink, #0f1419); padding: 6px 8px; border-radius: 8px; } .ds-wordmark:hover { background: var(--surface-2, #f1f3f6); } .ds-langtoggle { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; margin-right: 4px; border-radius: 999px; border: 1px solid var(--line, #e2e6ec); background: var(--surface, #fff); font: inherit; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; color: var(--ink-3, #66707e); cursor: pointer; transition: border-color 160ms ease; } .ds-langtoggle:hover { border-color: var(--line-strong, #cfd5de); } .ds-langtoggle .on { color: var(--ink, #0f1419); } .ds-langtoggle-sep { width: 1px; height: 12px; background: var(--line-strong, #cfd5de); } .ds-iconbtn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; color: var(--ink-2, #525c6a); text-decoration: none; transition: background-color 160ms ease, color 160ms ease; } .ds-iconbtn:hover { background: var(--surface-2, #f1f3f6); color: var(--ink, #0f1419); } .ds-wordmark:focus-visible, .ds-langtoggle:focus-visible, .ds-iconbtn:focus-visible { outline: 2px solid var(--accent, #ea6a12); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Paper Conversation",
+    "overview": "The whole site is one chat with Kyu on a sheet of cool paper. There is no page chrome to speak of: a 56px top bar, a centered 640px column, and a dock at the bottom holding the composer and five quick-action chips. Everything the visitor sees is either a message in the thread or a control for sending the next one. White surfaces sit on a blue-gray ground (#f6f7f9) with a faint radial lift behind the hero, so cards read as paper laid on paper rather than panels on a screen.\n\nThe system is light-only and quiet. Pretendard Variable carries Latin and Hangul in one voice; the display title is heavy and tightly tracked, body copy is regular at 1.6 line-height, and numerals are tabular everywhere. One accent, CodeBite orange (#ea6a12), does all the pointing: the send disc, the active chip, the user's bubble, link underlines, caret, selection, and focus rings. The only other hues on the page are the five resting chip icons (amber, green, blue, violet, red), and those give the single accent back the moment a chip is active.\n\nMotion is one grammar used once per transition: ease-out expo, 12px rise, 420ms. The signature move is the fold, where the hero collapses into the top bar on the first question and the composer becomes a sticky dock. Nothing is glass, nothing is blurred, nothing is a gradient except the ground lift and the dock's fade into the ground.",
+    "keyCharacteristics": [
+      "Single centered column, max 640px, same width for top bar, hero, thread, and dock.",
+      "Paper-on-paper surfaces: pure white, 1px tinted hairline, soft offset shadow at rest, lifted shadow on hover or focus.",
+      "One accent (CodeBite orange) for every pointing device; five chip hues only on resting chip icons and the kyu-rios topic dots.",
+      "Pill geometry for inputs, buttons, tags, and compact chips; 20px for cards; 16px for the hero chips.",
+      "Pretendard Variable at 700 for anything that names something, 600 for labels, 400 for prose.",
+      "Authored 24-viewbox SVG icons at 1.75 stroke, round caps and joins; GitHub and LinkedIn marks are the only filled glyphs.",
+      "One motion curve (cubic-bezier(0.16, 1, 0.3, 1)) and one duration (420ms) for entrances; 160ms linear for color hovers."
+    ],
+    "rules": [
+      { "name": "The One Orange Rule", "body": "Every device that points, selects, or confirms is CodeBite orange or one of its three derivatives. No second accent exists; the chip hues are icon-only and die on activation.", "section": "colors" },
+      { "name": "The Ink-On-Paper Rule", "body": "Primary call-to-action buttons are ink (#0f1419), not orange. Orange is reserved for the send disc so the composer stays the loudest control on the page.", "section": "colors" },
+      { "name": "The Weight-Is-Hierarchy Rule", "body": "Size steps are small (0.6875 to 1.5rem outside the hero); hierarchy comes from 700 / 600 / 500 / 400 and from ink / ink-2 / ink-3, not from size alone.", "section": "typography" },
+      { "name": "The No-Caps Rule", "body": "Nothing is uppercased or letter-spaced open; labels stay sentence-case at 600 and shrink instead.", "section": "typography" },
+      { "name": "The Lift-On-Intent Rule", "body": "Shadows deepen only in response to hover or focus, and always together with a translateY(-1px) (buttons) or translateY(-2px) (chips) on the 300ms ease-out curve. Nothing floats at rest except the hero avatar.", "section": "elevation" },
+      { "name": "The Ink-Tinted Shadow Rule", "body": "Shadows are tinted with the ink color (rgba 15, 20, 25), never neutral black, and carry a negative spread so they read as a soft offset, not a glow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep every new surface inside the 640px column with 16px gutters; the top bar, thread, and dock share edges.",
+      "Do build containers as surface + 1px line + card shadow + 20px radius, and lift to the float shadow only on hover or focus.",
+      "Do use pills (999px) for any control a hand would press: buttons, tags, toggles, compact chips, inputs.",
+      "Do make ink (#0f1419) the primary button fill and keep orange for the send disc, active states, and bubbles.",
+      "Do author icons as 24-viewbox inline SVG at 1.75 stroke with round caps and joins, 20px in chips and controls, 16px inline with text, 18px inside 36px icon buttons.",
+      "Do use the single motion grammar: cubic-bezier(0.16, 1, 0.3, 1) at 300 to 560ms for movement, 160ms linear for color, and respect prefers-reduced-motion.",
+      "Do set type with weight and ink level before size; 700 names things, 600 labels, 500 speaks (bubbles, taglines), 400 reads.",
+      "Do keep numerals tabular ('tnum' is on body; stats add tabular-nums) and keep Hangul words whole (word-break: keep-all)."
+    ],
+    "donts": [
+      "Don't add a second accent. The five chip hues belong to resting chip icons and the kyu-rios topic dots only; any active or interactive state is orange.",
+      "Don't use blur, backdrop-filter, glass, or gradient text. The only gradients are the hero's radial white lift and the dock's fade into the ground.",
+      "Don't ship a dark theme or a second color-scheme; the site is light-only by scene (color-scheme: light).",
+      "Don't uppercase or track-out labels; shrink and embolden instead.",
+      "Don't float anything at rest except the hero avatar; resting shadows are the card shadow, compact chips and tags carry none.",
+      "Don't use emoji, icon fonts, or an icon package in place of the authored SVG set; the wave in the greeting is copy, not an icon.",
+      "Don't introduce a second font family, including monospace; Pretendard Variable covers both languages."
+    ]
+  }
+}

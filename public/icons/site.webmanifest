@@ -1,0 +1,12 @@
+{
+  "name": "Kyu-seok Yeum",
+  "short_name": "Kyu",
+  "icons": [
+    { "src": "/icons/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/android-chrome-384x384.png", "sizes": "384x384", "type": "image/png" }
+  ],
+  "theme_color": "#f6f7f9",
+  "background_color": "#f6f7f9",
+  "display": "standalone",
+  "start_url": "/"
+}
