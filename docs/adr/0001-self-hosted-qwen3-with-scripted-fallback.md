@@ -18,6 +18,7 @@ The portfolio chat was fully scripted (keyword matcher, authored prose, static G
 
 - The page must never depend on the model: intent and card come from the keyword matcher in the browser; a 4-second first-token budget decides scripted vs generated prose; a health probe on first interaction skips the model when it is down.
 - Chips stay scripted; only free text reaches the model. Thinking mode is off. Replies are single-turn.
+- 2026-11-07 amendment after the spike (`server/spike/RESULTS.md`): Qwen3-4B failed the latency gate and Qwen3-1.7B's Korean was not good enough, so only English free text is generated; Korean free text stays scripted. Qwen3-1.7B Q4_K_M ships.
 - Roughly 1.5 to 3 GB of RAM on the mini PC is held permanently by the resident model.
 - A public, unauthenticated endpoint lives on the production box: one generation at a time, queue of 3, 10 questions/min/IP, 300-char questions, 220 output tokens, 25 s wall clock, Cloudflare in front, gateway on its own Compose project and network.
 - Every question is logged permanently (JSONL on a volume, mirrored nightly to a private repo, shipped to Loki for dashboards only). PRODUCT.md's "no analytics" now applies to the page, not the gateway, and the page discloses the log.

@@ -1,0 +1,54 @@
+name: Deploy ask gateway
+
+# Syncs server/ to the mini PC and restarts the portfolio-ask Compose project.
+# Needs the same secrets as CodeBite's deploy: DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - '.github/workflows/deploy-ask.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-ask
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy server/ to the mini PC
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: 'server/*'
+          target: '~/portfolio-ask-incoming'
+          rm: true
+          strip_components: 1
+
+      - name: Build and restart
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          command_timeout: 15m
+          script: |
+            set -e
+            # models/ and log/ live only on the box; .env is written by hand there.
+            rsync -a --delete --exclude models --exclude log --exclude .env --exclude spike \
+              ~/portfolio-ask-incoming/ ~/portfolio-ask/
+            cd ~/portfolio-ask
+            docker compose up -d --build --remove-orphans
+            for i in $(seq 1 40); do
+              curl -sf localhost:8090/health | grep -q '"ready":true' && { echo ready; exit 0; }
+              sleep 5
+            done
+            echo "gateway did not become ready" >&2
+            docker compose logs --tail 50 gateway
+            exit 1

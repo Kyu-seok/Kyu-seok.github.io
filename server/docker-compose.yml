@@ -13,6 +13,10 @@ services:
       --host 0.0.0.0 --port 8080
     volumes:
       - ./models:/models:ro
+    # Metrics for CodeBite's Prometheus. Bind to the Docker bridge IP in .env (LLAMA_BIND=172.17.0.1)
+    # so only containers on this host can reach the raw model API.
+    ports:
+      - "${LLAMA_BIND:-127.0.0.1}:8091:8080"
     cpus: 4
     cpu_shares: 128
     mem_limit: 3g
