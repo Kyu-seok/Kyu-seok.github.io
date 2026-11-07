@@ -38,6 +38,8 @@ services:
       LOG_DIR: /log
     volumes:
       - ./log:/log
+    # Run as the host user that owns ./log so the question log is writable through the bind mount.
+    user: "${GATEWAY_UID:-1000}:${GATEWAY_GID:-1000}"
     ports:
       - "${GATEWAY_BIND:-127.0.0.1}:8090:8090"
     cpus: 1
