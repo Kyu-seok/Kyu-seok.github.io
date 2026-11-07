@@ -248,6 +248,43 @@
 .is-chat .dock-inner .chips {
   order: 0;
 }
+.stamp {
+  margin-top: 8px;
+  font-size: 0.72rem;
+  color: var(--ink-3);
+}
+
+.stamp-link {
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.gen-cursor::after {
+  content: '▍';
+  margin-left: 1px;
+  color: var(--accent);
+  animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gen-cursor::after {
+    animation: none;
+  }
+}
+
 .dock-note {
   order: 3;
   text-align: center;

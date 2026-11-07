@@ -1,17 +1,23 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AVATAR_SRC, content, initialLang, rememberLang } from './content';
 import type { Intent, Lang, ProjectId, ReplyKind } from './content/types';
-import { resolve } from './chat/answer';
+import { resolve, type Resolution } from './chat/answer';
+import { askGateway } from './chat/gateway';
 import { TopBar } from './components/TopBar';
 import { Hero } from './components/Hero';
 import { Composer } from './components/Composer';
 import { Chips } from './components/Chips';
-import { Thread, type Message } from './components/Thread';
+import { Thread, type Generated, type Message } from './components/Thread';
 
 const REPLY_DELAY_MS = 520;
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+// Only English free text is generated (ADR 0001, option 2). Greetings and "how does this work" stay scripted.
+function wantsGeneration(lang: Lang, r: Resolution): boolean {
+  return lang === 'en' && r.kind !== 'hello' && r.kind !== 'how';
 }
 
 export function App() {
@@ -20,6 +26,7 @@ export function App() {
   const [typing, setTyping] = useState(false);
   const nextId = useRef(1);
   const timer = useRef<number | null>(null);
+  const session = useRef(0); // bumped on restart so a stream in flight cannot write into a new chat
   const t = content[lang];
 
   useEffect(() => {
@@ -45,6 +52,42 @@ export function App() {
     timer.current = window.setTimeout(push, REPLY_DELAY_MS);
   }, []);
 
+  // The intent and card are decided before the model is asked; the model only supplies prose.
+  // No token within the budget, or the gateway down or busy, means the scripted reply instead.
+  const replyGenerated = useCallback(
+    async (text: string, r: Resolution) => {
+      const mine = session.current;
+      const id = nextId.current++;
+      let added = false;
+      setTyping(true);
+      const patch = (f: (g: Generated) => Generated) =>
+        setMessages((m) => m.map((x) => (x.id === id && x.role === 'assistant' && x.gen ? { ...x, gen: f(x.gen) } : x)));
+      const outcome = await askGateway(text, r.kind, lang, {
+        onToken(tok) {
+          if (session.current !== mine) return;
+          if (!added) {
+            added = true;
+            setTyping(false);
+            setMessages((m) => [...m, { id, role: 'assistant', kind: r.kind, focus: r.focus, gen: { text: tok, done: false } }]);
+          } else {
+            patch((g) => ({ ...g, text: g.text + tok }));
+          }
+        },
+        onDone(stamp) {
+          if (session.current !== mine) return;
+          patch((g) => ({ ...g, done: true, stamp }));
+        },
+      });
+      if (session.current !== mine) return;
+      if (outcome === 'generated') {
+        patch((g) => (g.done ? g : { ...g, done: true })); // cut mid-stream: keep what arrived, no stamp
+      } else {
+        reply(r.kind, r.focus);
+      }
+    },
+    [lang, reply],
+  );
+
   const ask = useCallback(
     (text: string, intent?: Intent) => {
       const clean = text.trim();
@@ -52,18 +95,25 @@ export function App() {
       setMessages((m) => [...m, { id: nextId.current++, role: 'user', text: clean }]);
       if (intent) {
         reply(intent);
-      } else {
-        const r = resolve(clean);
-        reply(r.kind, r.focus);
+        return;
       }
+      const r = resolve(clean);
+      if (wantsGeneration(lang, r)) void replyGenerated(clean, r);
+      else reply(r.kind, r.focus);
     },
-    [reply],
+    [lang, reply, replyGenerated],
   );
 
   const askChip = useCallback((intent: Intent) => ask(t.ui.chipQuestions[intent], intent), [ask, t]);
 
+  const askHow = useCallback(() => {
+    setMessages((m) => [...m, { id: nextId.current++, role: 'user', text: t.ui.howQuestion }]);
+    reply('how');
+  }, [reply, t]);
+
   const restart = useCallback(() => {
     if (timer.current) window.clearTimeout(timer.current);
+    session.current++;
     setTyping(false);
     setMessages([]);
   }, []);
@@ -74,7 +124,7 @@ export function App() {
   const lastIntent = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
       const m = messages[i];
-      if (m.role === 'assistant' && m.kind !== 'hello' && m.kind !== 'unknown') return m.kind as Intent;
+      if (m.role === 'assistant' && m.kind !== 'hello' && m.kind !== 'unknown' && m.kind !== 'how') return m.kind as Intent;
     }
     return null;
   }, [messages]);
@@ -84,7 +134,7 @@ export function App() {
       <TopBar t={t} lang={lang} avatarSrc={AVATAR_SRC} onToggleLang={toggleLang} onRestart={restart} isChat={isChat} />
       <div className="stage">
         <Hero t={t} avatarSrc={AVATAR_SRC} />
-        <Thread t={t} messages={messages} typing={typing} avatarSrc={AVATAR_SRC} onAskChip={askChip} />
+        <Thread t={t} messages={messages} typing={typing} avatarSrc={AVATAR_SRC} onAskChip={askChip} onAskHow={askHow} />
         <div className="dock">
           <div className="dock-inner">
             <Chips t={t} compact={isChat} active={lastIntent} onPick={askChip} />

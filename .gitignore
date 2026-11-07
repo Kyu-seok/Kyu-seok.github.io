@@ -6,3 +6,5 @@ dist
 .impeccable/review/
 .impeccable/mocks/
 *.tsbuildinfo
+server/log/
+server/models/

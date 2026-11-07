@@ -20,6 +20,11 @@ const PROJECT_FOCUS: { id: ProjectId; keywords: string[] }[] = [
 
 const RULES: Rule[] = [
   {
+    kind: 'how',
+    weight: 6,
+    keywords: ['how does this work', 'how does this chat work', 'how do you work', 'how are you built', 'is this ai', 'are you ai', 'are you an ai', 'are you a bot', 'chatgpt', 'llm', 'qwen', 'generated', 'scripted', '어떻게 동작', '어떻게 작동', '어떻게 만들', 'ai야', 'ai예요', 'ai인가', '인공지능', '봇이야', '봇인가', '대본'],
+  },
+  {
     kind: 'contact',
     weight: 5,
     keywords: ['contact', 'email', 'e-mail', 'mail', 'reach', 'linkedin', 'github', 'hire', 'hiring', 'resume', 'cv', 'talk', '연락', '이메일', '메일', '링크드인', '깃허브', '채용', '이력서', '연락처', '얘기'],

@@ -1,11 +1,19 @@
 import { useEffect, useRef } from 'react';
 import type { Content, Intent, ProjectId, ReplyKind } from '../content/types';
+import type { Stamp } from '../chat/gateway';
 import { Chips } from './Chips';
 import { ContactCard, FunCard, MeCard, ProjectCarousel, SkillsCard } from './Cards';
 
+// A generated reply: prose streamed from the model. The card still comes from the intent.
+export interface Generated {
+  text: string;
+  done: boolean;
+  stamp?: Stamp;
+}
+
 export type Message =
   | { id: number; role: 'user'; text: string }
-  | { id: number; role: 'assistant'; kind: ReplyKind; focus?: ProjectId };
+  | { id: number; role: 'assistant'; kind: ReplyKind; focus?: ProjectId; gen?: Generated };
 
 interface Props {
   t: Content;
@@ -13,6 +21,7 @@ interface Props {
   typing: boolean;
   avatarSrc: string;
   onAskChip: (intent: Intent) => void;
+  onAskHow: () => void;
 }
 
 function Card({ t, kind, focus, onAskChip }: { t: Content; kind: ReplyKind; focus?: ProjectId; onAskChip: (i: Intent) => void }) {
@@ -27,6 +36,8 @@ function Card({ t, kind, focus, onAskChip }: { t: Content; kind: ReplyKind; focu
       return <FunCard t={t} />;
     case 'contact':
       return <ContactCard t={t} />;
+    case 'how':
+      return null;
     case 'hello':
     case 'unknown':
       return (
@@ -38,7 +49,26 @@ function Card({ t, kind, focus, onAskChip }: { t: Content; kind: ReplyKind; focu
   }
 }
 
-export function Thread({ t, messages, typing, avatarSrc, onAskChip }: Props) {
+function StampLine({ t, gen, onAskHow }: { t: Content; gen?: Generated; onAskHow: () => void }) {
+  if (gen) {
+    if (!gen.done) return null;
+    const s = gen.stamp;
+    const label = t.ui.stamp.generated.replace('{model}', s?.model ?? 'Qwen3');
+    const speed = s ? ` · ${s.tokS.toFixed(1)} tok/s · ${s.seconds.toFixed(1)}s` : '';
+    return (
+      <p className="stamp">
+        {label}
+        {speed}
+        <button type="button" className="stamp-link" onClick={onAskHow}>
+          {t.ui.stamp.how}
+        </button>
+      </p>
+    );
+  }
+  return <p className="stamp">{t.ui.stamp.scripted}</p>;
+}
+
+export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow }: Props) {
   const listRef = useRef<HTMLDivElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const count = messages.length;
@@ -70,22 +100,34 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip }: Props) {
             </div>
           );
         }
-        const paras = t.replies[m.kind];
-        // For project-focused answers the first paragraph is enough before the carousel.
-        const lead = m.kind === 'projects' && m.focus ? paras.slice(0, 1) : paras.slice(0, 1);
-        const tail = m.kind === 'projects' && m.focus ? [] : paras.slice(1);
+        let lead: string[];
+        let tail: string[];
+        if (m.gen) {
+          lead = m.gen.text.split(/\n{2,}/).filter((p) => p.trim().length > 0);
+          if (lead.length === 0) lead = [''];
+          tail = [];
+        } else {
+          const paras = t.replies[m.kind];
+          // For project-focused answers the first paragraph is enough before the carousel.
+          lead = paras.slice(0, 1);
+          tail = m.kind === 'projects' && m.focus ? [] : paras.slice(1);
+        }
+        const showCard = !m.gen || m.kind !== 'unknown';
         return (
           <div key={m.id} className="msg msg-assistant">
             <img className="msg-avatar" src={avatarSrc} alt="" width={32} height={32} aria-hidden="true" />
             <div className="msg-body">
               <span className="sr-only">{t.ui.assistantName}: </span>
               {lead.map((p, i) => (
-                <p key={i}>{p}</p>
+                <p key={i} className={m.gen && !m.gen.done && i === lead.length - 1 ? 'gen-cursor' : undefined}>
+                  {p}
+                </p>
               ))}
-              <Card t={t} kind={m.kind} focus={m.focus} onAskChip={onAskChip} />
+              {showCard && <Card t={t} kind={m.kind} focus={m.focus} onAskChip={onAskChip} />}
               {tail.map((p, i) => (
                 <p key={`t${i}`}>{p}</p>
               ))}
+              <StampLine t={t} gen={m.gen} onAskHow={onAskHow} />
             </div>
           </div>
         );

@@ -1,0 +1,48 @@
+# Compose project "portfolio-ask": the Qwen3 server and the gateway, on the CodeBite mini PC.
+# Separate from CodeBite's Compose project on purpose (ADR 0001): a bad deploy here cannot touch CodeBite.
+# Model file: download once into ./models (see README.md). Logs: ./log, never deleted.
+name: portfolio-ask
+
+services:
+  llama:
+    image: ghcr.io/ggml-org/llama.cpp:server
+    restart: unless-stopped
+    command: >
+      -m /models/${MODEL_FILE:-Qwen3-1.7B-Q4_K_M.gguf}
+      -c 4096 -np 1 -t 4 --cache-reuse 256 --no-webui --metrics
+      --host 0.0.0.0 --port 8080
+    volumes:
+      - ./models:/models:ro
+    cpus: 4
+    cpu_shares: 128
+    mem_limit: 3g
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+    networks: [ask]
+
+  gateway:
+    build: .
+    image: portfolio-ask-gateway
+    restart: unless-stopped
+    depends_on:
+      llama:
+        condition: service_healthy
+    environment:
+      LLAMA_URL: http://llama:8080
+      MODEL_NAME: ${MODEL_NAME:-Qwen3-1.7B}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://kyu-seok.github.io}
+      LOG_DIR: /log
+    volumes:
+      - ./log:/log
+    ports:
+      - "${GATEWAY_BIND:-127.0.0.1}:8090:8090"
+    cpus: 1
+    mem_limit: 128m
+    networks: [ask]
+
+networks:
+  ask: {}

@@ -2,7 +2,7 @@ export type Lang = 'ko' | 'en';
 
 export type Intent = 'me' | 'projects' | 'skills' | 'fun' | 'contact';
 export type ChipIntent = Intent;
-export type ReplyKind = Intent | 'hello' | 'unknown';
+export type ReplyKind = Intent | 'hello' | 'unknown' | 'how';
 
 export type ProjectId = 'codebite' | 'kyu-rios' | 'vimtext' | 'wedding-ledger';
 
@@ -66,6 +66,12 @@ export interface Content {
     assistantName: string;
     avatarAlt: string;
     newChat: string;
+    howQuestion: string;
+    stamp: {
+      generated: string; // '{model}' is replaced with the model name
+      scripted: string;
+      how: string;
+    };
   };
   replies: Record<ReplyKind, string[]>;
   me: {
