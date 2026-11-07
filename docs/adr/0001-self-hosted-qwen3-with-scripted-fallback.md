@@ -1,0 +1,24 @@
+---
+status: accepted
+date: 2026-11-07
+---
+
+# Self-host Qwen3 on the CodeBite mini PC, with the scripted chat as the permanent fallback
+
+The portfolio chat was fully scripted (keyword matcher, authored prose, static GitHub Pages). We decided to answer free-typed questions with a Qwen3 model (1.7B or 4B, chosen by measurement) served by llama.cpp `llama-server` on the Intel N100 mini PC that runs CodeBite, behind a thin Go gateway at ask.code-bite.com. The point is the showcase: the model running next to production on a 4-core, no-GPU box is the portfolio piece, so a hosted API (cheaper, faster, better Korean) was rejected on purpose.
+
+## Considered options
+
+- **Hosted API (Claude, OpenAI).** Better answers, no operations. Rejected: it demonstrates nothing about Kyu, and the answers were already fine.
+- **RAG over the content files.** Rejected: the corpus is under 3,000 tokens and fits in one cached system prompt; revisit if the fact sheet outgrows that.
+- **Ollama.** Rejected in favor of `llama-server`: Ollama unloads idle models and drops the cached fact-sheet prefix, and prefix caching is what makes a 4B model usable on this CPU (prefill is roughly 25 to 40 tokens per second).
+- **Give the chat CPU priority during gradings.** Rejected: CodeBite is production; the model runs at a low CPU share and the page falls back to scripted prose.
+
+## Consequences
+
+- The page must never depend on the model: intent and card come from the keyword matcher in the browser; a 4-second first-token budget decides scripted vs generated prose; a health probe on first interaction skips the model when it is down.
+- Chips stay scripted; only free text reaches the model. Thinking mode is off. Replies are single-turn.
+- Roughly 1.5 to 3 GB of RAM on the mini PC is held permanently by the resident model.
+- A public, unauthenticated endpoint lives on the production box: one generation at a time, queue of 3, 10 questions/min/IP, 300-char questions, 220 output tokens, 25 s wall clock, Cloudflare in front, gateway on its own Compose project and network.
+- Every question is logged permanently (JSONL on a volume, mirrored nightly to a private repo, shipped to Loki for dashboards only). PRODUCT.md's "no analytics" now applies to the page, not the gateway, and the page discloses the log.
+- The measurement spike is a go/no-go: if even Qwen3-1.7B misses the gate on an idle box, the idea is dropped rather than the budget loosened.
