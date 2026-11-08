@@ -16,13 +16,16 @@ function prefersReducedMotion() {
 }
 
 // Free text in either language is generated (ADR 0001, 2026-11-08 amendment). Greetings and "how does this
-// work" stay scripted, and so does Korean text longer than the gateway's Hangul cap: Korean costs about one
-// token per character and prefill is slow, so a longer question would miss the first-token budget anyway.
-const HANGUL_QUESTION_CAP = 40;
-const HANGUL = /[\u3131-\u318e\uac00-\ud7a3]/;
-function wantsGeneration(text: string, r: Resolution): boolean {
-  if (r.kind === 'hello' || r.kind === 'how') return false;
-  return !(HANGUL.test(text) && [...text].length > HANGUL_QUESTION_CAP);
+// work" stay scripted. Korean text longer than the gateway's cap (maxHangulQuestionChars in server/main.go)
+// is not sent: Korean costs about one token per character and prefill is slow, so it would miss the
+// first-token budget anyway. The script test matches Go's unicode.Hangul so page and gateway agree.
+const GATEWAY_HANGUL_QUESTION_CAP = 40;
+const HANGUL = /\p{Script=Hangul}/u;
+function overHangulCap(text: string): boolean {
+  return HANGUL.test(text) && [...text].length > GATEWAY_HANGUL_QUESTION_CAP;
+}
+function wantsGeneration(r: Resolution): boolean {
+  return r.kind !== 'hello' && r.kind !== 'how';
 }
 
 export function App() {
@@ -103,10 +106,15 @@ export function App() {
         return;
       }
       const r = resolve(clean);
-      if (wantsGeneration(clean, r)) void replyGenerated(clean, r);
+      if (overHangulCap(clean)) {
+        // A matched intent still has a true scripted reply; an unmatched one must say why, not "busy".
+        reply(r.kind === 'unknown' ? 'toolong' : r.kind, r.focus);
+        return;
+      }
+      if (wantsGeneration(r)) void replyGenerated(clean, r);
       else reply(r.kind, r.focus);
     },
-    [lang, reply, replyGenerated],
+    [reply, replyGenerated],
   );
 
   const askChip = useCallback((intent: Intent) => ask(t.ui.chipQuestions[intent], intent), [ask, t]);
@@ -129,7 +137,7 @@ export function App() {
   const lastIntent = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
       const m = messages[i];
-      if (m.role === 'assistant' && m.kind !== 'hello' && m.kind !== 'unknown' && m.kind !== 'how') return m.kind as Intent;
+      if (m.role === 'assistant' && m.kind !== 'hello' && m.kind !== 'unknown' && m.kind !== 'how' && m.kind !== 'toolong') return m.kind as Intent;
     }
     return null;
   }, [messages]);

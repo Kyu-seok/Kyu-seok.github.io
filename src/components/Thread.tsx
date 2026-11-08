@@ -40,6 +40,7 @@ function Card({ t, kind, focus, onAskChip }: { t: Content; kind: ReplyKind; focu
       return null;
     case 'hello':
     case 'unknown':
+    case 'toolong':
       return (
         <div className="suggest">
           <p className="suggest-lead">{t.ui.suggestionsLead}</p>

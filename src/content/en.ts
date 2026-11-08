@@ -47,6 +47,10 @@ export const en: Content = {
     hello: [
       "Hi! Pick a question below, or type one and a small model running on my mini PC will answer from facts I wrote.",
     ],
+    toolong: [
+      'That one is too long for the model: Korean questions are capped at 40 characters, because on my mini PC Korean costs about one token per character and the first word has to arrive within 4 seconds.',
+      'Try a shorter one, or pick a topic below.',
+    ],
     unknown: [
       "I can't answer that one right now. The model on my mini PC is busy or asleep, and the scripted part of me only knows a handful of questions.",
       'For anything else, email Kyu directly. He reads it.',
@@ -54,7 +58,7 @@ export const en: Content = {
     how: [
       'The chips are scripted: I wrote them ahead of time. When you type a question it goes to a Qwen3-1.7B model I run with llama.cpp on the same Intel N100 mini PC that grades CodeBite submissions, behind a small Go gateway.',
       "The model only knows a fact sheet I wrote, every generated answer is labeled with its speed, and if the first word does not arrive within 4 seconds you get my scripted answer instead. That happens while a Java submission is grading, because grading gets the CPU first.",
-      'I measured Qwen3-4B and 1.7B before shipping. 4B managed 3.8 tokens a second on this CPU, too slow to feel like a chat; 1.7B does about 9. I measured 1.7B’s Korean twice and it missed my bar both times; I turned Korean generation on anyway to see how it does with real questions, with Korean questions capped at 40 characters and answers at two or three sentences. Every question is logged so I can improve the fact sheet.',
+      'I measured Qwen3-4B and 1.7B before shipping. 4B managed 3.8 tokens a second on this CPU, too slow to feel like a chat; 1.7B does about 9. I measured 1.7B’s Korean twice and it missed my bar both times; I turned Korean generation on anyway to see how it does with real questions, with Korean questions capped at 40 characters and answers at 120 tokens, about two or three sentences. Every question is logged so I can improve the fact sheet.',
     ],
     me: [
       "I'm Kyu-seok, a backend engineer in Seoul. I believe every slow system is telling you something; you just have to know where to listen.",

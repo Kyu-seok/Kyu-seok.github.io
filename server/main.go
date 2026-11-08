@@ -26,6 +26,19 @@ import (
 	"unicode"
 )
 
+const (
+	maxQuestionChars = 300
+	// Korean is about one token per character on Qwen3 and prefill costs ~80 ms a token on the N100,
+	// so the 4 s first-token budget covers about 40 Hangul characters (spike/RESULTS.md, second pass).
+	maxHangulQuestionChars = 40
+	maxOutputTokens        = 220
+	maxOutputTokensKo      = 120 // ~8 tok/s: 220 Korean tokens would overrun the wall clock
+	genWallClock           = 25 * time.Second
+	queueDepth             = 3
+	perMinute              = 10
+	perHour                = 60
+)
+
 // hasHangul reports whether the question is (at least partly) Korean text.
 func hasHangul(s string) bool {
 	for _, r := range s {
@@ -55,25 +68,13 @@ func langName(lang string) (string, bool) {
 	return "", false
 }
 
+// outputTokens is the generation cap for the answer language.
 func outputTokens(lang string) int {
 	if lang == "ko" {
 		return maxOutputTokensKo
 	}
 	return maxOutputTokens
 }
-
-const (
-	maxQuestionChars = 300
-	// Korean is about one token per character on Qwen3 and prefill costs ~80 ms a token on the N100,
-	// so the 4 s first-token budget covers about 40 Hangul characters (spike/RESULTS.md, second pass).
-	maxHangulQuestionChars = 40
-	maxOutputTokens        = 220
-	maxOutputTokensKo      = 120 // ~8 tok/s: 220 Korean tokens would overrun the wall clock
-	genWallClock           = 25 * time.Second
-	queueDepth             = 3
-	perMinute              = 10
-	perHour                = 60
-)
 
 type config struct {
 	listen     string

@@ -2,7 +2,7 @@ export type Lang = 'ko' | 'en';
 
 export type Intent = 'me' | 'projects' | 'skills' | 'fun' | 'contact';
 export type ChipIntent = Intent;
-export type ReplyKind = Intent | 'hello' | 'unknown' | 'how';
+export type ReplyKind = Intent | 'hello' | 'unknown' | 'how' | 'toolong';
 
 export type ProjectId = 'codebite' | 'kyu-rios' | 'vimtext' | 'wedding-ledger';
 
