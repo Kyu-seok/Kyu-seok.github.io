@@ -7,6 +7,8 @@ The gateway and model server behind free-typed English questions on kyu-seok.git
 
 ## Run on the mini PC
 
+The box is on the home LAN only: SSH alias `mini` (user `kyu`), project in `~/portfolio-ask`. The deploy workflow reaches it from GitHub over the `DEPLOY_*` secrets instead.
+
 ```bash
 mkdir -p ~/portfolio-ask/models
 # once:
