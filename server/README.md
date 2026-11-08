@@ -2,7 +2,7 @@
 
 The gateway and model server behind free-typed questions on kyu-seok.github.io. See `../docs/adr/0001-self-hosted-qwen3-with-scripted-fallback.md` for why, `spike/RESULTS.md` for the measurements.
 
-- `main.go`: Go gateway. Holds the prompt (`facts.en.md` + `examples.en.md`), one generation at a time with a queue of 3, 10 questions/min and 60/hour per IP, 300-char questions (40 when the text contains Hangul), 220 output tokens (120 for Korean), 25 s wall clock, SSE streaming, URL allow-list from the fact sheet, permanent question log (`log/questions-YYYY-MM.jsonl`), `/health`, `/metrics`.
+- `main.go`: Go gateway. Holds the prompt (`facts.en.md` + `examples.en.md`, about 3,100 tokens together; the fact sheet's Voice, Opinions, and Small things sections are what the model may be playful with), temperature 0.3 for every intent (0.6 was measured and rejected, `spike/RESULTS.md`), one generation at a time with a queue of 3, 10 questions/min and 60/hour per IP, 300-char questions (40 when the text contains Hangul), 220 output tokens (120 for Korean), 25 s wall clock, SSE streaming, URL allow-list from the fact sheet, permanent question log (`log/questions-YYYY-MM.jsonl`), `/health`, `/metrics`.
 - `docker-compose.yml`: `llama` (llama.cpp server, Qwen3-1.7B Q4_K_M, low CPU share so CodeBite grading wins) and `gateway`.
 
 ## Run on the mini PC
