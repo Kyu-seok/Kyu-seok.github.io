@@ -85,7 +85,7 @@ Per-token cost grows with the cached context on this CPU, so every token added t
 
 ### Run A: trimmed sheet, seven examples (coffee and RabbitMQ small-talk examples in, code-decline examples out)
 
-Prompt 2,225 tokens. `bench.py --set smalltalk12 --short`, temperature 0.3 (220 tokens EN, 120 KO). Raw: `results/smalltalk-A-t03.jsonl`, `results/smalltalk-A-t03-ko.jsonl`; the 0.6 run is in `results/smalltalk-A-t06*.jsonl`. Latency: first token p50 1.5 s, max 2.4 s; 7.6 to 7.8 tok/s. The latency gate passes on this prompt.
+Prompt 2,225 tokens (`examples.A.md` next to this file). `bench.py --set smalltalk12 --short`, temperature 0.3 (220 tokens EN, 120 KO). Raw: `results/smalltalk-A-t03.jsonl`, `results/smalltalk-A-t03-ko.jsonl`; the 0.6 run is in `results/smalltalk-A-t06*.jsonl`. Latency: first token p50 1.5 s, max 2.4 s; 7.6 to 7.8 tok/s. The latency gate passes on this prompt.
 
 | # | Lang | Intent | Question | First token | Total | Tokens | Answer | Notes (observations, not verdicts) | Verdict |
 |---|---|---|---|---|---|---|---|---|---|
@@ -109,7 +109,7 @@ Regression on the same prompt (`results/smalltalk-A-reg-default.jsonl`, `results
 
 ### Run B: same sheet, examples swapped back (code-decline examples in, coffee and RabbitMQ examples out)
 
-Prompt 2,270 tokens (`examples.B.md` next to this file). Temperature 0.3 only. Raw: `results/smalltalk-B-*.jsonl`. Latency: first token p50 1.5 s, max 3.1 s; 7.2 to 7.7 tok/s.
+Prompt 2,270 tokens (this is the shipped `../examples.en.md`). Temperature 0.3 only. Raw: `results/smalltalk-B-*.jsonl`. Latency: first token p50 1.5 s, max 3.1 s; 7.2 to 7.7 tok/s.
 
 | # | Lang | Intent | Question | First token | Total | Tokens | Answer | Notes (observations, not verdicts) | Verdict |
 |---|---|---|---|---|---|---|---|---|---|
@@ -142,4 +142,6 @@ Regression on run B (`results/smalltalk-B-reg-*.jsonl`): the English code questi
 
 Latency gate: passes on both runs once the sheet is held at about 2,200 tokens. Quality gate: fails on both runs by every criterion except latency, and both runs regress the Korean declines that the live prompt gets right. The model does not generalize from the rules; it pastes the nearest example, and within this box's token budget there is no room for small-talk examples without dropping decline examples. The "narrow" behavior the live prompt has is the safety mechanism, not an accident of it.
 
-Recommendation (Claude's, for Kyu to decide in the PR): do not ship this prompt. If the chat should joke around, do it where the Korean decision already lives for chips: scripted replies. The matcher can route greetings, "tell me a joke", "I'm bored", "thanks", and "do you like coffee" to replies Kyu writes in both languages, which costs no prompt tokens, has no injection surface, and satisfies PRODUCT.md principle 1 as originally written. The model stays on the live prompt. Kyu's verdict:
+Recommendation (Claude's, for Kyu to decide in the PR): do not ship this prompt. If the chat should joke around, do it where the Korean decision already lives for chips: scripted replies. The matcher can route greetings, "tell me a joke", "I'm bored", "thanks", and "do you like coffee" to replies Kyu writes in both languages, which costs no prompt tokens, has no injection surface, and satisfies PRODUCT.md principle 1 as originally written. The model stays on the live prompt.
+
+Kyu's verdict (2026-11-08): ship run B's prompt anyway and watch the question log; revert if the replies are a problem. Same decision shape as Korean generation. The review is the log: unknown-intent questions and the Korean declines (code, weather) are the entries to read first. Review due 2026-11-22 or after 50 unknown-intent questions, whichever comes first, together with the Korean review (issue #1).
