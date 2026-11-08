@@ -23,15 +23,56 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"unicode"
 )
+
+// hasHangul reports whether the question is (at least partly) Korean text.
+func hasHangul(s string) bool {
+	for _, r := range s {
+		if unicode.Is(unicode.Hangul, r) {
+			return true
+		}
+	}
+	return false
+}
+
+// questionLimit is the character cap for a question: shorter when it contains Hangul.
+func questionLimit(q string) int {
+	if hasHangul(q) {
+		return maxHangulQuestionChars
+	}
+	return maxQuestionChars
+}
+
+// langName is the label put in front of the visitor's turn so the model answers in the page's language.
+func langName(lang string) (string, bool) {
+	switch lang {
+	case "en":
+		return "English", true
+	case "ko":
+		return "Korean", true
+	}
+	return "", false
+}
+
+func outputTokens(lang string) int {
+	if lang == "ko" {
+		return maxOutputTokensKo
+	}
+	return maxOutputTokens
+}
 
 const (
 	maxQuestionChars = 300
-	maxOutputTokens  = 220
-	genWallClock     = 25 * time.Second
-	queueDepth       = 3
-	perMinute        = 10
-	perHour          = 60
+	// Korean is about one token per character on Qwen3 and prefill costs ~80 ms a token on the N100,
+	// so the 4 s first-token budget covers about 40 Hangul characters (spike/RESULTS.md, second pass).
+	maxHangulQuestionChars = 40
+	maxOutputTokens        = 220
+	maxOutputTokensKo      = 120 // ~8 tok/s: 220 Korean tokens would overrun the wall clock
+	genWallClock           = 25 * time.Second
+	queueDepth             = 3
+	perMinute              = 10
+	perHour                = 60
 )
 
 type config struct {
@@ -338,12 +379,12 @@ func (g *gateway) ask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req.Question = strings.TrimSpace(req.Question)
-	if req.Question == "" || len([]rune(req.Question)) > maxQuestionChars {
-		http.Error(w, "question must be 1 to 300 characters", http.StatusBadRequest)
+	if limit := questionLimit(req.Question); req.Question == "" || len([]rune(req.Question)) > limit {
+		http.Error(w, fmt.Sprintf("question must be 1 to %d characters", limit), http.StatusBadRequest)
 		return
 	}
-	if req.Lang != "en" {
-		http.Error(w, "only English questions are generated", http.StatusUnprocessableEntity)
+	if _, ok := langName(req.Lang); !ok {
+		http.Error(w, "only English and Korean questions are generated", http.StatusUnprocessableEntity)
 		return
 	}
 	if req.Intent == "" {
@@ -443,17 +484,18 @@ type chatChunk struct {
 
 func (g *gateway) generate(ctx context.Context, req askRequest, emit func(string)) (genResult, error) {
 	var res genResult
+	lang, _ := langName(req.Lang)
 	body, _ := json.Marshal(map[string]any{
 		"model":                "portfolio",
 		"stream":               true,
-		"max_tokens":           maxOutputTokens,
+		"max_tokens":           outputTokens(req.Lang),
 		"temperature":          0.3,
 		"top_p":                0.9,
 		"cache_prompt":         true,
 		"chat_template_kwargs": map[string]any{"enable_thinking": false},
 		"messages": []map[string]string{
 			{"role": "system", "content": g.system},
-			{"role": "user", "content": "(English) " + req.Question},
+			{"role": "user", "content": "(" + lang + ") " + req.Question},
 		},
 	})
 	hr, err := http.NewRequestWithContext(ctx, http.MethodPost, g.cfg.upstream+"/v1/chat/completions", bytes.NewReader(body))

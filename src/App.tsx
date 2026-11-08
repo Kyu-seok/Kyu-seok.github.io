@@ -15,9 +15,14 @@ function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-// Only English free text is generated (ADR 0001, option 2). Greetings and "how does this work" stay scripted.
-function wantsGeneration(lang: Lang, r: Resolution): boolean {
-  return lang === 'en' && r.kind !== 'hello' && r.kind !== 'how';
+// Free text in either language is generated (ADR 0001, 2026-11-08 amendment). Greetings and "how does this
+// work" stay scripted, and so does Korean text longer than the gateway's Hangul cap: Korean costs about one
+// token per character and prefill is slow, so a longer question would miss the first-token budget anyway.
+const HANGUL_QUESTION_CAP = 40;
+const HANGUL = /[\u3131-\u318e\uac00-\ud7a3]/;
+function wantsGeneration(text: string, r: Resolution): boolean {
+  if (r.kind === 'hello' || r.kind === 'how') return false;
+  return !(HANGUL.test(text) && [...text].length > HANGUL_QUESTION_CAP);
 }
 
 export function App() {
@@ -98,7 +103,7 @@ export function App() {
         return;
       }
       const r = resolve(clean);
-      if (wantsGeneration(lang, r)) void replyGenerated(clean, r);
+      if (wantsGeneration(clean, r)) void replyGenerated(clean, r);
       else reply(r.kind, r.focus);
     },
     [lang, reply, replyGenerated],
