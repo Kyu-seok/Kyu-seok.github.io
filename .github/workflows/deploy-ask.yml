@@ -46,9 +46,16 @@ jobs:
             cd ~/portfolio-ask
             docker compose up -d --build --remove-orphans
             for i in $(seq 1 40); do
-              curl -sf localhost:8090/health | grep -q '"ready":true' && { echo ready; exit 0; }
+              curl -sf localhost:8090/health | grep -q '"ready":true' && break
               sleep 5
             done
-            echo "gateway did not become ready" >&2
-            docker compose logs --tail 50 gateway
-            exit 1
+            curl -sf localhost:8090/health | grep -q '"ready":true' || {
+              echo "gateway did not become ready" >&2; docker compose logs --tail 50 gateway; exit 1; }
+            echo ready
+            # Smoke: one real question must stream and land in the question log.
+            MARK="deploy smoke ${{ github.run_id }}"
+            curl -sN -m 60 -H 'Content-Type: application/json' \
+              -d "{\"question\":\"$MARK: which editor do you use?\",\"lang\":\"en\",\"intent\":\"skills\"}" \
+              localhost:8090/ask | grep -q '"outcome":"ok"' || { echo "smoke question failed" >&2; exit 1; }
+            tail -n 1 log/questions-*.jsonl | grep -qF "$MARK" || { echo "smoke question not in the log" >&2; exit 1; }
+            echo "smoke ok"

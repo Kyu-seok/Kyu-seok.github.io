@@ -80,17 +80,18 @@ type bucket struct {
 }
 
 type limiter struct {
-	mu sync.Mutex
-	m  map[string]*bucket
+	mu  sync.Mutex
+	m   map[string]*bucket
+	now func() time.Time
 }
 
 func newLimiter() *limiter {
-	l := &limiter{m: map[string]*bucket{}}
+	l := &limiter{m: map[string]*bucket{}, now: time.Now}
 	go func() {
 		for range time.Tick(10 * time.Minute) {
 			l.mu.Lock()
 			for k, b := range l.m {
-				if time.Since(b.lastSeen) > time.Hour {
+				if l.now().Sub(b.lastSeen) > time.Hour {
 					delete(l.m, k)
 				}
 			}
@@ -103,7 +104,7 @@ func newLimiter() *limiter {
 func (l *limiter) allow(ip string) bool {
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	now := time.Now()
+	now := l.now()
 	b, ok := l.m[ip]
 	if !ok {
 		b = &bucket{minuteAt: now, hourAt: now}
@@ -212,20 +213,26 @@ type linkFilter struct {
 	pending strings.Builder
 }
 
+// urlKey is how a URL is compared with the fact sheet: trailing punctuation and slash do not count.
+func urlKey(u string) string {
+	return strings.TrimRight(u, ".,;:/")
+}
+
 func newLinkFilter(facts string) *linkFilter {
 	f := &linkFilter{allowed: map[string]bool{}}
 	for _, u := range urlRe.FindAllString(facts, -1) {
-		f.allowed[strings.TrimRight(u, ".,;:")] = true
+		f.allowed[urlKey(u)] = true
 	}
 	return f
 }
 
 func (f *linkFilter) clean(word string) string {
 	return urlRe.ReplaceAllStringFunc(word, func(u string) string {
-		if f.allowed[strings.TrimRight(u, ".,;:")] {
+		if f.allowed[urlKey(u)] {
 			return u
 		}
-		return "[link removed]"
+		// Keep the sentence punctuation that followed the link.
+		return "[link removed]" + strings.TrimLeft(u[len(strings.TrimRight(u, ".,;:")):], "/")
 	})
 }
 
