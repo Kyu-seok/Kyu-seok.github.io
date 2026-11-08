@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 # Nightly: commit and push the question log to a private Git repo, so the mini PC is not its only copy.
-# One-time setup on the mini PC:
-#   git clone git@github.com:<you>/portfolio-ask-log.git ~/portfolio-ask/log   # the repo's deploy key is ~/.ssh/id_ed25519.pub
-#   crontab -e  ->  17 3 * * * ~/portfolio-ask/scripts/mirror-log.sh >> ~/portfolio-ask/mirror.log 2>&1
+# One-time setup (log/ already has files, so it is git-init'ed in place, never cloned over):
+#   on GitHub: private repo portfolio-ask-log with a write-enabled deploy key = the mini PC's ~/.ssh/portfolio-ask-log.pub
+#   on the mini PC, in ~/portfolio-ask/log:
+#     git init -b main && git remote add origin git@github.com:<you>/portfolio-ask-log.git
+#     git config core.sshCommand 'ssh -i ~/.ssh/portfolio-ask-log -o IdentitiesOnly=yes'
+#   crontab -e  ->  17 3 * * * $HOME/portfolio-ask/scripts/mirror-log.sh >> $HOME/portfolio-ask/mirror.log 2>&1
 set -eu
 cd "${LOG_DIR:-$HOME/portfolio-ask/log}"
 git add -A
