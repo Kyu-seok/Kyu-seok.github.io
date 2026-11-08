@@ -20,6 +20,14 @@ _Avoid_: AI reply, LLM answer, live reply
 Which of the five topics (me, projects, skills, fun, contact) a question is about. Decided by the keyword matcher, never by the model.
 _Avoid_: Category, topic, kind
 
+**Small talk**:
+A question that is not about Kyu's work and that the model may answer playfully, in Kyu's voice, without adding facts.
+_Avoid_: Off-topic, chit-chat, banter (banter is the tone, not the question)
+
+**Out of scope**:
+A question the model must decline: undisclosed facts, code, translation, general knowledge, and opinions on people, companies, or politics.
+_Avoid_: Forbidden, blocked, unknown (the page's "unknown" is a matcher result, not a judgment)
+
 **Card**:
 The structured block under a reply's prose: the project carousel, the skills grid, the contact list, and so on. Always picked from the intent, never generated.
 _Avoid_: Widget, attachment, rich answer

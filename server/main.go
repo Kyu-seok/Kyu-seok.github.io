@@ -33,10 +33,13 @@ const (
 	maxHangulQuestionChars = 40
 	maxOutputTokens        = 220
 	maxOutputTokensKo      = 120 // ~8 tok/s: 220 Korean tokens would overrun the wall clock
-	genWallClock           = 25 * time.Second
-	queueDepth             = 3
-	perMinute              = 10
-	perHour                = 60
+	// 0.6 was tried for unknown-intent questions (small talk) and rejected: it wrote `rm -rf *`
+	// for a question the same prompt declines at 0.3 (spike/RESULTS.md, small-talk gate).
+	temperature  = 0.3
+	genWallClock = 25 * time.Second
+	queueDepth   = 3
+	perMinute    = 10
+	perHour      = 60
 )
 
 // hasHangul reports whether the question is (at least partly) Korean text.
@@ -490,7 +493,7 @@ func (g *gateway) generate(ctx context.Context, req askRequest, emit func(string
 		"model":                "portfolio",
 		"stream":               true,
 		"max_tokens":           outputTokens(req.Lang),
-		"temperature":          0.3,
+		"temperature":          temperature,
 		"top_p":                0.9,
 		"cache_prompt":         true,
 		"chat_template_kwargs": map[string]any{"enable_thinking": false},

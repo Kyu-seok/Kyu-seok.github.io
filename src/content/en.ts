@@ -57,7 +57,7 @@ export const en: Content = {
     ],
     how: [
       'The chips are scripted: I wrote them ahead of time. When you type a question it goes to a Qwen3-1.7B model I run with llama.cpp on the same Intel N100 mini PC that grades CodeBite submissions, behind a small Go gateway.',
-      "The model only knows a fact sheet I wrote, every generated answer is labeled with its speed, and if the first word does not arrive within 4 seconds you get my scripted answer instead. That happens while a Java submission is grading, because grading gets the CPU first.",
+      "The model only knows a fact sheet I wrote, every generated answer is labeled with its speed, and if the first word does not arrive within 4 seconds you get my scripted answer instead. That happens while a Java submission is grading, because grading gets the CPU first. It is allowed to make small talk in a voice I wrote, but every fact it states about me comes from that sheet, and it will not write code, translate, or give opinions I did not write down.",
       'I measured Qwen3-4B and 1.7B before shipping. 4B managed 3.8 tokens a second on this CPU, too slow to feel like a chat; 1.7B does about 9. I measured 1.7B’s Korean twice and it missed my bar both times; I turned Korean generation on anyway to see how it does with real questions, with Korean questions capped at 40 characters and answers at 120 tokens, about two or three sentences. Every question is logged so I can improve the fact sheet.',
     ],
     me: [
