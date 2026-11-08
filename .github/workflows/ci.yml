@@ -15,7 +15,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build   # runs tsc -b first, so this is the typecheck
+      - run: npm run build   # tsc -b (typecheck) and oxlint (react-hooks, correctness) run first
 
   gateway:
     uses: ./.github/workflows/gateway-checks.yml
