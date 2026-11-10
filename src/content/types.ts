@@ -1,3 +1,5 @@
+import type { KeyedStudyTopic } from '../chat/answer';
+
 export type Lang = 'ko' | 'en';
 
 export type Intent = 'me' | 'projects' | 'skills' | 'fun' | 'contact';
@@ -26,13 +28,6 @@ export interface Project {
 export interface SkillGroup {
   label: string;
   items: string[];
-}
-
-export interface Topic {
-  name: string;
-  lessons: number;
-  refs: number;
-  color: string;
 }
 
 export interface ContactItem {
@@ -83,12 +78,19 @@ export interface Content {
   };
   fun: {
     title: string;
-    stats: { label: string; value: string }[];
-    topics: Topic[];
+    stats: { topics: string; lessons: string; reviewCards: string };
     link: Link;
     coverAlt: string;
   };
   contact: {
     items: ContactItem[];
+  };
+  notes: {
+    label: string;
+    showAll: string; // '{n}' is replaced with the lesson count
+    showFewer: string;
+    // English reads each study topic's title and summary from kyu-rious's graph.json. Korean writes them
+    // here, and tsc fails if a study topic with keywords has none.
+    topics: 'from-graph' | Record<KeyedStudyTopic, { title: string; summary: string }>;
   };
 }

@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 import type { Content, Intent, ProjectId, ReplyKind } from '../content/types';
 import type { Stamp } from '../chat/gateway';
 import { Chips } from './Chips';
-import { ContactCard, FunCard, MeCard, ProjectCarousel, SkillsCard } from './Cards';
+import type { KeyedStudyTopic } from '../chat/answer';
+import { ContactCard, FunCard, MeCard, NotesCard, ProjectCarousel, SkillsCard } from './Cards';
 
 // A generated reply: prose streamed from the model. The card still comes from the intent.
 export interface Generated {
@@ -13,7 +14,7 @@ export interface Generated {
 
 export type Message =
   | { id: number; role: 'user'; text: string }
-  | { id: number; role: 'assistant'; kind: ReplyKind; focus?: ProjectId; gen?: Generated };
+  | { id: number; role: 'assistant'; kind: ReplyKind; focus?: ProjectId; study?: KeyedStudyTopic; gen?: Generated };
 
 interface Props {
   t: Content;
@@ -128,6 +129,7 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow }: 
               {tail.map((p, i) => (
                 <p key={`t${i}`}>{p}</p>
               ))}
+              {m.study && <NotesCard t={t} slug={m.study} />}
               <StampLine t={t} gen={m.gen} onAskHow={onAskHow} />
             </div>
           </div>

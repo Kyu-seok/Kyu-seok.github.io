@@ -38,7 +38,7 @@ Dry and plain. The joke, if any, is that the system is telling on me, or that th
 ### kyu-rious (live, https://kyu-seok.github.io/kyu-rious/, source https://github.com/Kyu-seok/kyu-rious)
 
 - My public second brain: everything I have learned, published as a graph you can review. Topics, lessons, and reference sheets with typed relationships, plus spaced-repetition review of every lesson quiz, in the browser.
-- Currently 5 topics, 26 lessons, 232 review cards: Agent Orchestration, AI Engineering 101, Git Workflow, Kafka (for the CCDAK exam), Matt Pocock's Skills. This is also what I do for fun: every topic I study gets written up and quizzed on a spaced schedule.
+- Currently 5 topics, 28 lessons, 232 review cards: Agent Orchestration, AI Engineering 101, Git Workflow, Kafka (for the CCDAK exam), Matt Pocock's Skills. This is also what I do for fun: every topic I study gets written up and quizzed on a spaced schedule.
 
 ### VimText (MVP, https://github.com/Kyu-seok/VimText)
 

@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import type { ComponentType } from 'react';
 import type { ContactItem, Content, ProjectId } from '../content/types';
 import type { Project } from '../content/types';
+import type { KeyedStudyTopic } from '../chat/answer';
+import { STUDY_TOPICS, type StudyTopicSlug } from '../content/kyu-rious.gen';
+import { KYU_RIOUS, STUDY_TOPIC_COLORS } from '../content/kyuRious';
 import { IconArrowLeft, IconArrowRight, IconChevron, IconExternal, IconGitHub, IconGlobe, IconLinkedIn, IconMail } from './Icons';
 
 function ProjectCard({ t, p, focused }: { t: Content; p: Project; focused: boolean }) {
@@ -143,20 +146,26 @@ export function FunCard({ t }: { t: Content }) {
       <div className="fun-body">
         <h3 className="fun-title">{f.title}</h3>
         <dl className="fun-stats">
-          {f.stats.map((s) => (
-            <div key={s.label}>
-              <dd>{s.value}</dd>
-              <dt>{s.label}</dt>
-            </div>
-          ))}
+          <div>
+            <dd>{KYU_RIOUS.topics}</dd>
+            <dt>{f.stats.topics}</dt>
+          </div>
+          <div>
+            <dd>{KYU_RIOUS.lessons}</dd>
+            <dt>{f.stats.lessons}</dt>
+          </div>
+          <div>
+            <dd>{KYU_RIOUS.reviewCards}</dd>
+            <dt>{f.stats.reviewCards}</dt>
+          </div>
         </dl>
         <ul className="fun-topics">
-          {f.topics.map((tp) => (
-            <li key={tp.name}>
-              <span className="dot" style={{ background: tp.color }} aria-hidden="true" />
-              <span className="fun-topic-name">{tp.name}</span>
+          {(Object.entries(STUDY_TOPICS) as [StudyTopicSlug, (typeof STUDY_TOPICS)[StudyTopicSlug]][]).map(([slug, tp]) => (
+            <li key={slug}>
+              <span className="dot" style={{ background: STUDY_TOPIC_COLORS[slug] ?? 'var(--ink-3)' }} aria-hidden="true" />
+              <span className="fun-topic-name">{tp.title}</span>
               <span className="fun-topic-meta">
-                {tp.lessons} {t.ui.lessons} · {tp.refs} {t.ui.refs}
+                {tp.lessons.length} {t.ui.lessons} · {tp.refs} {t.ui.refs}
               </span>
             </li>
           ))}
@@ -167,6 +176,44 @@ export function FunCard({ t }: { t: Content }) {
         </a>
       </div>
     </div>
+  );
+}
+
+const NOTES_VISIBLE = 3;
+
+// The notes card: the study topic a free-text question touched and its kyu-rious lessons. Picked by the
+// keyword matcher in the browser, never by the model (GLOSSARY.md, "Notes card").
+export function NotesCard({ t, slug }: { t: Content; slug: KeyedStudyTopic }) {
+  const [open, setOpen] = useState(false);
+  const topic = STUDY_TOPICS[slug];
+  const words = t.notes.topics === 'from-graph' ? topic : t.notes.topics[slug];
+  const lessons = topic.lessons as readonly { title: string; url: string }[];
+  const shown = open ? lessons : lessons.slice(0, NOTES_VISIBLE);
+  const listId = `notes-${slug}`;
+  return (
+    <section className="card notes" aria-label={t.notes.label}>
+      <p className="notes-label">{t.notes.label}</p>
+      <a className="notes-topic" href={topic.url} target="_blank" rel="noreferrer">
+        {words.title}
+        <IconExternal size={16} />
+      </a>
+      <p className="notes-summary">{words.summary}</p>
+      <ol id={listId} className="notes-lessons">
+        {shown.map((l) => (
+          <li key={l.url}>
+            <a href={l.url} target="_blank" rel="noreferrer">
+              {l.title}
+            </a>
+          </li>
+        ))}
+      </ol>
+      {lessons.length > NOTES_VISIBLE && (
+        <button type="button" className="pcard-toggle notes-toggle" aria-expanded={open} aria-controls={listId} onClick={() => setOpen((o) => !o)}>
+          {open ? t.notes.showFewer : t.notes.showAll.replace('{n}', String(lessons.length))}
+          <IconChevron size={16} className="pcard-toggle-icon" />
+        </button>
+      )}
+    </section>
   );
 }
 

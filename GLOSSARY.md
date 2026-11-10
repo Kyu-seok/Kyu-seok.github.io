@@ -17,7 +17,7 @@ A reply whose prose was produced by the self-hosted model from the fact sheet, l
 _Avoid_: AI reply, LLM answer, live reply
 
 **Intent**:
-Which of the five topics (me, projects, skills, fun, contact) a question is about. Decided by the keyword matcher, never by the model.
+Which of the five subjects (me, projects, skills, fun, contact) a question is about. Decided by the keyword matcher, never by the model.
 _Avoid_: Category, topic, kind
 
 **Small talk**:
@@ -29,8 +29,16 @@ A question the model must decline: undisclosed facts, code, translation, general
 _Avoid_: Forbidden, blocked, unknown (the page's "unknown" is a matcher result, not a judgment)
 
 **Card**:
-The structured block under a reply's prose: the project carousel, the skills grid, the contact list, and so on. Always picked from the intent, never generated.
+A structured block under a reply's prose: the project carousel, the skills grid, the contact list, and so on. Picked by the keyword matcher, never generated; a reply may carry more than one.
 _Avoid_: Widget, attachment, rich answer
+
+**Notes card**:
+The card that links the study topic a free-text question touched and that topic's kyu-rious lessons, labeled "From my notes". Added alongside the intent's card, never instead of it.
+_Avoid_: Lesson card (kyu-rious has review cards), note link, RAG result
+
+**Study topic**:
+One of the subjects Kyu has written kyu-rious lessons on, such as Kafka or AI Engineering 101. On this page the bare word "topic" is not used.
+_Avoid_: Topic, course, category, note
 
 **Fact sheet**:
 The single authored document of facts about Kyu that the model is allowed to speak from. Written in English; the model answers in the page's active language.

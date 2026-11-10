@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/kyu-rious-graph.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/kyu-rious-graph.mjs",
     "build": "tsc -b && oxlint src && vite build",
     "preview": "vite preview",
     "lint": "oxlint src"

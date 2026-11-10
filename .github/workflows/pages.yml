@@ -3,6 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Daily rebuild so the notes card and the Fun card pick up new kyu-rious lessons from graph.json
+  # (scripts/kyu-rious-graph.mjs). If the fetch fails the build fails and the last good deploy stays live.
+  schedule:
+    - cron: '17 21 * * *' # 06:17 KST
   workflow_dispatch:
 
 permissions:
