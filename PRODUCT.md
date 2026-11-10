@@ -16,7 +16,7 @@ Recruiters, hiring managers, and fellow engineers who land on kyu-seok.github.io
 
 ## Product Purpose
 
-A single-page portfolio for 염규석 (Kyu-seok Yeum), a backend engineer in Seoul. It replaces a dormant Jekyll blog. Success: a visitor learns who Kyu is, sees CodeBite and kyu-rios as real, running work, and reaches GitHub, LinkedIn, or email without hunting.
+A single-page portfolio for 염규석 (Kyu-seok Yeum), a backend engineer in Seoul. It replaces a dormant Jekyll blog. Success: a visitor learns who Kyu is, sees CodeBite and kyu-rious as real, running work, and reaches GitHub, LinkedIn, or email without hunting.
 
 ## Positioning
 
@@ -25,7 +25,7 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 ## Operating Context
 
 - Visitors arrive on phones and laptops, in daylight, usually from a link in a résumé or a LinkedIn post.
-- kyu-rios lives at https://kyu-seok.github.io/kyu-rious/ in its own repo (Kyu-seok/kyu-rious, Pages via workflow). This site must not interfere with that path.
+- kyu-rious lives at https://kyu-seok.github.io/kyu-rious/ in its own repo (Kyu-seok/kyu-rious, Pages via workflow). This site must not interfere with that path.
 - The repo previously deployed a Jekyll build to the `gh-pages` branch. Pages must be switched to "GitHub Actions" as its source for the new site.
 
 ## Capabilities and Constraints
@@ -38,7 +38,7 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 - Language toggle KO/EN; initial language from the browser, remembered in localStorage.
 - No analytics, no cookies, no external scripts on the page. The only network call is to ask.code-bite.com, made on the visitor's first interaction, never on page load.
 - Avatar: the user's own memoji with transparent background at `public/avatar.png`, shown inside a peach circle.
-- Fun = kyu-rios second brain only (user decision). Book reviews from the old blog are not included.
+- Fun = kyu-rious second brain only (user decision). Book reviews from the old blog are not included.
 
 ## Brand Commitments
 
@@ -52,7 +52,7 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 - GitHub profile README (Kyu-seok/Kyu-seok): bio, "How I build" philosophy, stack list, email.
 - Social: https://www.linkedin.com/in/kyuseok/ , https://github.com/Kyu-seok , yeumkyuseok@gmail.com
 - CodeBite README (Kyu-seok/CodeBite) with screenshots in docs/screenshots/: product facts, architecture, latency work (30s to 1.9s), runs on a home mini PC. Live at https://code-bite.com
-- kyu-rios site: 5 topics, 26 lessons, 232 review cards; Astro; graph + spaced review. Its Kafka topic is described as "in preparation for the CCDAK exam", which is the source for the CCDAK claim.
+- kyu-rious site: 5 topics, 26 lessons, 232 review cards; Astro; graph + spaced review. Its Kafka topic is described as "in preparation for the CCDAK exam", which is the source for the CCDAK claim.
 - VimText README (Chrome MV3 Vim extension, no npm deps).
 - wedding-ledger README with docs/01-main.png.
 - Absent: a photo or memoji (placeholder shipped), employer or years-of-experience claims (not stated anywhere; do not invent), education claims (GitHub "company" says Curtin University but role is unconfirmed; omitted).

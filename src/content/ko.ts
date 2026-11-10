@@ -106,8 +106,8 @@ export const ko: Content = {
       status: '운영 중',
     },
     {
-      id: 'kyu-rios',
-      name: 'kyu-rios',
+      id: 'kyu-rious',
+      name: 'kyu-rious',
       tagline: '배운 모든 것을 복습할 수 있는 그래프로 공개합니다.',
       description: [
         '토픽, 레슨, 참고 시트를 선행·확장·대조 관계로 연결한 그래프와, 모든 레슨 퀴즈의 간격 반복 복습이 브라우저 안에서 돌아갑니다.',
@@ -118,8 +118,8 @@ export const ko: Content = {
         { label: 'kyu-seok.github.io/kyu-rious', href: 'https://kyu-seok.github.io/kyu-rious/' },
         { label: 'GitHub', href: 'https://github.com/Kyu-seok/kyu-rious' },
       ],
-      cover: '/projects/kyu-rios.jpg',
-      coverAlt: '다섯 개 토픽 클러스터가 보이는 kyu-rios 지식 그래프',
+      cover: '/projects/kyu-rious.jpg',
+      coverAlt: '다섯 개 토픽 클러스터가 보이는 kyu-rious 지식 그래프',
       status: '공개 중',
     },
     {
@@ -163,7 +163,7 @@ export const ko: Content = {
     ],
   },
   fun: {
-    title: 'kyu-rios, 공개 세컨드 브레인',
+    title: 'kyu-rious, 공개 세컨드 브레인',
     stats: [
       { label: '토픽', value: '5' },
       { label: '레슨', value: '26' },
@@ -177,7 +177,7 @@ export const ko: Content = {
       { name: "Matt Pocock's Skills", lessons: 8, refs: 7, color: '#7c3aed' },
     ],
     link: { label: '그래프 열기', href: 'https://kyu-seok.github.io/kyu-rious/' },
-    coverAlt: 'kyu-rios 지식 그래프',
+    coverAlt: 'kyu-rious 지식 그래프',
   },
   contact: {
     items: [

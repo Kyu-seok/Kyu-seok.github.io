@@ -13,7 +13,7 @@ interface Rule {
 
 const PROJECT_FOCUS: { id: ProjectId; keywords: string[] }[] = [
   { id: 'codebite', keywords: ['codebite', 'code-bite', 'code bite', '코드바이트', '코드 바이트'] },
-  { id: 'kyu-rios', keywords: ['kyu-rios', 'kyurios', 'rios', 'second brain', '세컨드 브레인', '세컨드브레인'] },
+  { id: 'kyu-rious', keywords: ['kyu-rious', 'kyurious', 'kyu rious', '큐리어스', 'second brain', '세컨드 브레인', '세컨드브레인'] },
   { id: 'vimtext', keywords: ['vimtext', 'vim text', 'vim', '빔텍스트'] },
   { id: 'wedding-ledger', keywords: ['ledger', 'wedding', '축의금', '결혼', '장부'] },
 ];

@@ -9,9 +9,9 @@ related_targets: ["index.html"]
 
 Scope: the whole single-page portfolio. Visitor mode: Experience (the chat is the work; the interface recedes into it).
 
-Audience and job: recruiters and engineers deciding in under a minute whether to talk to Kyu. Action: press a quick-action chip, read one answer, click through to GitHub, LinkedIn, email, CodeBite, or kyu-rios.
+Audience and job: recruiters and engineers deciding in under a minute whether to talk to Kyu. Action: press a quick-action chip, read one answer, click through to GitHub, LinkedIn, email, CodeBite, or kyu-rious.
 
-Proof on hand: CodeBite screenshots, the 30s to 1.9s latency story, kyu-rios live graph with 5 topics / 26 lessons / 232 cards, VimText and wedding-ledger READMEs. Avatar: memoji placeholder until the user exports one.
+Proof on hand: CodeBite screenshots, the 30s to 1.9s latency story, kyu-rious live graph with 5 topics / 26 lessons / 232 cards, VimText and wedding-ledger READMEs. Avatar: memoji placeholder until the user exports one.
 
 Constraints: static only, bilingual KO/EN, no LLM, the user pinned the Toukoum-style chat portfolio topology.
 

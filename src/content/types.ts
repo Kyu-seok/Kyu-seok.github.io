@@ -4,7 +4,7 @@ export type Intent = 'me' | 'projects' | 'skills' | 'fun' | 'contact';
 export type ChipIntent = Intent;
 export type ReplyKind = Intent | 'hello' | 'unknown' | 'how' | 'toolong';
 
-export type ProjectId = 'codebite' | 'kyu-rios' | 'vimtext' | 'wedding-ledger';
+export type ProjectId = 'codebite' | 'kyu-rious' | 'vimtext' | 'wedding-ledger';
 
 export interface Link {
   label: string;

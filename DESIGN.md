@@ -181,7 +181,7 @@ Motion is one grammar used once per transition: ease-out expo, 12px rise, 420ms.
 **Key Characteristics:**
 - Single centered column, max 640px, same width for top bar, hero, thread, and dock.
 - Paper-on-paper surfaces: pure white, 1px tinted hairline, soft offset shadow at rest, lifted shadow on hover or focus.
-- One accent (CodeBite orange) for every pointing device; five chip hues only on resting chip icons and the kyu-rios topic dots.
+- One accent (CodeBite orange) for every pointing device; five chip hues only on resting chip icons and the kyu-rious topic dots.
 - Pill geometry for inputs, buttons, tags, and compact chips; 20px for cards; 16px for the hero chips.
 - Pretendard Variable at 700 for anything that names something, 600 for labels, 400 for prose.
 - Authored 24-viewbox SVG icons at 1.75 stroke, round caps and joins; GitHub and LinkedIn marks are the only filled glyphs.
@@ -213,7 +213,7 @@ A blue-gray paper ground, pure white surfaces, near-black ink with two blue-gray
 - **Blue** (`chip-blue`): Skills chip icon.
 - **Violet** (`chip-violet`): Fun chip icon.
 - **Red** (`chip-red`): Contact chip icon.
-The same five values (with the accent as the sixth) color the 10px topic dots in the kyu-rios fun card, as data from that project. Active chips drop their hue and inherit `accent-ink`.
+The same five values (with the accent as the sixth) color the 10px topic dots in the kyu-rious fun card, as data from that project. Active chips drop their hue and inherit `accent-ink`.
 
 ### Named Rules
 **The One Orange Rule.** Every device that points, selects, or confirms is CodeBite orange or one of its three derivatives. No second accent exists; the chip hues are icon-only and die on activation.
@@ -232,7 +232,7 @@ The same five values (with the accent as the sixth) color the 10px topic dots in
 - **Display** (700, clamp(2.25rem, 7vw, 3rem), 1.1, -0.03em): the hero title only ("Backend Engineer" / "백엔드 엔지니어").
 - **Headline** (700, 1.25rem, 1.2, -0.02em): project card names.
 - **Title** (700, 1.125rem, -0.02em): wordmark "Kyu" and the fun card title.
-- **Stat** (700, 1.5rem, 1.1, -0.02em, tabular-nums): the three kyu-rios numbers.
+- **Stat** (700, 1.5rem, 1.1, -0.02em, tabular-nums): the three kyu-rious numbers.
 - **Body** (400, 1rem, 1.6): thread paragraphs (max 62ch), composer input, contact values (600), user bubble (500), hero greeting (500, 1.125rem, ink-2).
 - **Body Small** (400 or 500, 0.875rem to 0.9375rem, 1.5 to 1.55): project tagline (500, 0.9375rem), project description (0.875rem, ink-2), fact values (600, 0.9375rem), fun topic names (600, 0.9375rem).
 - **Label** (600, 0.8125rem): chip labels, large tags, skills group names, suggestion lead, project "more" toggle, fun topic meta.
@@ -281,7 +281,7 @@ Two geometries. Pills (999px) for everything hand-sized: the composer, primary b
 ### Buttons
 Tactile and restrained: dark pills that lift a pixel on hover.
 - **Shape:** pill (999px)
-- **Primary (`.btn`):** ink background, white text, 600 at 0.875rem, 8px 14px padding, 6px gap to a 16px external-link icon. Used for project links and the kyu-rios link.
+- **Primary (`.btn`):** ink background, white text, 600 at 0.875rem, 8px 14px padding, 6px gap to a 16px external-link icon. Used for project links and the kyu-rious link.
 - **Hover / Focus:** background to #232a33, `translateY(-1px)` over 300ms ease-out; focus-visible is the global 2px accent outline, 2px offset.
 - **Send (`.composer-send`):** 40px accent disc with a white 20px up-arrow; hover to #d95f0e with the same lift; disabled at 0.4 opacity when the input is empty.
 - **Icon (`.iconbtn`):** 36px transparent circle, ink-2 glyph; hover washes to surface-2 and ink. Used for GitHub, LinkedIn, and restart in the top bar.
@@ -336,7 +336,7 @@ On the first message `.is-chat` is set: the hero's grid row goes from 1fr to 0fr
 - **Do** keep numerals tabular (`'tnum'` is on body; stats add `tabular-nums`) and keep Hangul words whole (`word-break: keep-all`).
 
 ### Don't:
-- **Don't** add a second accent. The five chip hues belong to resting chip icons and the kyu-rios topic dots only; any active or interactive state is orange.
+- **Don't** add a second accent. The five chip hues belong to resting chip icons and the kyu-rious topic dots only; any active or interactive state is orange.
 - **Don't** use blur, backdrop-filter, glass, or gradient text. The only gradients are the hero's radial white lift and the dock's fade into the ground.
 - **Don't** ship a dark theme or a second color-scheme; the site is light-only by scene (`color-scheme: light`).
 - **Don't** uppercase or track-out labels; shrink and embolden instead.

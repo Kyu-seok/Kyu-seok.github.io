@@ -26,7 +26,7 @@
       "display": { "displayName": "Display", "purpose": "The hero title only." },
       "headline": { "displayName": "Headline", "purpose": "Project card names." },
       "title": { "displayName": "Title", "purpose": "Wordmark and fun card title." },
-      "stat": { "displayName": "Stat", "purpose": "Tabular numbers in the kyu-rios fun card." },
+      "stat": { "displayName": "Stat", "purpose": "Tabular numbers in the kyu-rious fun card." },
       "body": { "displayName": "Body", "purpose": "Thread paragraphs (max 62ch), composer input, bubbles." },
       "body-sm": { "displayName": "Body Small", "purpose": "Project taglines and descriptions, fact values, topic names." },
       "label": { "displayName": "Label", "purpose": "Chip labels, large tags, group names, text buttons." },
@@ -56,7 +56,7 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Ink pill with an external-link icon; project and kyu-rios links.",
+      "description": "Ink pill with an external-link icon; project and kyu-rious links.",
       "html": "<a class=\"ds-btn\" href=\"#\">code-bite.com <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M14 5h5v5\"/><path d=\"M19 5 10 14\"/><path d=\"M19 13.5V18a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 18V7a1.5 1.5 0 0 1 1.5-1.5H11\"/></svg></a>",
       "css": ".ds-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius-pill, 999px); background: var(--ink, #0f1419); color: #fff; font-family: var(--font, 'Pretendard Variable', sans-serif); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: transform 300ms var(--ease-out, cubic-bezier(0.16,1,0.3,1)), background-color 160ms ease; } .ds-btn:hover { transform: translateY(-1px); background: #232a33; } .ds-btn:focus-visible { outline: 2px solid var(--accent, #ea6a12); outline-offset: 2px; }"
     },
@@ -139,7 +139,7 @@
     "keyCharacteristics": [
       "Single centered column, max 640px, same width for top bar, hero, thread, and dock.",
       "Paper-on-paper surfaces: pure white, 1px tinted hairline, soft offset shadow at rest, lifted shadow on hover or focus.",
-      "One accent (CodeBite orange) for every pointing device; five chip hues only on resting chip icons and the kyu-rios topic dots.",
+      "One accent (CodeBite orange) for every pointing device; five chip hues only on resting chip icons and the kyu-rious topic dots.",
       "Pill geometry for inputs, buttons, tags, and compact chips; 20px for cards; 16px for the hero chips.",
       "Pretendard Variable at 700 for anything that names something, 600 for labels, 400 for prose.",
       "Authored 24-viewbox SVG icons at 1.75 stroke, round caps and joins; GitHub and LinkedIn marks are the only filled glyphs.",
@@ -164,7 +164,7 @@
       "Do keep numerals tabular ('tnum' is on body; stats add tabular-nums) and keep Hangul words whole (word-break: keep-all)."
     ],
     "donts": [
-      "Don't add a second accent. The five chip hues belong to resting chip icons and the kyu-rios topic dots only; any active or interactive state is orange.",
+      "Don't add a second accent. The five chip hues belong to resting chip icons and the kyu-rious topic dots only; any active or interactive state is orange.",
       "Don't use blur, backdrop-filter, glass, or gradient text. The only gradients are the hero's radial white lift and the dock's fade into the ground.",
       "Don't ship a dark theme or a second color-scheme; the site is light-only by scene (color-scheme: light).",
       "Don't uppercase or track-out labels; shrink and embolden instead.",

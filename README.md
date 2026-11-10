@@ -16,7 +16,7 @@ npm run build    # outputs dist/
 
 Pushing to `main` runs `.github/workflows/pages.yml`, which builds and deploys `dist/` with GitHub Actions. The repository's Pages source must be set to **GitHub Actions** (Settings → Pages → Build and deployment).
 
-`https://kyu-seok.github.io/kyu-rios/` is served from the separate `Kyu-seok/kyu-rios` repository and is not affected by this one.
+`https://kyu-seok.github.io/kyu-rious/` is served from the separate `Kyu-seok/kyu-rious` repository and is not affected by this one.
 
 ## Replace the avatar
 
@@ -30,4 +30,4 @@ All copy lives in `src/content/en.ts` and `src/content/ko.ts`. Both files share 
 
 Free-text questions are matched by keyword in `src/chat/answer.ts`. Add synonyms there when a question you expect falls through to the "I can't answer that" reply.
 
-Project covers are in `public/projects/` (CodeBite and wedding-ledger screenshots come from their repos' `docs/` folders; kyu-rios is a screenshot of the live site; VimText is an authored SVG).
+Project covers are in `public/projects/` (CodeBite and wedding-ledger screenshots come from their repos' `docs/` folders; kyu-rious is a screenshot of the live site; VimText is an authored SVG).

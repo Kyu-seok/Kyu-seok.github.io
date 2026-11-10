@@ -106,8 +106,8 @@ export const en: Content = {
       status: 'In production',
     },
     {
-      id: 'kyu-rios',
-      name: 'kyu-rios',
+      id: 'kyu-rious',
+      name: 'kyu-rious',
       tagline: 'Everything I have learned, published as a graph you can review.',
       description: [
         'Topics, lessons and reference sheets with typed relationships (requires, extends, contrasts-with), plus spaced-repetition review of every lesson quiz, running in the browser.',
@@ -118,8 +118,8 @@ export const en: Content = {
         { label: 'kyu-seok.github.io/kyu-rious', href: 'https://kyu-seok.github.io/kyu-rious/' },
         { label: 'GitHub', href: 'https://github.com/Kyu-seok/kyu-rious' },
       ],
-      cover: '/projects/kyu-rios.jpg',
-      coverAlt: 'kyu-rios knowledge graph with five topic clusters',
+      cover: '/projects/kyu-rious.jpg',
+      coverAlt: 'kyu-rious knowledge graph with five topic clusters',
       status: 'Live',
     },
     {
@@ -163,7 +163,7 @@ export const en: Content = {
     ],
   },
   fun: {
-    title: 'kyu-rios, a public second brain',
+    title: 'kyu-rious, a public second brain',
     stats: [
       { label: 'Topics', value: '5' },
       { label: 'Lessons', value: '26' },
@@ -177,7 +177,7 @@ export const en: Content = {
       { name: "Matt Pocock's Skills", lessons: 8, refs: 7, color: '#7c3aed' },
     ],
     link: { label: 'Open the graph', href: 'https://kyu-seok.github.io/kyu-rious/' },
-    coverAlt: 'kyu-rios knowledge graph',
+    coverAlt: 'kyu-rious knowledge graph',
   },
   contact: {
     items: [

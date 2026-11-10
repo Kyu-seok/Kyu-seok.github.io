@@ -50,9 +50,10 @@ Alternative to keep on the table: per-topic cached prompt slots in llama-server.
 5. Freshness: is the index baked at build time and refreshed nightly, or does kyu-rious's deploy trigger this repo's rebuild? A runtime fetch would break the PRODUCT.md network rule.
 6. Does the model get the matched title at all, or does it stay out of this entirely?
 7. Is the per-topic cached-slot alternative worth a spike, or is it dropped?
-8. Display name: the project is now "kyu-rious", but the page and fact sheet still say "kyu-rios" in prose, and the fact sheet tells the model to keep "kyu-rios" as written. Rename everywhere?
+8. ~~Display name: rename "kyu-rios" to "kyu-rious" everywhere?~~ Decided 2026-11-10: yes, see "Already done".
 9. Does this deserve an ADR? It reopens ADR 0001's "RAG rejected, revisit if the fact sheet outgrows that".
 
 ## Already done
 
 - 2026-11-10: the portfolio's kyu-rious links were changed from `/kyu-rios/` to `/kyu-rious/`, and the GitHub links from `Kyu-seok/kyu-rios` to `Kyu-seok/kyu-rious`. The old Pages path returned 404.
+- 2026-11-10: the display name is "kyu-rious" everywhere a visitor or the model sees it, plus the `ProjectId`, the cover images, and the `.impeccable/` notes. The intent keywords dropped the old spellings (no users yet) and added `kyurious`, `kyu rious`, `큐리어스`. The prompt stayed at 2,271 tokens (facts 1,959 + examples 312). `server/spike/` keeps "kyu-rios" because it records what the model said.
