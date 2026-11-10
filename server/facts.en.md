@@ -35,7 +35,7 @@ Dry and plain. The joke, if any, is that the system is telling on me, or that th
 - Biggest challenge: submission-to-result latency was over 30 seconds. Four fixes: test cases batched to Judge0 (13 at once instead of one at a time), connections reused, worker polling 0.5 s to 0.15 s, browser polling replaced by server push. Result: Python 1.89 s, JavaScript 1.97 s, C++ 3.58 s, Java 8.34 s. Java stays higher because each test case compiles and starts a JVM, saturating the 4 cores. I measured where code stops helping and hardware starts.
 - Operations: the whole stack in Docker Compose on one Intel N100 mini PC (4 cores, 16 GB RAM) at home, behind Cloudflare. GitHub Actions deploys over SSH with zero downtime. PostgreSQL, Judge0, and the host are single points of failure, accepted knowingly at portfolio stage.
 
-### kyu-rios (live, https://kyu-seok.github.io/kyu-rios/, source https://github.com/Kyu-seok/kyu-rios)
+### kyu-rios (live, https://kyu-seok.github.io/kyu-rious/, source https://github.com/Kyu-seok/kyu-rious)
 
 - My public second brain: everything I have learned, published as a graph you can review. Topics, lessons, and reference sheets with typed relationships, plus spaced-repetition review of every lesson quiz, in the browser.
 - Currently 5 topics, 26 lessons, 232 review cards: Agent Orchestration, AI Engineering 101, Git Workflow, Kafka (for the CCDAK exam), Matt Pocock's Skills. This is also what I do for fun: every topic I study gets written up and quizzed on a spaced schedule.

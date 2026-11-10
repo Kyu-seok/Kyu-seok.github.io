@@ -115,8 +115,8 @@ export const ko: Content = {
       ],
       stack: ['Astro', 'TypeScript', 'Vitest', 'Playwright', 'GitHub Pages'],
       links: [
-        { label: 'kyu-seok.github.io/kyu-rios', href: 'https://kyu-seok.github.io/kyu-rios/' },
-        { label: 'GitHub', href: 'https://github.com/Kyu-seok/kyu-rios' },
+        { label: 'kyu-seok.github.io/kyu-rious', href: 'https://kyu-seok.github.io/kyu-rious/' },
+        { label: 'GitHub', href: 'https://github.com/Kyu-seok/kyu-rious' },
       ],
       cover: '/projects/kyu-rios.jpg',
       coverAlt: '다섯 개 토픽 클러스터가 보이는 kyu-rios 지식 그래프',
@@ -176,7 +176,7 @@ export const ko: Content = {
       { name: 'Kafka', lessons: 2, refs: 3, color: '#dc2626' },
       { name: "Matt Pocock's Skills", lessons: 8, refs: 7, color: '#7c3aed' },
     ],
-    link: { label: '그래프 열기', href: 'https://kyu-seok.github.io/kyu-rios/' },
+    link: { label: '그래프 열기', href: 'https://kyu-seok.github.io/kyu-rious/' },
     coverAlt: 'kyu-rios 지식 그래프',
   },
   contact: {

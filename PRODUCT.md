@@ -25,7 +25,7 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 ## Operating Context
 
 - Visitors arrive on phones and laptops, in daylight, usually from a link in a résumé or a LinkedIn post.
-- kyu-rios lives at https://kyu-seok.github.io/kyu-rios/ in its own repo (Kyu-seok/kyu-rios, Pages via workflow). This site must not interfere with that path.
+- kyu-rios lives at https://kyu-seok.github.io/kyu-rious/ in its own repo (Kyu-seok/kyu-rious, Pages via workflow). This site must not interfere with that path.
 - The repo previously deployed a Jekyll build to the `gh-pages` branch. Pages must be switched to "GitHub Actions" as its source for the new site.
 
 ## Capabilities and Constraints
