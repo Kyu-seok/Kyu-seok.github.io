@@ -1,3 +1,4 @@
+import { KYU_RIOUS } from './kyuRious';
 import type { Content } from './types';
 
 export const ko: Content = {
@@ -111,7 +112,7 @@ export const ko: Content = {
       tagline: '배운 모든 것을 복습할 수 있는 그래프로 공개합니다.',
       description: [
         '토픽, 레슨, 참고 시트를 선행·확장·대조 관계로 연결한 그래프와, 모든 레슨 퀴즈의 간격 반복 복습이 브라우저 안에서 돌아갑니다.',
-        '/teach 워크스페이스에서 Astro로 생성합니다. 지금까지 5개 토픽, 26개 레슨, 232장의 복습 카드.',
+        `/teach 워크스페이스에서 Astro로 생성합니다. 지금까지 ${KYU_RIOUS.topics}개 토픽, ${KYU_RIOUS.lessons}개 레슨, ${KYU_RIOUS.reviewCards}장의 복습 카드.`,
       ],
       stack: ['Astro', 'TypeScript', 'Vitest', 'Playwright', 'GitHub Pages'],
       links: [
@@ -164,18 +165,7 @@ export const ko: Content = {
   },
   fun: {
     title: 'kyu-rious, 공개 세컨드 브레인',
-    stats: [
-      { label: '토픽', value: '5' },
-      { label: '레슨', value: '26' },
-      { label: '복습 카드', value: '232' },
-    ],
-    topics: [
-      { name: 'Agent Orchestration', lessons: 5, refs: 3, color: '#2563eb' },
-      { name: 'AI Engineering 101', lessons: 6, refs: 6, color: '#ea6a12' },
-      { name: 'Git Workflow', lessons: 5, refs: 2, color: '#0f9d58' },
-      { name: 'Kafka', lessons: 2, refs: 3, color: '#dc2626' },
-      { name: "Matt Pocock's Skills", lessons: 8, refs: 7, color: '#7c3aed' },
-    ],
+    stats: { topics: '토픽', lessons: '레슨', reviewCards: '복습 카드' },
     link: { label: '그래프 열기', href: 'https://kyu-seok.github.io/kyu-rious/' },
     coverAlt: 'kyu-rious 지식 그래프',
   },
@@ -186,5 +176,32 @@ export const ko: Content = {
       { kind: 'linkedin', label: 'LinkedIn', value: 'linkedin.com/in/kyuseok', href: 'https://www.linkedin.com/in/kyuseok/' },
       { kind: 'site', label: 'CodeBite', value: 'code-bite.com', href: 'https://code-bite.com/' },
     ],
+  },
+  notes: {
+    label: '내 노트에서',
+    showAll: '레슨 {n}개 모두 보기',
+    showFewer: '접기',
+    topics: {
+      'agent-orchestration': {
+        title: '에이전트 오케스트레이션',
+        summary: '하네스·루프·그래프 엔지니어링의 지도, 그리고 작업에 맞는 오케스트레이션 형태를 고르는 법.',
+      },
+      'ai-engineering-101': {
+        title: 'AI 엔지니어링 101',
+        summary: 'Chip Huyen의 《AI Engineering》을 읽기 전에 보는 입문서. 토큰과 샘플링부터 평가, RAG까지.',
+      },
+      'git-workflow': {
+        title: 'Git 워크플로',
+        summary: 'AI 에이전트와 함께 일하며 익힌 브랜치, 리모트, 충돌 해결, PR 리뷰, 룰셋.',
+      },
+      kafka: {
+        title: 'Kafka',
+        summary: 'Kafka가 이벤트를 파티션과 컨슈머로 보내는 방식. CCDAK 시험을 준비하며 정리했습니다.',
+      },
+      'matt-pocock-skills': {
+        title: 'Matt Pocock의 스킬',
+        summary: '코딩 에이전트와 아이디어에서 출시까지 가는 흐름. 그릴링과 스펙에서 티켓, TDD, 리뷰까지.',
+      },
+    },
   },
 };

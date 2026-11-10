@@ -8,3 +8,4 @@ dist
 *.tsbuildinfo
 server/log/
 server/models/
+src/content/kyu-rious.gen.ts

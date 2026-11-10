@@ -967,3 +967,59 @@
     padding-top: 16px;
   }
 }
+
+/* notes card */
+
+.notes {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.notes-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+.notes-topic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.notes-topic:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.notes-summary {
+  font-size: 0.875rem;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+.notes-lessons {
+  width: 100%;
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+.notes-lessons li {
+  border-top: 1px solid var(--line);
+}
+.notes-lessons a {
+  display: block;
+  padding: 8px 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+.notes-lessons a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.notes-toggle[aria-expanded='true'] .pcard-toggle-icon {
+  transform: rotate(180deg);
+}

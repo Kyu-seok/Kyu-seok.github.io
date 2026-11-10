@@ -1,3 +1,4 @@
+import { KYU_RIOUS } from './kyuRious';
 import type { Content } from './types';
 
 export const en: Content = {
@@ -111,7 +112,7 @@ export const en: Content = {
       tagline: 'Everything I have learned, published as a graph you can review.',
       description: [
         'Topics, lessons and reference sheets with typed relationships (requires, extends, contrasts-with), plus spaced-repetition review of every lesson quiz, running in the browser.',
-        'Generated from /teach workspaces with Astro. 5 topics, 26 lessons and 232 review cards so far.',
+        `Generated from /teach workspaces with Astro. ${KYU_RIOUS.topics} topics, ${KYU_RIOUS.lessons} lessons and ${KYU_RIOUS.reviewCards} review cards so far.`,
       ],
       stack: ['Astro', 'TypeScript', 'Vitest', 'Playwright', 'GitHub Pages'],
       links: [
@@ -164,18 +165,7 @@ export const en: Content = {
   },
   fun: {
     title: 'kyu-rious, a public second brain',
-    stats: [
-      { label: 'Topics', value: '5' },
-      { label: 'Lessons', value: '26' },
-      { label: 'Review cards', value: '232' },
-    ],
-    topics: [
-      { name: 'Agent Orchestration', lessons: 5, refs: 3, color: '#2563eb' },
-      { name: 'AI Engineering 101', lessons: 6, refs: 6, color: '#ea6a12' },
-      { name: 'Git Workflow', lessons: 5, refs: 2, color: '#0f9d58' },
-      { name: 'Kafka', lessons: 2, refs: 3, color: '#dc2626' },
-      { name: "Matt Pocock's Skills", lessons: 8, refs: 7, color: '#7c3aed' },
-    ],
+    stats: { topics: 'Topics', lessons: 'Lessons', reviewCards: 'Review cards' },
     link: { label: 'Open the graph', href: 'https://kyu-seok.github.io/kyu-rious/' },
     coverAlt: 'kyu-rious knowledge graph',
   },
@@ -186,5 +176,11 @@ export const en: Content = {
       { kind: 'linkedin', label: 'LinkedIn', value: 'linkedin.com/in/kyuseok', href: 'https://www.linkedin.com/in/kyuseok/' },
       { kind: 'site', label: 'CodeBite', value: 'code-bite.com', href: 'https://code-bite.com/' },
     ],
+  },
+  notes: {
+    label: 'From my notes',
+    showAll: 'All {n} lessons',
+    showFewer: 'Fewer lessons',
+    topics: 'from-graph',
   },
 };

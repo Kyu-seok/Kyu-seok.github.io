@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AVATAR_SRC, content, initialLang, rememberLang } from './content';
 import type { Intent, Lang, ProjectId, ReplyKind } from './content/types';
-import { resolve, type Resolution } from './chat/answer';
+import { resolve, studyTopic, type KeyedStudyTopic, type Resolution } from './chat/answer';
 import { askGateway } from './chat/gateway';
 import { TopBar } from './components/TopBar';
 import { Hero } from './components/Hero';
@@ -46,9 +46,9 @@ export function App() {
     if (timer.current) window.clearTimeout(timer.current);
   }, []);
 
-  const reply = useCallback((kind: ReplyKind, focus?: ProjectId) => {
+  const reply = useCallback((kind: ReplyKind, focus?: ProjectId, study?: KeyedStudyTopic) => {
     const push = () => {
-      setMessages((m) => [...m, { id: nextId.current++, role: 'assistant', kind, focus }]);
+      setMessages((m) => [...m, { id: nextId.current++, role: 'assistant', kind, focus, study }]);
       setTyping(false);
     };
     if (prefersReducedMotion()) {
@@ -63,7 +63,7 @@ export function App() {
   // The intent and card are decided before the model is asked; the model only supplies prose.
   // No token within the budget, or the gateway down or busy, means the scripted reply instead.
   const replyGenerated = useCallback(
-    async (text: string, r: Resolution) => {
+    async (text: string, r: Resolution, study?: KeyedStudyTopic) => {
       const mine = session.current;
       const id = nextId.current++;
       let added = false;
@@ -76,7 +76,7 @@ export function App() {
           if (!added) {
             added = true;
             setTyping(false);
-            setMessages((m) => [...m, { id, role: 'assistant', kind: r.kind, focus: r.focus, gen: { text: tok, done: false } }]);
+            setMessages((m) => [...m, { id, role: 'assistant', kind: r.kind, focus: r.focus, study, gen: { text: tok, done: false } }]);
           } else {
             patch((g) => ({ ...g, text: g.text + tok }));
           }
@@ -90,7 +90,7 @@ export function App() {
       if (outcome === 'generated') {
         patch((g) => (g.done ? g : { ...g, done: true })); // cut mid-stream: keep what arrived, no stamp
       } else {
-        reply(r.kind, r.focus);
+        reply(r.kind, r.focus, study);
       }
     },
     [lang, reply],
@@ -106,13 +106,17 @@ export function App() {
         return;
       }
       const r = resolve(clean);
+      // Free text only, never chips. The notes card is added beside the intent's card and never changes it.
+      const study = studyTopic(clean);
       if (overHangulCap(clean)) {
         // A matched intent still has a true scripted reply; an unmatched one must say why, not "busy".
-        reply(r.kind === 'unknown' ? 'toolong' : r.kind, r.focus);
+        // The too-long reply is about the question's length, not its subject, so it gets no notes card.
+        if (r.kind === 'unknown') reply('toolong');
+        else reply(r.kind, r.focus, study);
         return;
       }
-      if (wantsGeneration(r)) void replyGenerated(clean, r);
-      else reply(r.kind, r.focus);
+      if (wantsGeneration(r)) void replyGenerated(clean, r, study);
+      else reply(r.kind, r.focus, study);
     },
     [reply, replyGenerated],
   );
