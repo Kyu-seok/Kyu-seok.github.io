@@ -1,5 +1,7 @@
 # Spike results: Qwen3 on the CodeBite mini PC (2026-11-07)
 
+The project called "kyu-rios" below was renamed "kyu-rious" on 2026-11-10. Questions and answers here keep the old name because they record what was asked and said.
+
 Box: Intel N100 (4 E-cores, AVX2, no AVX-512), 15 GiB RAM, governor `powersave` (intel_pstate, EPP balance_performance), 16 CodeBite containers running.
 Server: `ghcr.io/ggml-org/llama.cpp:server` build 12182, `-c 4096 -np 1 -t 4 --cache-reuse 256`, container `--cpus 4 --cpu-shares 128`.
 Prompt: `../facts.en.md` (1,785 tokens) as system prompt, thinking disabled, 8 questions (4 EN, 4 KO), see `bench.py`.

@@ -138,7 +138,7 @@ export function FunCard({ t }: { t: Content }) {
   return (
     <div className="card fun">
       <div className="fun-cover">
-        <img src="/projects/kyu-rios-graph.jpg" alt={f.coverAlt} loading="lazy" />
+        <img src="/projects/kyu-rious-graph.jpg" alt={f.coverAlt} loading="lazy" />
       </div>
       <div className="fun-body">
         <h3 className="fun-title">{f.title}</h3>

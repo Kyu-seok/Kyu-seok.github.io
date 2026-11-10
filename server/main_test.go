@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const facts = "Email me. Site: https://code-bite.com, source https://github.com/Kyu-seok/CodeBite and https://kyu-seok.github.io/kyu-rios/."
+const facts = "Email me. Site: https://code-bite.com, source https://github.com/Kyu-seok/CodeBite and https://kyu-seok.github.io/kyu-rious/."
 
 func collect(f *linkFilter, deltas ...string) string {
 	var out strings.Builder
