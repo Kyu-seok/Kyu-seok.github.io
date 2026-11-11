@@ -4,11 +4,287 @@
 package main
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"log"
+	"math"
+	"net/http"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
+	"sync/atomic"
+	"time"
 )
+
+const (
+	// maxPickChars is the Korean question cap, kept until a 60-character measurement says otherwise (#10).
+	// The page's Hangul cap names this constant; change both together (CODING_STANDARDS.md).
+	maxPickChars = 40
+	pickTimeout  = 10 * time.Second
+	embedBatch   = 16 // example questions per embedding request at startup
+)
+
+// picker holds the answer bank and, once the embedding model has answered, one vector per example question.
+type picker struct {
+	bank     []bankEntry
+	url      string
+	client   *http.Client
+	examples []pickExample
+	vectors  atomic.Pointer[[][]float64] // nil until ready
+}
+
+type pickExample struct {
+	entry int // index into bank
+	text  string
+}
+
+func newPicker(bank []bankEntry, url string) *picker {
+	p := &picker{bank: bank, url: url, client: &http.Client{Timeout: 2 * time.Minute}}
+	for i, e := range bank {
+		for _, x := range e.examples {
+			p.examples = append(p.examples, pickExample{i, x})
+		}
+	}
+	return p
+}
+
+func (p *picker) ready() bool { return p.vectors.Load() != nil }
+
+// prepare embeds every example question, retrying until the embedding model answers. It never gives up and
+// never crashes the gateway; until it succeeds, /pick answers 503.
+func (p *picker) prepare(retry time.Duration) {
+	for attempt := 1; ; attempt++ {
+		start := time.Now()
+		vecs, err := p.embedExamples()
+		if err == nil {
+			p.vectors.Store(&vecs)
+			log.Printf("picker: %d example questions embedded in %s", len(vecs), time.Since(start).Round(time.Millisecond))
+			return
+		}
+		log.Printf("picker attempt %d failed: %v", attempt, err)
+		time.Sleep(time.Duration(min(attempt, 12)) * retry)
+	}
+}
+
+func (p *picker) embedExamples() ([][]float64, error) {
+	var vecs [][]float64
+	for i := 0; i < len(p.examples); i += embedBatch {
+		var texts []string
+		for _, x := range p.examples[i:min(i+embedBatch, len(p.examples))] {
+			texts = append(texts, x.text)
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+		v, err := p.embed(ctx, texts)
+		cancel()
+		if err != nil {
+			return nil, err
+		}
+		vecs = append(vecs, v...)
+	}
+	return vecs, nil
+}
+
+// embed asks llama-server (--embedding) for one unit vector per text, in order. bge-m3 takes no query prefix.
+func (p *picker) embed(ctx context.Context, texts []string) ([][]float64, error) {
+	body, _ := json.Marshal(map[string]any{"input": texts, "model": "bge-m3"})
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, p.url+"/v1/embeddings", bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := p.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		b, _ := io.ReadAll(io.LimitReader(resp.Body, 512))
+		return nil, fmt.Errorf("embedding model %d: %s", resp.StatusCode, b)
+	}
+	var out struct {
+		Data []struct {
+			Index     int       `json:"index"`
+			Embedding []float64 `json:"embedding"`
+		} `json:"data"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
+		return nil, fmt.Errorf("embedding model: %w", err)
+	}
+	if len(out.Data) != len(texts) {
+		return nil, fmt.Errorf("embedding model returned %d vectors for %d texts", len(out.Data), len(texts))
+	}
+	sort.Slice(out.Data, func(i, j int) bool { return out.Data[i].Index < out.Data[j].Index })
+	vecs := make([][]float64, len(texts))
+	for i, d := range out.Data {
+		var n float64
+		for _, x := range d.Embedding {
+			n += x * x
+		}
+		if n = math.Sqrt(n); n == 0 {
+			return nil, fmt.Errorf("embedding model returned a zero vector")
+		}
+		vecs[i] = make([]float64, len(d.Embedding))
+		for j, x := range d.Embedding {
+			vecs[i][j] = x / n
+		}
+	}
+	return vecs, nil
+}
+
+// pickResult is the nearest entry and the best-scoring other entry, for the question log.
+type pickResult struct {
+	entry, runnerUp      *bankEntry
+	score, runnerUpScore float64
+}
+
+// pick embeds the question and takes the entry of the single nearest example by cosine similarity.
+// There is no threshold: scores do not separate "nothing fits" (docs/adr/0002).
+func (p *picker) pick(ctx context.Context, question string) (pickResult, error) {
+	vecs := p.vectors.Load()
+	if vecs == nil {
+		return pickResult{}, errNotReady
+	}
+	qv, err := p.embed(ctx, []string{question})
+	if err != nil {
+		return pickResult{}, err
+	}
+	best := make([]float64, len(p.bank))
+	for i := range best {
+		best[i] = math.Inf(-1)
+	}
+	for i, ev := range *vecs {
+		if len(ev) != len(qv[0]) {
+			return pickResult{}, fmt.Errorf("embedding size changed: %d, examples %d", len(qv[0]), len(ev))
+		}
+		var s float64
+		for j := range ev {
+			s += ev[j] * qv[0][j]
+		}
+		if e := p.examples[i].entry; s > best[e] {
+			best[e] = s
+		}
+	}
+	var res pickResult
+	first, second := -1, -1
+	for i, s := range best {
+		switch {
+		case first < 0 || s > best[first]:
+			first, second = i, first
+		case second < 0 || s > best[second]:
+			second = i
+		}
+	}
+	res.entry, res.score = &p.bank[first], round4(best[first])
+	if second >= 0 {
+		res.runnerUp, res.runnerUpScore = &p.bank[second], round4(best[second])
+	}
+	return res, nil
+}
+
+func round4(x float64) float64 { return math.Round(x*1e4) / 1e4 }
+
+var errNotReady = fmt.Errorf("picker not ready")
+
+type pickRequest struct {
+	Question string `json:"question"`
+	Lang     string `json:"lang"`   // page language, logged only
+	Intent   string `json:"intent"` // the keyword matcher's intent, logged only
+}
+
+// pickHandler answers POST /pick with a picked reply. It does not take the generation lock: the embedding
+// model is its own process, and a pick takes well under a second.
+func (g *gateway) pickHandler(w http.ResponseWriter, r *http.Request) {
+	if !g.cors(w, r) {
+		return
+	}
+	if r.Method != http.MethodPost {
+		http.Error(w, "POST only", http.StatusMethodNotAllowed)
+		return
+	}
+	var req pickRequest
+	if err := json.NewDecoder(io.LimitReader(r.Body, 4096)).Decode(&req); err != nil {
+		http.Error(w, "bad json", http.StatusBadRequest)
+		return
+	}
+	req.Question = strings.TrimSpace(req.Question)
+	if req.Question == "" || len([]rune(req.Question)) > maxPickChars {
+		http.Error(w, fmt.Sprintf("question must be 1 to %d characters", maxPickChars), http.StatusBadRequest)
+		return
+	}
+	if !hasHangul(req.Question) {
+		http.Error(w, "only Korean questions are picked", http.StatusUnprocessableEntity)
+		return
+	}
+	if req.Intent == "" {
+		req.Intent = "unknown"
+	}
+	entry := logEntry{At: time.Now().UTC().Format(time.RFC3339), Lang: req.Lang, Intent: req.Intent, Question: req.Question, Model: g.cfg.embedModel}
+	fail := func(outcome string, status int, msg string) {
+		g.refuse(w, &g.met.picks, entry, outcome, status, msg)
+	}
+	if !g.pk.ready() {
+		fail("not_ready", http.StatusServiceUnavailable, "picker not ready")
+		return
+	}
+	if !g.allowed(r) {
+		fail("rate_limited", http.StatusTooManyRequests, rateLimitedMsg)
+		return
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), pickTimeout)
+	defer cancel()
+	start := time.Now()
+	res, err := g.pk.pick(ctx, req.Question)
+	elapsed := time.Since(start)
+	if err != nil {
+		log.Printf("pick: %v", err)
+		fail("error", http.StatusServiceUnavailable, "picker not ready")
+		return
+	}
+	entry.Outcome = "ok"
+	entry.Answer = res.entry.reply
+	entry.TotalMs = elapsed.Milliseconds()
+	entry.Pick, entry.PickScore = res.entry.id, &res.score
+	if res.runnerUp != nil {
+		entry.RunnerUp, entry.RunnerUpScore = res.runnerUp.id, &res.runnerUpScore
+	}
+	g.qlog.write(entry)
+	g.met.count(&g.met.picks, "ok")
+	g.met.pickLatency.observe(elapsed)
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-store")
+	json.NewEncoder(w).Encode(map[string]any{
+		"id": res.entry.id, "text": res.entry.reply, "card": res.entry.card,
+		"score": res.score, "ms": elapsed.Milliseconds(), "model": g.cfg.embedModel,
+	})
+}
+
+// latency is a Prometheus histogram of pick latency, hand-rolled like the rest of /metrics.
+type latency struct {
+	counts [len(latencyBuckets) + 1]atomic.Int64 // the last one is +Inf
+	sumMs  atomic.Int64
+}
+
+var latencyBuckets = [...]float64{0.05, 0.1, 0.25, 0.5, 1, 2.5, 5}
+
+func (l *latency) observe(d time.Duration) {
+	l.counts[sort.SearchFloat64s(latencyBuckets[:], d.Seconds())].Add(1)
+	l.sumMs.Add(d.Milliseconds())
+}
+
+func (l *latency) write(w io.Writer, name string) {
+	fmt.Fprintf(w, "# TYPE %s histogram\n", name)
+	var cum int64
+	for i, b := range latencyBuckets {
+		cum += l.counts[i].Load()
+		fmt.Fprintf(w, "%s_bucket{le=\"%g\"} %d\n", name, b, cum)
+	}
+	cum += l.counts[len(latencyBuckets)].Load()
+	fmt.Fprintf(w, "%s_bucket{le=\"+Inf\"} %d\n%s_sum %.3f\n%s_count %d\n", name, cum, name, float64(l.sumMs.Load())/1000, name, cum)
+}
 
 // bankEntry is one answer bank entry: Kyu's reply, the questions it answers, and the card it carries.
 type bankEntry struct {

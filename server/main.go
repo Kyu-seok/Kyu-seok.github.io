@@ -182,6 +182,11 @@ type logEntry struct {
 	Tokens       int     `json:"tokens,omitempty"`
 	TokPerSec    float64 `json:"tok_s,omitempty"`
 	Model        string  `json:"model"`
+	// Picked replies only: the entry shown and the best other entry, so the review can find weak entries.
+	Pick          string   `json:"pick,omitempty"`
+	PickScore     *float64 `json:"pick_score,omitempty"`
+	RunnerUp      string   `json:"runner_up,omitempty"`
+	RunnerUpScore *float64 `json:"runner_up_score,omitempty"`
 }
 
 type qlog struct {
@@ -206,9 +211,11 @@ func (q *qlog) write(e logEntry) {
 // ---- metrics (Prometheus text format, hand-rolled to avoid a dependency) ----
 
 type metrics struct {
-	asks      sync.Map     // outcome -> *int64
-	genSecs   atomic.Int64 // milliseconds summed
-	genTokens atomic.Int64
+	asks        sync.Map // /ask outcome -> *int64
+	picks       sync.Map // /pick outcome -> *int64
+	pickLatency latency
+	genSecs     atomic.Int64 // milliseconds summed
+	genTokens   atomic.Int64
 }
 
 func (m *metrics) count(counter *sync.Map, outcome string) {
@@ -216,7 +223,7 @@ func (m *metrics) count(counter *sync.Map, outcome string) {
 	atomic.AddInt64(v.(*int64), 1)
 }
 
-func (m *metrics) write(w io.Writer, busy, queued int32, warm bool) {
+func (m *metrics) write(w io.Writer, busy, queued int32, warm, pickReady bool) {
 	fmt.Fprintln(w, "# TYPE portfolio_ask_total counter")
 	m.asks.Range(func(k, v any) bool {
 		fmt.Fprintf(w, "portfolio_ask_total{outcome=%q} %d\n", k, atomic.LoadInt64(v.(*int64)))
@@ -231,6 +238,17 @@ func (m *metrics) write(w io.Writer, busy, queued int32, warm bool) {
 		w1 = 1
 	}
 	fmt.Fprintf(w, "# TYPE portfolio_ask_warm gauge\nportfolio_ask_warm %d\n", w1)
+	fmt.Fprintln(w, "# TYPE portfolio_pick_total counter")
+	m.picks.Range(func(k, v any) bool {
+		fmt.Fprintf(w, "portfolio_pick_total{outcome=%q} %d\n", k, atomic.LoadInt64(v.(*int64)))
+		return true
+	})
+	m.pickLatency.write(w, "portfolio_pick_seconds")
+	r1 := 0
+	if pickReady {
+		r1 = 1
+	}
+	fmt.Fprintf(w, "# TYPE portfolio_pick_ready gauge\nportfolio_pick_ready %d\n", r1)
 }
 
 // ---- link filter: only URLs that appear in the fact sheet may reach the page ----
@@ -291,7 +309,7 @@ type gateway struct {
 	cfg    config
 	system string
 	links  *linkFilter
-	bank   []bankEntry
+	pk     *picker
 	lim    *limiter
 	qlog   *qlog
 	met    *metrics
@@ -331,16 +349,18 @@ func (g *gateway) health(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
 	json.NewEncoder(w).Encode(map[string]any{
-		"ready":  g.warm.Load(),
-		"model":  g.cfg.modelName,
-		"busy":   g.busy.Load(),
-		"queued": g.queued.Load(),
+		"ready":      g.warm.Load(),
+		"model":      g.cfg.modelName,
+		"busy":       g.busy.Load(),
+		"queued":     g.queued.Load(),
+		"pick_ready": g.pk.ready(),
+		"pick_model": g.cfg.embedModel,
 	})
 }
 
 func (g *gateway) metricsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; version=0.0.4")
-	g.met.write(w, g.busy.Load(), g.queued.Load(), g.warm.Load())
+	g.met.write(w, g.busy.Load(), g.queued.Load(), g.warm.Load(), g.pk.ready())
 }
 
 type sse struct {
@@ -595,7 +615,7 @@ func newGateway(cfg config) (*gateway, error) {
 		cfg:    cfg,
 		system: system,
 		links:  newLinkFilter(system),
-		bank:   bank,
+		pk:     newPicker(bank, cfg.embedURL),
 		lim:    newLimiter(),
 		qlog:   &qlog{dir: cfg.logDir},
 		met:    &metrics{},
@@ -607,12 +627,14 @@ func newGateway(cfg config) (*gateway, error) {
 // start runs the background work that makes the gateway ready; it never blocks and never crashes the process.
 func (g *gateway) start() {
 	go g.warmUp()
+	go g.pk.prepare(g.cfg.pickRetry)
 }
 
 func (g *gateway) routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", g.health)
 	mux.HandleFunc("/ask", g.ask)
+	mux.HandleFunc("/pick", g.pickHandler)
 	mux.HandleFunc("/metrics", g.metricsHandler)
 	return mux
 }
