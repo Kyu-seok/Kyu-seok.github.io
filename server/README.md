@@ -30,6 +30,19 @@ Public route: the mini PC's Cloudflare Tunnel (`/etc/cloudflared/config.yml`, ro
 
 Log mirror: `scripts/mirror-log.sh` pushes `log/` to a private repo nightly from cron.
 
+## The gate: run it whenever the answer bank's example questions change
+
+`scripts/gate.py` checks a bank change against the live bge-m3, picking exactly as `/pick` does. It runs the 15 held-out gate questions (`scripts/gate/gate.json`, written by an agent that never saw the bank; never edit them to fit it) and the 28 practice questions the bank was tuned on (`scripts/gate/dev.json`, shown for information only). It prints each pick with its score and runner-up, then the verdict: **PASS at 13 of 15 or better with every trap**, exit 0; FAIL, exit 1. If a fixture accepts an id the bank no longer has, it says which; in the gate set that means no verdict (exit 2) until the bank keeps the id. Not in CI: it needs the live model.
+
+```bash
+# from a laptop, through an SSH tunnel to the embed container's port on the box:
+ssh -N -L 8096:172.17.0.1:8096 mini &
+cd server && python3 scripts/gate.py
+# on the box itself: python3 scripts/gate.py --embed http://172.17.0.1:8096
+```
+
+`python3 scripts/gate_test.py` tests the script against a fake embedding server.
+
 ## API
 
 `GET /health` → `{"ready":true,"model":"Qwen3-1.7B","busy":0,"queued":0,"pick_ready":true,"pick_model":"bge-m3"}`. `ready` is false until the fact sheet prefix is cached after a restart (about a minute). `pick_ready` is false until every answer bank example question is embedded, and stays false while bge-m3 is down.

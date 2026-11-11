@@ -5,7 +5,8 @@ example question nearest in meaning to a visitor's Korean question and the page 
 Nothing here is generated, so every reply must be true as written.
 
 Draft: the replies are Claude's draft and must be rewritten in Kyu's voice before the page shows them (#10).
-After changing example questions, run the gate against the live embedding model (spec #10, Seam 2).
+After changing example questions, run the gate against the live embedding model: `python3 scripts/gate.py`
+(README.md, "The gate").
 
 Format, checked when the gateway starts (it refuses to start on a bad bank):
 `## <id> [<card>]`, then at least two `- ` example questions, then one or more `> ` reply lines.
