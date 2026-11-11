@@ -117,31 +117,21 @@ func TestClientIPPrefersCloudflareHeader(t *testing.T) {
 	}
 }
 
-func TestQuestionLimitShrinksForHangul(t *testing.T) {
-	if got := questionLimit("Which editor do you use?"); got != maxQuestionChars {
-		t.Fatalf("english: got %d", got)
+func TestOnlyEnglishWithoutHangulIsGenerated(t *testing.T) {
+	cases := []struct {
+		lang, q string
+		want    bool
+	}{
+		{"en", "Which editor do you use?", true},
+		{"ko", "어떤 에디터 쓰세요?", false},
+		{"ko", "Which editor do you use?", false},
+		{"en", "어떤 에디터 쓰세요?", false},
+		{"en", "Is CodeBite 한국어 only?", false},
+		{"ja", "Which editor do you use?", false},
 	}
-	if got := questionLimit("어떤 에디터 쓰세요?"); got != maxHangulQuestionChars {
-		t.Fatalf("korean: got %d", got)
-	}
-	if got := questionLimit("Is CodeBite 한국어 only?"); got != maxHangulQuestionChars {
-		t.Fatalf("mixed: got %d", got)
-	}
-}
-
-func TestLangNameAcceptsEnglishAndKoreanOnly(t *testing.T) {
-	for lang, want := range map[string]string{"en": "English", "ko": "Korean"} {
-		if got, ok := langName(lang); !ok || got != want {
-			t.Fatalf("%s: got %q %v", lang, got, ok)
+	for _, c := range cases {
+		if got := generated(c.lang, c.q); got != c.want {
+			t.Errorf("generated(%q, %q) = %v, want %v", c.lang, c.q, got, c.want)
 		}
-	}
-	if _, ok := langName("ja"); ok {
-		t.Fatal("ja accepted")
-	}
-}
-
-func TestOutputTokensShorterForKorean(t *testing.T) {
-	if outputTokens("ko") != maxOutputTokensKo || outputTokens("en") != maxOutputTokens {
-		t.Fatal("wrong caps")
 	}
 }
