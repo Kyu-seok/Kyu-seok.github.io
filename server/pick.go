@@ -34,6 +34,7 @@ const (
 type picker struct {
 	bank     []bankEntry
 	url      string
+	model    string // the embedding model's name, sent with every request (EMBED_MODEL_NAME)
 	client   *http.Client
 	examples []pickExample
 	vectors  atomic.Pointer[[][]float64] // nil until the example questions are embedded
@@ -46,8 +47,8 @@ type pickExample struct {
 	text  string
 }
 
-func newPicker(bank []bankEntry, url string) *picker {
-	p := &picker{bank: bank, url: url, client: &http.Client{Timeout: 2 * time.Minute}, wake: make(chan struct{}, 1)}
+func newPicker(bank []bankEntry, url, model string) *picker {
+	p := &picker{bank: bank, url: url, model: model, client: &http.Client{Timeout: 2 * time.Minute}, wake: make(chan struct{}, 1)}
 	for i, e := range bank {
 		for _, x := range e.examples {
 			p.examples = append(p.examples, pickExample{i, x})
@@ -149,7 +150,7 @@ func (p *picker) embedExamples() ([][]float64, error) {
 
 // embed asks llama-server (--embedding) for one unit vector per text, in order. bge-m3 takes no query prefix.
 func (p *picker) embed(ctx context.Context, texts []string) ([][]float64, error) {
-	body, _ := json.Marshal(map[string]any{"input": texts, "model": "bge-m3"})
+	body, _ := json.Marshal(map[string]any{"input": texts, "model": p.model})
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, p.url+"/v1/embeddings", bytes.NewReader(body))
 	if err != nil {
 		return nil, err

@@ -615,7 +615,7 @@ func newGateway(cfg config) (*gateway, error) {
 		cfg:    cfg,
 		system: system,
 		links:  newLinkFilter(system),
-		pk:     newPicker(bank, cfg.embedURL),
+		pk:     newPicker(bank, cfg.embedURL, cfg.embedModel),
 		lim:    newLimiter(),
 		qlog:   &qlog{dir: cfg.logDir},
 		met:    &metrics{},
