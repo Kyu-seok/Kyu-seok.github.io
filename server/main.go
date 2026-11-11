@@ -19,6 +19,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -211,44 +212,77 @@ func (q *qlog) write(e logEntry) {
 // ---- metrics (Prometheus text format, hand-rolled to avoid a dependency) ----
 
 type metrics struct {
-	asks        sync.Map // /ask outcome -> *int64
-	picks       sync.Map // /pick outcome -> *int64
+	asks        outcomes // /ask
+	picks       outcomes // /pick
 	pickLatency latency
 	genSecs     atomic.Int64 // milliseconds summed
 	genTokens   atomic.Int64
 }
 
-func (m *metrics) count(counter *sync.Map, outcome string) {
-	v, _ := counter.LoadOrStore(outcome, new(int64))
-	atomic.AddInt64(v.(*int64), 1)
+// outcomes is a counter labeled by outcome.
+type outcomes struct {
+	m sync.Map // outcome -> *atomic.Int64
+}
+
+func (o *outcomes) inc(outcome string) {
+	v, _ := o.m.LoadOrStore(outcome, new(atomic.Int64))
+	v.(*atomic.Int64).Add(1)
+}
+
+func (o *outcomes) write(w io.Writer, name string) {
+	fmt.Fprintf(w, "# TYPE %s counter\n", name)
+	o.m.Range(func(k, v any) bool {
+		fmt.Fprintf(w, "%s{outcome=%q} %d\n", name, k, v.(*atomic.Int64).Load())
+		return true
+	})
+}
+
+func writeGauge(w io.Writer, name string, v int64) {
+	fmt.Fprintf(w, "# TYPE %s gauge\n%s %d\n", name, name, v)
+}
+
+func writeFlag(w io.Writer, name string, on bool) {
+	var v int64
+	if on {
+		v = 1
+	}
+	writeGauge(w, name, v)
 }
 
 func (m *metrics) write(w io.Writer, busy, queued int32, warm, pickReady bool) {
-	fmt.Fprintln(w, "# TYPE portfolio_ask_total counter")
-	m.asks.Range(func(k, v any) bool {
-		fmt.Fprintf(w, "portfolio_ask_total{outcome=%q} %d\n", k, atomic.LoadInt64(v.(*int64)))
-		return true
-	})
+	m.asks.write(w, "portfolio_ask_total")
 	fmt.Fprintf(w, "# TYPE portfolio_ask_generation_seconds_total counter\nportfolio_ask_generation_seconds_total %.3f\n", float64(m.genSecs.Load())/1000)
 	fmt.Fprintf(w, "# TYPE portfolio_ask_generated_tokens_total counter\nportfolio_ask_generated_tokens_total %d\n", m.genTokens.Load())
-	fmt.Fprintf(w, "# TYPE portfolio_ask_busy gauge\nportfolio_ask_busy %d\n", busy)
-	fmt.Fprintf(w, "# TYPE portfolio_ask_queued gauge\nportfolio_ask_queued %d\n", queued)
-	w1 := 0
-	if warm {
-		w1 = 1
-	}
-	fmt.Fprintf(w, "# TYPE portfolio_ask_warm gauge\nportfolio_ask_warm %d\n", w1)
-	fmt.Fprintln(w, "# TYPE portfolio_pick_total counter")
-	m.picks.Range(func(k, v any) bool {
-		fmt.Fprintf(w, "portfolio_pick_total{outcome=%q} %d\n", k, atomic.LoadInt64(v.(*int64)))
-		return true
-	})
+	writeGauge(w, "portfolio_ask_busy", int64(busy))
+	writeGauge(w, "portfolio_ask_queued", int64(queued))
+	writeFlag(w, "portfolio_ask_warm", warm)
+	m.picks.write(w, "portfolio_pick_total")
 	m.pickLatency.write(w, "portfolio_pick_seconds")
-	r1 := 0
-	if pickReady {
-		r1 = 1
+	writeFlag(w, "portfolio_pick_ready", pickReady)
+}
+
+// latency is a Prometheus histogram of pick latency, hand-rolled like the rest of /metrics.
+type latency struct {
+	counts [len(latencyBuckets) + 1]atomic.Int64 // the last one is +Inf
+	sumMs  atomic.Int64
+}
+
+var latencyBuckets = [...]float64{0.05, 0.1, 0.25, 0.5, 1, 2.5, 5}
+
+func (l *latency) observe(d time.Duration) {
+	l.counts[sort.SearchFloat64s(latencyBuckets[:], d.Seconds())].Add(1)
+	l.sumMs.Add(d.Milliseconds())
+}
+
+func (l *latency) write(w io.Writer, name string) {
+	fmt.Fprintf(w, "# TYPE %s histogram\n", name)
+	var cum int64
+	for i, b := range latencyBuckets {
+		cum += l.counts[i].Load()
+		fmt.Fprintf(w, "%s_bucket{le=\"%g\"} %d\n", name, b, cum)
 	}
-	fmt.Fprintf(w, "# TYPE portfolio_pick_ready gauge\nportfolio_pick_ready %d\n", r1)
+	cum += l.counts[len(latencyBuckets)].Load()
+	fmt.Fprintf(w, "%s_bucket{le=\"+Inf\"} %d\n%s_sum %.3f\n%s_count %d\n", name, cum, name, float64(l.sumMs.Load())/1000, name, cum)
 }
 
 // ---- link filter: only URLs that appear in the fact sheet may reach the page ----
@@ -382,10 +416,10 @@ func (g *gateway) allowed(r *http.Request) bool {
 }
 
 // refuse logs a question that got no reply, counts its outcome, and answers with an error status.
-func (g *gateway) refuse(w http.ResponseWriter, counter *sync.Map, e logEntry, outcome string, status int, msg string) {
+func (g *gateway) refuse(w http.ResponseWriter, counter *outcomes, e logEntry, outcome string, status int, msg string) {
 	e.Outcome = outcome
 	g.qlog.write(e)
-	g.met.count(counter, outcome)
+	counter.inc(outcome)
 	http.Error(w, msg, status)
 }
 
@@ -474,7 +508,7 @@ func (g *gateway) ask(w http.ResponseWriter, r *http.Request) {
 		entry.Outcome = "error"
 		log.Printf("generate: %v", err)
 	}
-	g.met.count(&g.met.asks, entry.Outcome)
+	g.met.asks.inc(entry.Outcome)
 	g.met.genSecs.Add(entry.TotalMs)
 	g.met.genTokens.Add(int64(res.tokens))
 	g.qlog.write(entry)

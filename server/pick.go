@@ -321,7 +321,7 @@ func (g *gateway) pickHandler(w http.ResponseWriter, r *http.Request) {
 		entry.RunnerUp, entry.RunnerUpScore = res.runnerUp.id, &res.runnerUpScore
 	}
 	g.qlog.write(entry)
-	g.met.count(&g.met.picks, "ok")
+	g.met.picks.inc("ok")
 	g.met.pickLatency.observe(elapsed)
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
@@ -329,30 +329,6 @@ func (g *gateway) pickHandler(w http.ResponseWriter, r *http.Request) {
 		"id": res.entry.id, "text": res.entry.reply, "card": res.entry.card,
 		"score": res.score, "ms": elapsed.Milliseconds(), "model": g.cfg.embedModel,
 	})
-}
-
-// latency is a Prometheus histogram of pick latency, hand-rolled like the rest of /metrics.
-type latency struct {
-	counts [len(latencyBuckets) + 1]atomic.Int64 // the last one is +Inf
-	sumMs  atomic.Int64
-}
-
-var latencyBuckets = [...]float64{0.05, 0.1, 0.25, 0.5, 1, 2.5, 5}
-
-func (l *latency) observe(d time.Duration) {
-	l.counts[sort.SearchFloat64s(latencyBuckets[:], d.Seconds())].Add(1)
-	l.sumMs.Add(d.Milliseconds())
-}
-
-func (l *latency) write(w io.Writer, name string) {
-	fmt.Fprintf(w, "# TYPE %s histogram\n", name)
-	var cum int64
-	for i, b := range latencyBuckets {
-		cum += l.counts[i].Load()
-		fmt.Fprintf(w, "%s_bucket{le=\"%g\"} %d\n", name, b, cum)
-	}
-	cum += l.counts[len(latencyBuckets)].Load()
-	fmt.Fprintf(w, "%s_bucket{le=\"+Inf\"} %d\n%s_sum %.3f\n%s_count %d\n", name, cum, name, float64(l.sumMs.Load())/1000, name, cum)
 }
 
 // bankEntry is one answer bank entry: Kyu's reply, the questions it answers, and the card it carries.
