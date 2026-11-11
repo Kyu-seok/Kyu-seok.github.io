@@ -3,7 +3,7 @@
 server, asserting only on what it prints and its exit code. The embedding server is a fake that returns fixed
 vectors keyed by text, so the nearest entry is known in advance.
 
-Usage (from server/): python3 scripts/gate_test.py   (not in CI; the gate itself needs the live bge-m3)
+Usage (from server/): python3 scripts/gate_test.py   (runs in CI; the gate itself needs the live bge-m3 and does not)
 """
 import hashlib
 import http.server
@@ -212,6 +212,17 @@ class Gate(unittest.TestCase):
         self.assertIn("dev.json: 오늘 서울 날씨 어때요? accepts `none`, which is not in the bank; scored on the rest", out)
         self.assertIn("dev.json: 그중 하나만 알려줘 accepts `none`, which is not in the bank; scored on the rest", out)
         self.assertNotIn("gate.json:", out)
+
+
+class GateFixture(unittest.TestCase):
+    # sha256 of the 15 held-out questions as written blind on 2026-11-12 (prototype/ko-picker, 01780f1). The gate
+    # only means something if they are never fitted to the bank, so changing this hash is a decision for its own PR,
+    # not a side effect of a bank edit.
+    PINNED = "5f1eb40fbf750c2deb63efe45a208b067d424fcce13183fc5dbb9bb1ff75a08d"
+
+    def test_gate_questions_are_the_ones_written_blind(self):
+        got = hashlib.sha256((SCRIPTS / "gate/gate.json").read_bytes()).hexdigest()
+        self.assertEqual(got, self.PINNED, "gate/gate.json changed; the gate questions are pinned (docs/adr/0002)")
 
 
 if __name__ == "__main__":

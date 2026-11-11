@@ -1,6 +1,6 @@
 name: Gateway checks
 
-# gofmt, vet, test, shellcheck and the prompt token ceiling for server/. Called by ci.yml (branches, PRs)
+# gofmt, vet, test, shellcheck, the prompt token ceiling and the gate script's tests for server/. Called by ci.yml (branches, PRs)
 # and by deploy-ask.yml, which refuses to deploy a push to main that fails here.
 on:
   workflow_call:
@@ -23,5 +23,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install tokenizers==0.21.1
+      - run: pip install -r scripts/requirements.txt
       - run: python3 scripts/check-prompt-tokens.py
+      - run: python3 scripts/gate_test.py

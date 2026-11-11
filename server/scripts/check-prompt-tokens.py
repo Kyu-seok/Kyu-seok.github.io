@@ -8,7 +8,7 @@ same PR.
 
 Counts with Qwen3-1.7B's Hugging Face tokenizer at a pinned revision, which matches llama-server's
 /tokenize on the shipped GGUF; scripts/tokens.sh counts on the real model when you need to confirm.
-Usage (from server/): python3 scripts/check-prompt-tokens.py   (needs: pip install tokenizers)
+Usage (from server/): python3 scripts/check-prompt-tokens.py   (needs: pip install -r scripts/requirements.txt)
 """
 import pathlib
 import sys

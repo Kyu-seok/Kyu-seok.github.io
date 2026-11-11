@@ -12,7 +12,7 @@ Usage (from server/), with bge-m3 reachable at --embed:
   ssh -N -L 8096:172.17.0.1:8096 mini &     # from a laptop; on the box itself use --embed http://172.17.0.1:8096
   python3 scripts/gate.py
 Exit: 0 PASS, 1 FAIL, 2 no verdict (a fixture names an id the bank does not have, or the bank or model failed).
-Tests: python3 scripts/gate_test.py (a fake embedding server; not in CI).
+Tests: python3 scripts/gate_test.py (a fake embedding server; runs in CI, which also pins gate/gate.json).
 """
 import argparse
 import json

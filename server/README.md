@@ -41,7 +41,7 @@ cd server && python3 scripts/gate.py
 # on the box itself: python3 scripts/gate.py --embed http://172.17.0.1:8096
 ```
 
-`python3 scripts/gate_test.py` tests the script against a fake embedding server.
+`python3 scripts/gate_test.py` tests the script against a fake embedding server, and pins `gate/gate.json` to the questions written blind; CI runs it, and a Go test checks that `gate.py` reads the bank as the gateway does.
 
 ## API
 
