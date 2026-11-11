@@ -293,3 +293,188 @@ func TestPickReturnsTheEntryOfTheNearestExample(t *testing.T) {
 		t.Fatalf("got %+v", got)
 	}
 }
+
+// logLines returns the question log, one decoded JSON object per line.
+func logLines(t *testing.T, gw running) []map[string]any {
+	t.Helper()
+	files, _ := filepath.Glob(filepath.Join(gw.log, "questions-*.jsonl"))
+	var out []map[string]any
+	for _, f := range files {
+		b, err := os.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, line := range strings.Split(strings.TrimSpace(string(b)), "\n") {
+			if line == "" {
+				continue
+			}
+			var m map[string]any
+			if err := json.Unmarshal([]byte(line), &m); err != nil {
+				t.Fatalf("log line %q: %v", line, err)
+			}
+			out = append(out, m)
+		}
+	}
+	return out
+}
+
+func TestPickRefusesEmptyLongAndNonKoreanQuestions(t *testing.T) {
+	gw := startGateway(t, false)
+	pickOK(t, gw, "빔 쓰시나요?")
+	before := len(logLines(t, gw))
+	cases := []struct {
+		body string
+		want int
+	}{
+		{`{"question":"   "}`, http.StatusBadRequest},
+		{`{"question":"` + strings.Repeat("가", 41) + `"}`, http.StatusBadRequest},
+		{`not json`, http.StatusBadRequest},
+		{`{"question":"Which editor do you use?"}`, http.StatusUnprocessableEntity},
+	}
+	for _, c := range cases {
+		if code, body := post(t, gw.url+"/pick", c.body); code != c.want {
+			t.Errorf("%s: got %d (%s), want %d", c.body, code, body, c.want)
+		}
+	}
+	if n := len(logLines(t, gw)); n != before {
+		t.Fatalf("refused input reached the question log: %d lines, want %d", n, before)
+	}
+}
+
+func TestPickSharesTheRateLimitWithAsk(t *testing.T) {
+	gw := startGateway(t, false)
+	pickOK(t, gw, "빔 쓰시나요?") // 1
+	eventually(t, "the language model to warm up", func() bool {
+		resp, err := http.Get(gw.url + "/health")
+		if err != nil {
+			return false
+		}
+		defer resp.Body.Close()
+		var h map[string]any
+		json.NewDecoder(resp.Body).Decode(&h)
+		return h["ready"] == true
+	})
+	for i := 0; i < perMinute/2; i++ { // 2..6
+		if code, body := post(t, gw.url+"/ask", `{"question":"Which editor do you use?","lang":"en"}`); code != http.StatusOK {
+			t.Fatalf("ask %d: %d %s", i, code, body)
+		}
+	}
+	for i := 1 + perMinute/2; i < perMinute; i++ { // 7..10
+		if code, body := post(t, gw.url+"/pick", `{"question":"빔 쓰시나요?"}`); code != http.StatusOK {
+			t.Fatalf("pick %d: %d %s", i, code, body)
+		}
+	}
+	if code, _ := post(t, gw.url+"/pick", `{"question":"빔 쓰시나요?"}`); code != http.StatusTooManyRequests {
+		t.Fatalf("pick over the shared cap: got %d, want 429", code)
+	}
+	if code, _ := post(t, gw.url+"/ask", `{"question":"Which editor do you use?","lang":"en"}`); code != http.StatusTooManyRequests {
+		t.Fatalf("ask over the shared cap: got %d, want 429", code)
+	}
+	last := logLines(t, gw)
+	if o := last[len(last)-2]; o["outcome"] != "rate_limited" || o["model"] != "bge-m3" {
+		t.Fatalf("rate-limited pick logged as %v", o)
+	}
+}
+
+func health(t *testing.T, gw running) map[string]any {
+	t.Helper()
+	resp, err := http.Get(gw.url + "/health")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	var h map[string]any
+	if err := json.NewDecoder(resp.Body).Decode(&h); err != nil {
+		t.Fatal(err)
+	}
+	return h
+}
+
+func TestPickIs503WhileTheEmbeddingModelIsDownAndRecovers(t *testing.T) {
+	gw := startGateway(t, true)
+	for i := 0; i < 3; i++ {
+		if code, _ := post(t, gw.url+"/pick", `{"question":"빔 쓰시나요?"}`); code != http.StatusServiceUnavailable {
+			t.Fatalf("down at startup: got %d, want 503", code)
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	if h := health(t, gw); h["pick_ready"] != false || h["pick_model"] != "bge-m3" {
+		t.Fatalf("health while down: %v", h)
+	}
+
+	gw.embed.down.Store(false)
+	if got := pickOK(t, gw, "빔 쓰시나요?"); got.ID != "editor" {
+		t.Fatalf("after recovery: %+v", got)
+	}
+	if h := health(t, gw); h["pick_ready"] != true {
+		t.Fatalf("health after recovery: %v", h)
+	}
+
+	gw.embed.down.Store(true)
+	if code, _ := post(t, gw.url+"/pick", `{"question":"빔 쓰시나요?"}`); code != http.StatusServiceUnavailable {
+		t.Fatalf("down after ready: got %d, want 503", code)
+	}
+	gw.embed.down.Store(false)
+	if code, body := post(t, gw.url+"/pick", `{"question":"빔 쓰시나요?"}`); code != http.StatusOK {
+		t.Fatalf("back again: got %d %s", code, body)
+	}
+}
+
+func TestAPickIsLoggedWithItsScoreAndRunnerUp(t *testing.T) {
+	gw := startGateway(t, false)
+	eventually(t, "the picker to be ready", func() bool { return health(t, gw)["pick_ready"] == true })
+	if code, body := post(t, gw.url+"/pick", `{"question":"빔 쓰시나요?","lang":"ko","intent":"skills"}`); code != http.StatusOK {
+		t.Fatalf("%d %s", code, body)
+	}
+	lines := logLines(t, gw)
+	if len(lines) != 1 {
+		t.Fatalf("got %d log lines, want 1", len(lines))
+	}
+	got := lines[0]
+	want := map[string]any{
+		"question": "빔 쓰시나요?", "lang": "ko", "intent": "skills", "outcome": "ok", "model": "bge-m3",
+		"answer": "매일 Vim과 Claude Code를 씁니다.",
+		"pick":   "editor", "pick_score": 0.96, "runner_up": "codebite", "runner_up_score": 0.8,
+	}
+	for k, v := range want {
+		if got[k] != v {
+			t.Errorf("log %s = %v, want %v", k, got[k], v)
+		}
+	}
+	if _, ok := got["at"]; !ok {
+		t.Error("log line has no time")
+	}
+}
+
+func TestAskStillRefusesHangul(t *testing.T) {
+	gw := startGateway(t, false)
+	for _, body := range []string{
+		`{"question":"어떤 에디터 쓰세요?","lang":"ko","intent":"skills"}`,
+		`{"question":"어떤 에디터 쓰세요?","lang":"en"}`,
+	} {
+		if code, _ := post(t, gw.url+"/ask", body); code != http.StatusUnprocessableEntity {
+			t.Errorf("%s: got %d, want 422", body, code)
+		}
+	}
+}
+
+func TestMetricsCountPicksAndTheirLatency(t *testing.T) {
+	gw := startGateway(t, false)
+	pickOK(t, gw, "빔 쓰시나요?")
+	resp, err := http.Get(gw.url + "/metrics")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	b, _ := io.ReadAll(resp.Body)
+	for _, want := range []string{
+		`portfolio_pick_total{outcome="ok"} 1`,
+		`portfolio_pick_seconds_bucket{le="+Inf"} 1`,
+		`portfolio_pick_seconds_count 1`,
+		`portfolio_pick_ready 1`,
+	} {
+		if !strings.Contains(string(b), want) {
+			t.Errorf("metrics lack %q:\n%s", want, b)
+		}
+	}
+}
