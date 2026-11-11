@@ -15,17 +15,13 @@ function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-// Free text in either language is generated (ADR 0001, 2026-11-08 amendment). Greetings and "how does this
-// work" stay scripted. Korean text longer than the gateway's cap (maxHangulQuestionChars in server/main.go)
-// is not sent: Korean costs about one token per character and prefill is slow, so it would miss the
-// first-token budget anyway. The script test matches Go's unicode.Hangul so page and gateway agree.
-const GATEWAY_HANGUL_QUESTION_CAP = 40;
+// Only English free text is generated. Korean free text was generated from 2026-11-08 and reverted on
+// 2026-11-12: real answers stayed below the bar (ADR 0001, 2026-11-12 amendment). A question with Hangul
+// stays scripted even on the English page; the gateway refuses it too (generated() in server/main.go).
+// Greetings and "how does this work" stay scripted.
 const HANGUL = /\p{Script=Hangul}/u;
-function overHangulCap(text: string): boolean {
-  return HANGUL.test(text) && [...text].length > GATEWAY_HANGUL_QUESTION_CAP;
-}
-function wantsGeneration(r: Resolution): boolean {
-  return r.kind !== 'hello' && r.kind !== 'how';
+function wantsGeneration(lang: Lang, text: string, r: Resolution): boolean {
+  return lang === 'en' && !HANGUL.test(text) && r.kind !== 'hello' && r.kind !== 'how';
 }
 
 export function App() {
@@ -108,17 +104,10 @@ export function App() {
       const r = resolve(clean);
       // Free text only, never chips. The notes card is added beside the intent's card and never changes it.
       const study = studyTopic(clean);
-      if (overHangulCap(clean)) {
-        // A matched intent still has a true scripted reply; an unmatched one must say why, not "busy".
-        // The too-long reply is about the question's length, not its subject, so it gets no notes card.
-        if (r.kind === 'unknown') reply('toolong');
-        else reply(r.kind, r.focus, study);
-        return;
-      }
-      if (wantsGeneration(r)) void replyGenerated(clean, r, study);
+      if (wantsGeneration(lang, clean, r)) void replyGenerated(clean, r, study);
       else reply(r.kind, r.focus, study);
     },
-    [reply, replyGenerated],
+    [lang, reply, replyGenerated],
   );
 
   const askChip = useCallback((intent: Intent) => ask(t.ui.chipQuestions[intent], intent), [ask, t]);
@@ -141,7 +130,7 @@ export function App() {
   const lastIntent = useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
       const m = messages[i];
-      if (m.role === 'assistant' && m.kind !== 'hello' && m.kind !== 'unknown' && m.kind !== 'how' && m.kind !== 'toolong') return m.kind as Intent;
+      if (m.role === 'assistant' && m.kind !== 'hello' && m.kind !== 'unknown' && m.kind !== 'how') return m.kind as Intent;
     }
     return null;
   }, [messages]);

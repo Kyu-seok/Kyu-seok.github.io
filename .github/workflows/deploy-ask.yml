@@ -65,7 +65,8 @@ jobs:
               -d "{\"question\":\"$MARK: which editor do you use?\",\"lang\":\"en\",\"intent\":\"skills\"}" \
               localhost:8090/ask | grep -q '"outcome":"ok"' || { echo "smoke question failed" >&2; exit 1; }
             tail -n 1 log/questions-*.jsonl | grep -qF "$MARK" || { echo "smoke question not in the log" >&2; exit 1; }
-            curl -sN -m 60 -H 'Content-Type: application/json' \
-              -d "{\"question\":\"어떤 에디터 쓰세요?\",\"lang\":\"ko\",\"intent\":\"skills\"}" \
-              localhost:8090/ask | grep -q '"outcome":"ok"' || { echo "korean smoke question failed" >&2; exit 1; }
+            # Korean is scripted (ADR 0001, 2026-11-12): the gateway must refuse it before the model or the log.
+            code=$(curl -s -o /dev/null -w '%{http_code}' -m 10 -H 'Content-Type: application/json' \
+              -d '{"question":"어떤 에디터 쓰세요?","lang":"ko","intent":"skills"}' localhost:8090/ask)
+            [ "$code" = 422 ] || { echo "korean question got $code, want 422" >&2; exit 1; }
             echo "smoke ok"
