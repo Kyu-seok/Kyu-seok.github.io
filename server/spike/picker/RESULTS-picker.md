@@ -56,3 +56,19 @@ Kyu chose one last round over accepting round 2's fail. Rules, written down befo
 3. `gate.py gate.json`: bge-m3, top match, no threshold. **Pass: at least 13 of 15 and every trap.**
 4. One run. Pass: build it (answer bank, ADR 0002). Fail: Korean free text stays scripted for good, recorded in
    ADR 0002. No further rounds either way.
+
+## Final gate result (2026-11-12): PASS
+
+Bank rewritten by Claude (Kyu delegated it), committed in 1e4baec. Gate questions written by a subagent that saw only
+the id names and one-line meanings, never the bank, committed unchanged in 01780f1 before the single run.
+
+**15/15, traps 5/5** (pass line 13/15 and all traps). Full output: `python3 gate.py gate.json`.
+
+Caveats, recorded rather than argued away:
+- "누구세요?" is word for word a bank example (score 1.000), and two more are near copies (크롬 확장프로그램 0.991,
+  연봉 0.967). Without those three it is still 12/12.
+- The weakest picks were two traps: 백준 1000번 파이썬으로 풀어줘 → decline_code at 0.655 and 내일 서울 날씨 →
+  decline_general at 0.661, each well clear of the runner-up (0.465, 0.506).
+- The gate has no one-word reaction or small-talk question (심심해, 신기해), which were round 2's weakest shape.
+  The question log review after launch should read those first.
+- Reply text is still Claude's draft; the gate judged picks only. Kyu's voice pass is required before it ships.
