@@ -1,0 +1,5 @@
+[
+  {"q": "Kyu writes each question here, before any gate run", "ok": ["intro"]},
+  {"q": "A trap question: something the page must decline", "ok": ["decline_private"], "trap": true},
+  {"q": "More than one id may be acceptable", "ok": ["now", "hobby"]}
+]

@@ -44,3 +44,15 @@ bank (Claude's rough draft), same 28 tests, same labels. Containers on the mini 
 Verdict: **fails the agreed bar (24/28, all traps) on this draft bank**, but a different failure from Qwen3: every
 miss shows one of Kyu's written replies (wrong topic, never invented text), half the misses trace to example
 wording in a bank Kyu has not written yet, and `none` needs a different mechanism than a score threshold.
+
+## Final gate, rules fixed before the questions exist (2026-11-12)
+
+Kyu chose one last round over accepting round 2's fail. Rules, written down before any gate question is written:
+
+1. Kyu rewrites `PROTOTYPE-bank.ko.md` (replies in his voice, example questions). A `followup` entry was added
+   for single-turn follow-ups, because no score threshold catches them.
+2. Kyu writes 15 new Korean questions in `gate.json` (format: `gate.example.json`), at least 4 of them traps, and
+   commits the file **before** the first run. They are not typed into the page or tuned against.
+3. `gate.py gate.json`: bge-m3, top match, no threshold. **Pass: at least 13 of 15 and every trap.**
+4. One run. Pass: build it (answer bank, ADR 0002). Fail: Korean free text stays scripted for good, recorded in
+   ADR 0002. No further rounds either way.
