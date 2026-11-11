@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Korean Picker Embeddings</title>
+<style>
+:root{--bg:#fafaf9;--fg:#1c1917;--muted:#78716c;--line:#e7e5e4;--card:#fff;--ok:#15803d;--bad:#b91c1c;--warn:#a16207;--accent:#1d4ed8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1917;--fg:#f5f5f4;--muted:#a8a29e;--line:#44403c;--card:#292524;--ok:#4ade80;--bad:#f87171;--warn:#facc15;--accent:#93c5fd}}
+:root[data-theme="dark"]{--bg:#1c1917;--fg:#f5f5f4;--muted:#a8a29e;--line:#44403c;--card:#292524;--ok:#4ade80;--bad:#f87171;--warn:#facc15;--accent:#93c5fd}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif}
+main{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+.banner{border:1px dashed var(--warn);color:var(--warn);padding:8px 12px;border-radius:8px;font-size:13px;margin-bottom:16px}
+h1{font-size:20px;margin:0 0 4px}p.sub{color:var(--muted);margin:0 0 12px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:14px}
+.bar label{display:flex;gap:6px;align-items:center}select,input{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+input[type=range]{padding:0}.tau{font-family:ui-monospace,monospace;font-weight:600;min-width:3.5em}
+.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button{background:none;border:1px solid var(--line);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer}
+.tabs button.on{border-color:var(--accent);color:var(--accent)}
+form{display:flex;gap:8px}form input{flex:1;padding:10px 12px;border-radius:8px}
+button.go{padding:8px 16px;border:0;border-radius:8px;background:var(--accent);color:var(--bg);font:inherit;cursor:pointer}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:10px}
+.id{font-family:ui-monospace,monospace;font-weight:600;color:var(--accent)}.m{color:var(--muted);font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.score{font-size:18px;font-weight:600}.wrap{overflow-x:auto}
+.cand{display:flex;gap:8px;font-size:13px}.cand .s{font-family:ui-monospace,monospace;min-width:3.5em}.below{opacity:.5}
+</style></head><body><main>
+<div class="banner">PROTOTYPE, throwaway. An embedding model finds the nearest example question; below the threshold means <b>none</b>. Reply text is a rough draft, not Kyu's voice.</div>
+<h1>Korean picker, embeddings</h1>
+<p class="sub">Same bank, same 28 tests, same pass line as the Qwen3 picker (which scored 12/28).</p>
+<div class="bar">
+  <label>Model <select id="model"></select></label>
+  <label>none below <input type="range" id="tau" min="0.5" max="0.95" step="0.005" value="0.8"><span class="tau" id="tauv"></span></label>
+  <span class="m">Moving the slider re-scores without asking the model again.</span>
+</div>
+<div class="tabs"><button data-t="try" class="on">Try it</button><button data-t="bench">Run the 28 tests</button></div>
+<section id="try">
+  <form id="f"><input id="q" autocomplete="off" placeholder="예: 심심해, 에디터 뭐 써요?, 그중 하나만 알려줘" autofocus><button class="go">Pick</button></form>
+  <div id="hist"></div>
+</section>
+<section id="bench" hidden>
+  <button class="go" id="run">Run all</button> <span class="m" id="prog"></span>
+  <div class="box"><span class="score" id="score">–</span> <span class="m" id="detail"></span><div class="m" id="sweep"></div></div>
+  <div class="wrap"><table><thead><tr><th>#</th><th>Question</th><th>Picked (top score)</th><th>Accepted</th><th>ms</th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s);let state,bench={};const hist=[];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tau=()=>+$('#tau').value;const decide=r=>r.top[0].score>=tau()?r.top[0].id:'none';
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));['try','bench'].forEach(t=>$('#'+t).hidden=t!==b.dataset.t)});
+async function pick(q){return (await fetch('/pick',{method:'POST',body:JSON.stringify({q,model:$('#model').value})})).json();}
+function renderHist(){$('#hist').innerHTML=hist.map(({q,model,r})=>{if(r.error)return `<div class="box"><b>${esc(q)}</b><div class="bad">${esc(r.error)}</div></div>`;
+  const id=decide(r);const reply=id==='none'?r.none_reply:r.replies[id];
+  return `<div class="box"><div><b>${esc(q)}</b> → <span class="id">${esc(id)}</span> <span class="m">${model} · ${r.ms} ms</span></div><div>${esc(reply)}</div>
+  <div style="margin-top:6px">${r.top.map(c=>`<div class="cand ${c.score<tau()?'below':''}"><span class="s">${c.score.toFixed(3)}</span><span class="id">${esc(c.id)}</span><span class="m">${esc(c.example)}</span></div>`).join('')}</div></div>`}).join('');}
+function scoreAt(t,res){let p=0,tr=0,trok=0;state.tests.forEach((x,i)=>{const r=res[i];if(!r||r.error)return;const id=r.top[0].score>=t?r.top[0].id:'none';const ok=x.ok.includes(id);p+=ok;if(x.trap){tr++;trok+=ok}});return {p,tr,trok};}
+function renderBench(){const res=bench[$('#model').value];if(!res){$('#rows').innerHTML='';$('#score').textContent='–';$('#detail').textContent='';$('#sweep').textContent='';return;}
+  $('#rows').innerHTML=state.tests.map((t,i)=>{const r=res[i];if(!r)return '';if(r.error)return `<tr><td>${i+1}</td><td>${esc(t.q)}</td><td class="bad">${esc(r.error)}</td><td></td><td></td></tr>`;
+    const id=decide(r),ok=t.ok.includes(id);return `<tr><td>${i+1}</td><td>${esc(t.q)}${t.trap?' <span class="m">trap</span>':''} <span class="m">${t.src}</span></td><td class="${ok?'ok':'bad'}">${ok?'✓':'✗'} <span class="id">${esc(id)}</span> <span class="m">${esc(r.top[0].id)} ${r.top[0].score.toFixed(3)}</span></td><td class="m">${t.ok.join(', ')}</td><td>${r.ms}</td></tr>`}).join('');
+  const {p,tr,trok}=scoreAt(tau(),res);const ms=res.filter(r=>r&&!r.error).map(r=>r.ms).sort((a,b)=>a-b);
+  $('#score').innerHTML=`<span class="${p>=24&&trok===tr?'ok':'bad'}">${p} / ${state.tests.length}</span>`;
+  $('#detail').textContent=`at ${tau().toFixed(3)} · traps ${trok}/${tr} · question embed p50 ${ms[Math.floor(ms.length/2)]} ms, max ${ms[ms.length-1]} ms · pass: ≥24, all traps`;
+  let best=null;for(let t=0.5;t<=0.95;t+=0.005){const s=scoreAt(t,res);if(!best||s.p>best.p||(s.p===best.p&&s.trok>best.trok))best={t,...s};}
+  $('#sweep').textContent=`Best threshold on these 28: ${best.t.toFixed(3)} → ${best.p}/28, traps ${best.trok}/${best.tr}. (Tuned on the test set itself, so it flatters; a real gate needs fresh questions.)`;}
+$('#tau').oninput=()=>{$('#tauv').textContent=tau().toFixed(3);renderHist();renderBench();};
+$('#model').onchange=renderBench;
+$('#f').onsubmit=async ev=>{ev.preventDefault();const q=$('#q').value.trim();if(!q)return;$('#q').value='';const r=await pick(q);hist.unshift({q,model:$('#model').value,r});renderHist();};
+$('#run').onclick=async()=>{const m=$('#model').value;bench[m]=[];for(const [i,t] of state.tests.entries()){$('#prog').textContent=`${i+1} / ${state.tests.length}`;bench[m][i]=await pick(t.q);renderBench();}$('#prog').textContent='done';};
+(async()=>{state=await (await fetch('/state')).json();$('#model').innerHTML=state.models.map(m=>`<option>${m}</option>`).join('');$('#tauv').textContent=tau().toFixed(3);})();
+</script></body></html>
