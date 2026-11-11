@@ -2,7 +2,7 @@
 //
 // It owns the prompt (fact sheet + examples), enforces the caps decided in ADR 0001,
 // streams tokens to the browser as Server-Sent Events, and appends every question
-// to the permanent question log.
+// to the permanent question log. Korean free text gets picked replies instead (pick.go).
 package main
 
 import (
