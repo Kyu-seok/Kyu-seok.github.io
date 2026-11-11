@@ -203,8 +203,8 @@ type metrics struct {
 	genTokens atomic.Int64
 }
 
-func (m *metrics) count(outcome string) {
-	v, _ := m.asks.LoadOrStore(outcome, new(int64))
+func (m *metrics) count(counter *sync.Map, outcome string) {
+	v, _ := counter.LoadOrStore(outcome, new(int64))
 	atomic.AddInt64(v.(*int64), 1)
 }
 
@@ -345,6 +345,21 @@ func (s sse) send(event string, v any) {
 	s.fl.Flush()
 }
 
+const rateLimitedMsg = "too many questions, try again in a minute"
+
+// allowed applies the per-IP limiter that /ask and /pick share: one budget per visitor, whichever path answers.
+func (g *gateway) allowed(r *http.Request) bool {
+	return g.lim.allow(clientIP(r))
+}
+
+// refuse logs a question that got no reply, counts its outcome, and answers with an error status.
+func (g *gateway) refuse(w http.ResponseWriter, counter *sync.Map, e logEntry, outcome string, status int, msg string) {
+	e.Outcome = outcome
+	g.qlog.write(e)
+	g.met.count(counter, outcome)
+	http.Error(w, msg, status)
+}
+
 func (g *gateway) ask(w http.ResponseWriter, r *http.Request) {
 	if !g.cors(w, r) {
 		return
@@ -372,17 +387,14 @@ func (g *gateway) ask(w http.ResponseWriter, r *http.Request) {
 	}
 	entry := logEntry{At: time.Now().UTC().Format(time.RFC3339), Lang: req.Lang, Intent: req.Intent, Question: req.Question, Model: g.cfg.modelName}
 	fail := func(outcome string, status int, msg string) {
-		entry.Outcome = outcome
-		g.qlog.write(entry)
-		g.met.count(outcome)
-		http.Error(w, msg, status)
+		g.refuse(w, &g.met.asks, entry, outcome, status, msg)
 	}
 	if !g.warm.Load() {
 		fail("not_ready", http.StatusServiceUnavailable, "model warming up")
 		return
 	}
-	if !g.lim.allow(clientIP(r)) {
-		fail("rate_limited", http.StatusTooManyRequests, "too many questions, try again in a minute")
+	if !g.allowed(r) {
+		fail("rate_limited", http.StatusTooManyRequests, rateLimitedMsg)
 		return
 	}
 	if g.queued.Add(1) > queueDepth {
@@ -433,7 +445,7 @@ func (g *gateway) ask(w http.ResponseWriter, r *http.Request) {
 		entry.Outcome = "error"
 		log.Printf("generate: %v", err)
 	}
-	g.met.count(entry.Outcome)
+	g.met.count(&g.met.asks, entry.Outcome)
 	g.met.genSecs.Add(entry.TotalMs)
 	g.met.genTokens.Add(int64(res.tokens))
 	g.qlog.write(entry)
@@ -551,11 +563,11 @@ func (g *gateway) warmUp() {
 	}
 }
 
-func main() {
-	cfg := loadConfig()
+// newGateway loads the prompt files and builds the gateway; it starts nothing.
+func newGateway(cfg config) (*gateway, error) {
 	facts, err := os.ReadFile(cfg.facts)
 	if err != nil {
-		log.Fatalf("fact sheet: %v", err)
+		return nil, fmt.Errorf("fact sheet: %w", err)
 	}
 	system := string(facts)
 	if ex, err := os.ReadFile(cfg.examples); err == nil {
@@ -564,9 +576,9 @@ func main() {
 		log.Printf("no examples file: %v", err)
 	}
 	if err := os.MkdirAll(cfg.logDir, 0o755); err != nil {
-		log.Fatalf("log dir: %v", err)
+		return nil, fmt.Errorf("log dir: %w", err)
 	}
-	g := &gateway{
+	return &gateway{
 		cfg:    cfg,
 		system: system,
 		links:  newLinkFilter(system),
@@ -575,14 +587,30 @@ func main() {
 		met:    &metrics{},
 		slot:   make(chan struct{}, 1),
 		client: &http.Client{Timeout: 10 * time.Minute},
-	}
-	go g.warmUp()
+	}, nil
+}
 
+// start runs the background work that makes the gateway ready; it never blocks and never crashes the process.
+func (g *gateway) start() {
+	go g.warmUp()
+}
+
+func (g *gateway) routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", g.health)
 	mux.HandleFunc("/ask", g.ask)
 	mux.HandleFunc("/metrics", g.metricsHandler)
-	srv := &http.Server{Addr: cfg.listen, Handler: mux, ReadHeaderTimeout: 10 * time.Second}
+	return mux
+}
+
+func main() {
+	cfg := loadConfig()
+	g, err := newGateway(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	g.start()
+	srv := &http.Server{Addr: cfg.listen, Handler: g.routes(), ReadHeaderTimeout: 10 * time.Second}
 	log.Printf("portfolio-ask listening on %s, upstream %s, model %s, origins %v", cfg.listen, cfg.upstream, cfg.modelName, cfg.origins)
 	log.Fatal(srv.ListenAndServe())
 }
