@@ -16,6 +16,14 @@ _Avoid_: Static reply, canned reply, fallback (fallback is when it is used, not 
 A reply whose prose was produced by the self-hosted model from the fact sheet, labeled as such on the page.
 _Avoid_: AI reply, LLM answer, live reply
 
+**Picked reply**:
+A reply to Korean free text whose prose Kyu wrote ahead of time, chosen from the answer bank by the embedding model. Nothing in it is generated.
+_Avoid_: Matched reply, generated reply (no text is produced), retrieved answer
+
+**Answer bank**:
+Kyu's written Korean replies, each with the example questions it answers and the card it carries. The only source of picked replies.
+_Avoid_: FAQ, knowledge base, canned replies, fact sheet (the fact sheet feeds the model; the answer bank feeds the embedding model)
+
 **Intent**:
 Which of the five subjects (me, projects, skills, fun, contact) a question is about. Decided by the keyword matcher, never by the model.
 _Avoid_: Category, topic, kind
@@ -29,7 +37,7 @@ A question the model must decline: undisclosed facts, code, translation, general
 _Avoid_: Forbidden, blocked, unknown (the page's "unknown" is a matcher result, not a judgment)
 
 **Card**:
-A structured block under a reply's prose: the project carousel, the skills grid, the contact list, and so on. Picked by the keyword matcher, never generated; a reply may carry more than one.
+A structured block under a reply's prose: the project carousel, the skills grid, the contact list, and so on. Chosen by the keyword matcher, or by the answer bank entry of a picked reply; never generated. A reply may carry more than one.
 _Avoid_: Widget, attachment, rich answer
 
 **Notes card**:
@@ -41,12 +49,16 @@ One of the subjects Kyu has written kyu-rious lessons on, such as Kafka or AI En
 _Avoid_: Topic, course, category, note
 
 **Fact sheet**:
-The single authored document of facts about Kyu that the model is allowed to speak from. Written in English; the model answers in the page's active language.
+The single authored document of facts about Kyu that the model is allowed to speak from. Written in English; generated replies are English only.
 _Avoid_: Knowledge base, context, corpus, RAG documents
 
 **Model**:
 The Qwen3 language model running on the CodeBite mini PC that writes generated replies.
 _Avoid_: AI, the LLM, Qwen (use the size when it matters: Qwen3-1.7B, Qwen3-4B)
+
+**Embedding model**:
+The second model on the mini PC (bge-m3) that finds the answer bank entry nearest in meaning to a Korean question. It never writes text.
+_Avoid_: The model (that is Qwen3), AI, classifier, router
 
 **Time budget**:
 The fixed wait, measured from sending the question, after which the page gives up on a generated reply and shows the scripted reply instead.
