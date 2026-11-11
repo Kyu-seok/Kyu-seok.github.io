@@ -15,4 +15,4 @@ Reviewer: for a diff that touches generation, caps, or fallback behaviour, check
 
 ## Page and gateway agree on every cap
 
-The page decides locally what to send (it must work without the gateway) and the gateway enforces independently (it is public). Any cap or classification that exists in both, such as the Hangul question cap and what counts as Hangul, carries the same value and the same definition on both sides, and the page's constant names its gateway source. A change to one side without the other is a defect.
+The page decides locally what to send (it must work without the gateway) and the gateway enforces independently (it is public). Any cap, classification or card id that exists in both, such as the Hangul question cap, what counts as Hangul, and the answer bank's cards (`knownCards` in `server/pick.go`, `ProjectId` in `src/content/types.ts`), carries the same value and the same definition on both sides, and the page's constant names its gateway source. A change to one side without the other is a defect.
