@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -29,12 +30,15 @@ const (
 )
 
 // picker holds the answer bank and, once the embedding model has answered, one vector per example question.
+// It is ready while those vectors exist and the embedding model is answering.
 type picker struct {
 	bank     []bankEntry
 	url      string
 	client   *http.Client
 	examples []pickExample
-	vectors  atomic.Pointer[[][]float64] // nil until ready
+	vectors  atomic.Pointer[[][]float64] // nil until the example questions are embedded
+	alive    atomic.Bool                 // the embedding model answered its last request
+	wake     chan struct{}               // a failed pick asks the background loop to probe now
 }
 
 type pickExample struct {
@@ -43,7 +47,7 @@ type pickExample struct {
 }
 
 func newPicker(bank []bankEntry, url string) *picker {
-	p := &picker{bank: bank, url: url, client: &http.Client{Timeout: 2 * time.Minute}}
+	p := &picker{bank: bank, url: url, client: &http.Client{Timeout: 2 * time.Minute}, wake: make(chan struct{}, 1)}
 	for i, e := range bank {
 		for _, x := range e.examples {
 			p.examples = append(p.examples, pickExample{i, x})
@@ -52,22 +56,77 @@ func newPicker(bank []bankEntry, url string) *picker {
 	return p
 }
 
-func (p *picker) ready() bool { return p.vectors.Load() != nil }
+func (p *picker) ready() bool { return p.vectors.Load() != nil && p.alive.Load() }
 
-// prepare embeds every example question, retrying until the embedding model answers. It never gives up and
-// never crashes the gateway; until it succeeds, /pick answers 503.
-func (p *picker) prepare(retry time.Duration) {
-	for attempt := 1; ; attempt++ {
-		start := time.Now()
-		vecs, err := p.embedExamples()
-		if err == nil {
-			p.vectors.Store(&vecs)
-			log.Printf("picker: %d example questions embedded in %s", len(vecs), time.Since(start).Round(time.Millisecond))
-			return
-		}
-		log.Printf("picker attempt %d failed: %v", attempt, err)
-		time.Sleep(time.Duration(min(attempt, 12)) * retry)
+// down records that the embedding model failed a request and wakes the background loop to probe it.
+func (p *picker) down(err error) {
+	if p.alive.Swap(false) {
+		log.Printf("picker: embedding model down: %v", err)
 	}
+	select {
+	case p.wake <- struct{}{}:
+	default:
+	}
+}
+
+// run keeps the picker ready for as long as the gateway lives. It embeds every example question once the
+// embedding model answers, then probes the model with one example question: every retry while it is down
+// (backing off), every 12 retries while it is up. A probe does not re-embed the examples unless the
+// vector size changed (a different model). It never gives up and never crashes the gateway.
+func (p *picker) run(retry time.Duration) {
+	for failures := 0; ; {
+		var err error
+		if p.vectors.Load() == nil {
+			err = p.prepare()
+		} else {
+			err = p.probe()
+		}
+		wait := 12 * retry
+		if err != nil {
+			failures++
+			p.down(err)
+			log.Printf("picker attempt %d failed: %v", failures, err)
+			wait = time.Duration(min(failures, 12)) * retry
+		} else {
+			if failures > 0 || !p.alive.Load() {
+				log.Printf("picker: embedding model answering")
+			}
+			failures = 0
+			p.alive.Store(true)
+		}
+		select {
+		case <-time.After(wait):
+		case <-p.wake:
+		}
+	}
+}
+
+// prepare embeds every example question.
+func (p *picker) prepare() error {
+	start := time.Now()
+	vecs, err := p.embedExamples()
+	if err != nil {
+		return err
+	}
+	p.vectors.Store(&vecs)
+	log.Printf("picker: %d example questions embedded in %s", len(vecs), time.Since(start).Round(time.Millisecond))
+	return nil
+}
+
+// probe embeds one example question to check that the embedding model answers with vectors of the size the
+// examples have; a different size drops the example vectors so the next round embeds them again.
+func (p *picker) probe() error {
+	ctx, cancel := context.WithTimeout(context.Background(), pickTimeout)
+	defer cancel()
+	v, err := p.embed(ctx, []string{p.examples[0].text})
+	if err != nil {
+		return err
+	}
+	if vecs := p.vectors.Load(); len(v[0]) != len((*vecs)[0]) {
+		p.vectors.Store(nil)
+		return fmt.Errorf("embedding size changed: %d, examples %d", len(v[0]), len((*vecs)[0]))
+	}
+	return nil
 }
 
 func (p *picker) embedExamples() ([][]float64, error) {
@@ -146,11 +205,14 @@ type pickResult struct {
 func (p *picker) pick(ctx context.Context, question string) (pickResult, error) {
 	vecs := p.vectors.Load()
 	if vecs == nil {
-		return pickResult{}, errNotReady
+		return pickResult{}, errEmbeddingDown
 	}
 	qv, err := p.embed(ctx, []string{question})
 	if err != nil {
-		return pickResult{}, err
+		if ctx.Err() != context.Canceled { // a visitor who left says nothing about the embedding model
+			p.down(err)
+		}
+		return pickResult{}, fmt.Errorf("%w: %v", errEmbeddingDown, err)
 	}
 	best := make([]float64, len(p.bank))
 	for i := range best {
@@ -158,7 +220,8 @@ func (p *picker) pick(ctx context.Context, question string) (pickResult, error) 
 	}
 	for i, ev := range *vecs {
 		if len(ev) != len(qv[0]) {
-			return pickResult{}, fmt.Errorf("embedding size changed: %d, examples %d", len(qv[0]), len(ev))
+			p.down(fmt.Errorf("embedding size changed: %d, examples %d", len(qv[0]), len(ev)))
+			return pickResult{}, errEmbeddingDown
 		}
 		var s float64
 		for j := range ev {
@@ -187,7 +250,8 @@ func (p *picker) pick(ctx context.Context, question string) (pickResult, error) 
 
 func round4(x float64) float64 { return math.Round(x*1e4) / 1e4 }
 
-var errNotReady = fmt.Errorf("picker not ready")
+// errEmbeddingDown means the embedding model did not answer, or not with vectors the examples can be compared to.
+var errEmbeddingDown = errors.New("embedding model down")
 
 type pickRequest struct {
 	Question string `json:"question"`
@@ -227,7 +291,7 @@ func (g *gateway) pickHandler(w http.ResponseWriter, r *http.Request) {
 		g.refuse(w, &g.met.picks, entry, outcome, status, msg)
 	}
 	if !g.pk.ready() {
-		fail("not_ready", http.StatusServiceUnavailable, "picker not ready")
+		fail("not_ready", http.StatusServiceUnavailable, "embedding model not ready")
 		return
 	}
 	if !g.allowed(r) {
@@ -239,9 +303,13 @@ func (g *gateway) pickHandler(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	res, err := g.pk.pick(ctx, req.Question)
 	elapsed := time.Since(start)
-	if err != nil {
+	if err != nil { // every pick error is errEmbeddingDown
+		if r.Context().Err() != nil {
+			fail("client_gone", http.StatusRequestTimeout, "client gone")
+			return
+		}
 		log.Printf("pick: %v", err)
-		fail("error", http.StatusServiceUnavailable, "picker not ready")
+		fail("not_ready", http.StatusServiceUnavailable, "embedding model did not answer")
 		return
 	}
 	entry.Outcome = "ok"

@@ -414,7 +414,16 @@ func TestPickIs503WhileTheEmbeddingModelIsDownAndRecovers(t *testing.T) {
 	if code, _ := post(t, gw.url+"/pick", `{"question":"빔 쓰시나요?"}`); code != http.StatusServiceUnavailable {
 		t.Fatalf("down after ready: got %d, want 503", code)
 	}
+	if h := health(t, gw); h["pick_ready"] != false {
+		t.Fatalf("health after the embedding model dropped: %v", h)
+	}
+	lines := logLines(t, gw)
+	if o := lines[len(lines)-1]; o["outcome"] != "not_ready" {
+		t.Fatalf("pick while the embedding model is down logged as %v", o)
+	}
+
 	gw.embed.down.Store(false)
+	eventually(t, "health to see the embedding model back", func() bool { return health(t, gw)["pick_ready"] == true })
 	if code, body := post(t, gw.url+"/pick", `{"question":"빔 쓰시나요?"}`); code != http.StatusOK {
 		t.Fatalf("back again: got %d %s", code, body)
 	}

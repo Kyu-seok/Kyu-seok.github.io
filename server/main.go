@@ -627,7 +627,7 @@ func newGateway(cfg config) (*gateway, error) {
 // start runs the background work that makes the gateway ready; it never blocks and never crashes the process.
 func (g *gateway) start() {
 	go g.warmUp()
-	go g.pk.prepare(g.cfg.pickRetry)
+	go g.pk.run(g.cfg.pickRetry)
 }
 
 func (g *gateway) routes() http.Handler {
