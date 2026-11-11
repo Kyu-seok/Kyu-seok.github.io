@@ -22,7 +22,7 @@ import (
 
 const (
 	// maxPickChars is the Korean question cap, kept until a 60-character measurement says otherwise (#10).
-	// The page's Hangul cap names this constant; change both together (CODING_STANDARDS.md).
+	// The page's cap for questions it sends to /pick must equal this and name it (CODING_STANDARDS.md).
 	maxPickChars = 40
 	pickTimeout  = 10 * time.Second
 	embedBatch   = 16 // example questions per embedding request at startup
