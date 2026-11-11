@@ -195,10 +195,16 @@ func (p *picker) embed(ctx context.Context, texts []string) ([][]float64, error)
 	return vecs, nil
 }
 
+// scoredEntry is an answer bank entry and its cosine similarity to the question, rounded for the log.
+type scoredEntry struct {
+	entry *bankEntry
+	score float64
+}
+
 // pickResult is the nearest entry and the best-scoring other entry, for the question log.
 type pickResult struct {
-	entry, runnerUp      *bankEntry
-	score, runnerUpScore float64
+	pick     scoredEntry
+	runnerUp *scoredEntry // nil when the bank has one entry
 }
 
 // pick embeds the question and takes the entry of the single nearest example by cosine similarity.
@@ -242,14 +248,15 @@ func (p *picker) pick(ctx context.Context, question string) (pickResult, error) 
 			second = i
 		}
 	}
-	res.entry, res.score = &p.bank[first], round4(best[first])
+	res.pick = scoredEntry{&p.bank[first], logScore(best[first])}
 	if second >= 0 {
-		res.runnerUp, res.runnerUpScore = &p.bank[second], round4(best[second])
+		res.runnerUp = &scoredEntry{&p.bank[second], logScore(best[second])}
 	}
 	return res, nil
 }
 
-func round4(x float64) float64 { return math.Round(x*1e4) / 1e4 }
+// logScore rounds a cosine similarity to the four decimals the reply and the question log carry.
+func logScore(x float64) float64 { return math.Round(x*1e4) / 1e4 }
 
 // errEmbeddingDown means the embedding model did not answer, or not with vectors the examples can be compared to.
 var errEmbeddingDown = errors.New("embedding model down")
@@ -291,7 +298,7 @@ func (g *gateway) pickHandler(w http.ResponseWriter, r *http.Request) {
 	fail := func(outcome string, status int, msg string) {
 		g.refuse(w, &g.met.picks, entry, outcome, status, msg)
 	}
-	if !g.pk.ready() {
+	if !g.picker.ready() {
 		fail("not_ready", http.StatusServiceUnavailable, "embedding model not ready")
 		return
 	}
@@ -302,7 +309,7 @@ func (g *gateway) pickHandler(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), pickTimeout)
 	defer cancel()
 	start := time.Now()
-	res, err := g.pk.pick(ctx, req.Question)
+	res, err := g.picker.pick(ctx, req.Question)
 	elapsed := time.Since(start)
 	if err != nil { // every pick error is errEmbeddingDown
 		if r.Context().Err() != nil {
@@ -314,11 +321,11 @@ func (g *gateway) pickHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	entry.Outcome = "ok"
-	entry.Answer = res.entry.reply
+	entry.Answer = res.pick.entry.reply
 	entry.TotalMs = elapsed.Milliseconds()
-	entry.Pick, entry.PickScore = res.entry.id, &res.score
+	entry.Pick, entry.PickScore = res.pick.entry.id, &res.pick.score
 	if res.runnerUp != nil {
-		entry.RunnerUp, entry.RunnerUpScore = res.runnerUp.id, &res.runnerUpScore
+		entry.RunnerUp, entry.RunnerUpScore = res.runnerUp.entry.id, &res.runnerUp.score
 	}
 	g.qlog.write(entry)
 	g.met.picks.inc("ok")
@@ -326,8 +333,8 @@ func (g *gateway) pickHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
 	json.NewEncoder(w).Encode(map[string]any{
-		"id": res.entry.id, "text": res.entry.reply, "card": res.entry.card,
-		"score": res.score, "ms": elapsed.Milliseconds(), "model": g.cfg.embedModel,
+		"id": res.pick.entry.id, "text": res.pick.entry.reply, "card": res.pick.entry.card,
+		"score": res.pick.score, "ms": elapsed.Milliseconds(), "model": g.cfg.embedModel,
 	})
 }
 

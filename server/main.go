@@ -343,7 +343,7 @@ type gateway struct {
 	cfg    config
 	system string
 	links  *linkFilter
-	pk     *picker
+	picker *picker
 	lim    *limiter
 	qlog   *qlog
 	met    *metrics
@@ -387,14 +387,14 @@ func (g *gateway) health(w http.ResponseWriter, r *http.Request) {
 		"model":      g.cfg.modelName,
 		"busy":       g.busy.Load(),
 		"queued":     g.queued.Load(),
-		"pick_ready": g.pk.ready(),
+		"pick_ready": g.picker.ready(),
 		"pick_model": g.cfg.embedModel,
 	})
 }
 
 func (g *gateway) metricsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; version=0.0.4")
-	g.met.write(w, g.busy.Load(), g.queued.Load(), g.warm.Load(), g.pk.ready())
+	g.met.write(w, g.busy.Load(), g.queued.Load(), g.warm.Load(), g.picker.ready())
 }
 
 type sse struct {
@@ -649,7 +649,7 @@ func newGateway(cfg config) (*gateway, error) {
 		cfg:    cfg,
 		system: system,
 		links:  newLinkFilter(system),
-		pk:     newPicker(bank, cfg.embedURL, cfg.embedModel),
+		picker: newPicker(bank, cfg.embedURL, cfg.embedModel),
 		lim:    newLimiter(),
 		qlog:   &qlog{dir: cfg.logDir},
 		met:    &metrics{},
@@ -661,7 +661,7 @@ func newGateway(cfg config) (*gateway, error) {
 // start runs the background work that makes the gateway ready; it never blocks and never crashes the process.
 func (g *gateway) start() {
 	go g.warmUp()
-	go g.pk.run(g.cfg.pickRetry)
+	go g.picker.run(g.cfg.pickRetry)
 }
 
 func (g *gateway) routes() http.Handler {
