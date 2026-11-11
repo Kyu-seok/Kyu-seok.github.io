@@ -61,6 +61,10 @@ type config struct {
 	modelName  string
 	facts      string
 	examples   string
+	answers    string
+	embedURL   string
+	embedModel string
+	pickRetry  time.Duration
 	logDir     string
 	origins    map[string]bool
 	timeoutUps time.Duration
@@ -80,6 +84,10 @@ func loadConfig() config {
 		modelName:  env("MODEL_NAME", "Qwen3-1.7B"),
 		facts:      env("FACTS_FILE", "facts.en.md"),
 		examples:   env("EXAMPLES_FILE", "examples.en.md"),
+		answers:    env("ANSWERS_FILE", "answers.ko.md"),
+		embedURL:   strings.TrimRight(env("EMBED_URL", "http://embed:8080"), "/"),
+		embedModel: env("EMBED_MODEL_NAME", "bge-m3"),
+		pickRetry:  5 * time.Second,
 		logDir:     env("LOG_DIR", "./log"),
 		origins:    map[string]bool{},
 		timeoutUps: genWallClock + 5*time.Second,
@@ -283,6 +291,7 @@ type gateway struct {
 	cfg    config
 	system string
 	links  *linkFilter
+	bank   []bankEntry
 	lim    *limiter
 	qlog   *qlog
 	met    *metrics
@@ -575,6 +584,10 @@ func newGateway(cfg config) (*gateway, error) {
 	} else {
 		log.Printf("no examples file: %v", err)
 	}
+	bank, err := loadAnswerBank(cfg.answers)
+	if err != nil {
+		return nil, err
+	}
 	if err := os.MkdirAll(cfg.logDir, 0o755); err != nil {
 		return nil, fmt.Errorf("log dir: %w", err)
 	}
@@ -582,6 +595,7 @@ func newGateway(cfg config) (*gateway, error) {
 		cfg:    cfg,
 		system: system,
 		links:  newLinkFilter(system),
+		bank:   bank,
 		lim:    newLimiter(),
 		qlog:   &qlog{dir: cfg.logDir},
 		met:    &metrics{},
