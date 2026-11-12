@@ -65,8 +65,19 @@ jobs:
               -d "{\"question\":\"$MARK: which editor do you use?\",\"lang\":\"en\",\"intent\":\"skills\"}" \
               localhost:8090/ask | grep -q '"outcome":"ok"' || { echo "smoke question failed" >&2; exit 1; }
             tail -n 1 log/questions-*.jsonl | grep -qF "$MARK" || { echo "smoke question not in the log" >&2; exit 1; }
-            # Korean is scripted (ADR 0001, 2026-11-12): the gateway must refuse it before the model or the log.
+            # Korean is never generated (ADR 0001, 2026-11-12): /ask must refuse it before the model or the log.
             code=$(curl -s -o /dev/null -w '%{http_code}' -m 10 -H 'Content-Type: application/json' \
               -d '{"question":"어떤 에디터 쓰세요?","lang":"ko","intent":"skills"}' localhost:8090/ask)
-            [ "$code" = 422 ] || { echo "korean question got $code, want 422" >&2; exit 1; }
+            [ "$code" = 422 ] || { echo "korean question on /ask got $code, want 422" >&2; exit 1; }
+            # Korean gets a picked reply (ADR 0002): /pick must answer with an id from the answer bank.
+            for i in $(seq 1 24); do
+              curl -sf localhost:8090/health | grep -q '"pick_ready":true' && break
+              sleep 5
+            done
+            resp=$(curl -sf -m 10 -H 'Content-Type: application/json' \
+              -d '{"question":"어떤 에디터 쓰세요?","lang":"ko","intent":"skills"}' localhost:8090/pick) || {
+              echo "korean question on /pick failed" >&2; docker compose logs --tail 50 embed gateway; exit 1; }
+            id=$(printf '%s' "$resp" | grep -o '"id":"[a-z0-9_]*"' | cut -d'"' -f4)
+            [ -n "$id" ] && grep -q "^## $id \[" answers.ko.md || { echo "/pick returned no known id: $resp" >&2; exit 1; }
+            echo "picked $id"
             echo "smoke ok"

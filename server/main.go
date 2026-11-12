@@ -2,7 +2,7 @@
 //
 // It owns the prompt (fact sheet + examples), enforces the caps decided in ADR 0001,
 // streams tokens to the browser as Server-Sent Events, and appends every question
-// to the permanent question log.
+// to the permanent question log. Korean free text gets picked replies instead (pick.go).
 package main
 
 import (
@@ -19,6 +19,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -61,6 +62,10 @@ type config struct {
 	modelName  string
 	facts      string
 	examples   string
+	answers    string
+	embedURL   string
+	embedModel string
+	pickRetry  time.Duration
 	logDir     string
 	origins    map[string]bool
 	timeoutUps time.Duration
@@ -80,6 +85,10 @@ func loadConfig() config {
 		modelName:  env("MODEL_NAME", "Qwen3-1.7B"),
 		facts:      env("FACTS_FILE", "facts.en.md"),
 		examples:   env("EXAMPLES_FILE", "examples.en.md"),
+		answers:    env("ANSWERS_FILE", "answers.ko.md"),
+		embedURL:   strings.TrimRight(env("EMBED_URL", "http://embed:8080"), "/"),
+		embedModel: env("EMBED_MODEL_NAME", "bge-m3"),
+		pickRetry:  5 * time.Second,
 		logDir:     env("LOG_DIR", "./log"),
 		origins:    map[string]bool{},
 		timeoutUps: genWallClock + 5*time.Second,
@@ -174,6 +183,11 @@ type logEntry struct {
 	Tokens       int     `json:"tokens,omitempty"`
 	TokPerSec    float64 `json:"tok_s,omitempty"`
 	Model        string  `json:"model"`
+	// Picked replies only: the entry shown and the best other entry, so the review can find weak entries.
+	Pick          string   `json:"pick,omitempty"`
+	PickScore     *float64 `json:"pick_score,omitempty"`
+	RunnerUp      string   `json:"runner_up,omitempty"`
+	RunnerUpScore *float64 `json:"runner_up_score,omitempty"`
 }
 
 type qlog struct {
@@ -198,31 +212,77 @@ func (q *qlog) write(e logEntry) {
 // ---- metrics (Prometheus text format, hand-rolled to avoid a dependency) ----
 
 type metrics struct {
-	asks      sync.Map     // outcome -> *int64
-	genSecs   atomic.Int64 // milliseconds summed
-	genTokens atomic.Int64
+	asks        outcomes // /ask
+	picks       outcomes // /pick
+	pickLatency latency
+	genSecs     atomic.Int64 // milliseconds summed
+	genTokens   atomic.Int64
 }
 
-func (m *metrics) count(outcome string) {
-	v, _ := m.asks.LoadOrStore(outcome, new(int64))
-	atomic.AddInt64(v.(*int64), 1)
+// outcomes is a counter labeled by outcome.
+type outcomes struct {
+	m sync.Map // outcome -> *atomic.Int64
 }
 
-func (m *metrics) write(w io.Writer, busy, queued int32, warm bool) {
-	fmt.Fprintln(w, "# TYPE portfolio_ask_total counter")
-	m.asks.Range(func(k, v any) bool {
-		fmt.Fprintf(w, "portfolio_ask_total{outcome=%q} %d\n", k, atomic.LoadInt64(v.(*int64)))
+func (o *outcomes) inc(outcome string) {
+	v, _ := o.m.LoadOrStore(outcome, new(atomic.Int64))
+	v.(*atomic.Int64).Add(1)
+}
+
+func (o *outcomes) write(w io.Writer, name string) {
+	fmt.Fprintf(w, "# TYPE %s counter\n", name)
+	o.m.Range(func(k, v any) bool {
+		fmt.Fprintf(w, "%s{outcome=%q} %d\n", name, k, v.(*atomic.Int64).Load())
 		return true
 	})
+}
+
+func writeGauge(w io.Writer, name string, v int64) {
+	fmt.Fprintf(w, "# TYPE %s gauge\n%s %d\n", name, name, v)
+}
+
+func writeFlag(w io.Writer, name string, on bool) {
+	var v int64
+	if on {
+		v = 1
+	}
+	writeGauge(w, name, v)
+}
+
+func (m *metrics) write(w io.Writer, busy, queued int32, warm, pickReady bool) {
+	m.asks.write(w, "portfolio_ask_total")
 	fmt.Fprintf(w, "# TYPE portfolio_ask_generation_seconds_total counter\nportfolio_ask_generation_seconds_total %.3f\n", float64(m.genSecs.Load())/1000)
 	fmt.Fprintf(w, "# TYPE portfolio_ask_generated_tokens_total counter\nportfolio_ask_generated_tokens_total %d\n", m.genTokens.Load())
-	fmt.Fprintf(w, "# TYPE portfolio_ask_busy gauge\nportfolio_ask_busy %d\n", busy)
-	fmt.Fprintf(w, "# TYPE portfolio_ask_queued gauge\nportfolio_ask_queued %d\n", queued)
-	w1 := 0
-	if warm {
-		w1 = 1
+	writeGauge(w, "portfolio_ask_busy", int64(busy))
+	writeGauge(w, "portfolio_ask_queued", int64(queued))
+	writeFlag(w, "portfolio_ask_warm", warm)
+	m.picks.write(w, "portfolio_pick_total")
+	m.pickLatency.write(w, "portfolio_pick_seconds")
+	writeFlag(w, "portfolio_pick_ready", pickReady)
+}
+
+// latency is a Prometheus histogram of pick latency, hand-rolled like the rest of /metrics.
+type latency struct {
+	counts [len(latencyBuckets) + 1]atomic.Int64 // the last one is +Inf
+	sumMs  atomic.Int64
+}
+
+var latencyBuckets = [...]float64{0.05, 0.1, 0.25, 0.5, 1, 2.5, 5}
+
+func (l *latency) observe(d time.Duration) {
+	l.counts[sort.SearchFloat64s(latencyBuckets[:], d.Seconds())].Add(1)
+	l.sumMs.Add(d.Milliseconds())
+}
+
+func (l *latency) write(w io.Writer, name string) {
+	fmt.Fprintf(w, "# TYPE %s histogram\n", name)
+	var cum int64
+	for i, b := range latencyBuckets {
+		cum += l.counts[i].Load()
+		fmt.Fprintf(w, "%s_bucket{le=\"%g\"} %d\n", name, b, cum)
 	}
-	fmt.Fprintf(w, "# TYPE portfolio_ask_warm gauge\nportfolio_ask_warm %d\n", w1)
+	cum += l.counts[len(latencyBuckets)].Load()
+	fmt.Fprintf(w, "%s_bucket{le=\"+Inf\"} %d\n%s_sum %.3f\n%s_count %d\n", name, cum, name, float64(l.sumMs.Load())/1000, name, cum)
 }
 
 // ---- link filter: only URLs that appear in the fact sheet may reach the page ----
@@ -283,6 +343,7 @@ type gateway struct {
 	cfg    config
 	system string
 	links  *linkFilter
+	picker *picker
 	lim    *limiter
 	qlog   *qlog
 	met    *metrics
@@ -322,16 +383,18 @@ func (g *gateway) health(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
 	json.NewEncoder(w).Encode(map[string]any{
-		"ready":  g.warm.Load(),
-		"model":  g.cfg.modelName,
-		"busy":   g.busy.Load(),
-		"queued": g.queued.Load(),
+		"ready":      g.warm.Load(),
+		"model":      g.cfg.modelName,
+		"busy":       g.busy.Load(),
+		"queued":     g.queued.Load(),
+		"pick_ready": g.picker.ready(),
+		"pick_model": g.cfg.embedModel,
 	})
 }
 
 func (g *gateway) metricsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; version=0.0.4")
-	g.met.write(w, g.busy.Load(), g.queued.Load(), g.warm.Load())
+	g.met.write(w, g.busy.Load(), g.queued.Load(), g.warm.Load(), g.picker.ready())
 }
 
 type sse struct {
@@ -343,6 +406,21 @@ func (s sse) send(event string, v any) {
 	b, _ := json.Marshal(v)
 	fmt.Fprintf(s.w, "event: %s\ndata: %s\n\n", event, b)
 	s.fl.Flush()
+}
+
+const rateLimitedMsg = "too many questions, try again in a minute"
+
+// allowed applies the per-IP limiter that /ask and /pick share: one budget per visitor, whichever path answers.
+func (g *gateway) allowed(r *http.Request) bool {
+	return g.lim.allow(clientIP(r))
+}
+
+// refuse logs a question that got no reply, counts its outcome, and answers with an error status.
+func (g *gateway) refuse(w http.ResponseWriter, counter *outcomes, e logEntry, outcome string, status int, msg string) {
+	e.Outcome = outcome
+	g.qlog.write(e)
+	counter.inc(outcome)
+	http.Error(w, msg, status)
 }
 
 func (g *gateway) ask(w http.ResponseWriter, r *http.Request) {
@@ -372,17 +450,14 @@ func (g *gateway) ask(w http.ResponseWriter, r *http.Request) {
 	}
 	entry := logEntry{At: time.Now().UTC().Format(time.RFC3339), Lang: req.Lang, Intent: req.Intent, Question: req.Question, Model: g.cfg.modelName}
 	fail := func(outcome string, status int, msg string) {
-		entry.Outcome = outcome
-		g.qlog.write(entry)
-		g.met.count(outcome)
-		http.Error(w, msg, status)
+		g.refuse(w, &g.met.asks, entry, outcome, status, msg)
 	}
 	if !g.warm.Load() {
 		fail("not_ready", http.StatusServiceUnavailable, "model warming up")
 		return
 	}
-	if !g.lim.allow(clientIP(r)) {
-		fail("rate_limited", http.StatusTooManyRequests, "too many questions, try again in a minute")
+	if !g.allowed(r) {
+		fail("rate_limited", http.StatusTooManyRequests, rateLimitedMsg)
 		return
 	}
 	if g.queued.Add(1) > queueDepth {
@@ -433,7 +508,7 @@ func (g *gateway) ask(w http.ResponseWriter, r *http.Request) {
 		entry.Outcome = "error"
 		log.Printf("generate: %v", err)
 	}
-	g.met.count(entry.Outcome)
+	g.met.asks.inc(entry.Outcome)
 	g.met.genSecs.Add(entry.TotalMs)
 	g.met.genTokens.Add(int64(res.tokens))
 	g.qlog.write(entry)
@@ -551,11 +626,11 @@ func (g *gateway) warmUp() {
 	}
 }
 
-func main() {
-	cfg := loadConfig()
+// newGateway loads the prompt files and builds the gateway; it starts nothing.
+func newGateway(cfg config) (*gateway, error) {
 	facts, err := os.ReadFile(cfg.facts)
 	if err != nil {
-		log.Fatalf("fact sheet: %v", err)
+		return nil, fmt.Errorf("fact sheet: %w", err)
 	}
 	system := string(facts)
 	if ex, err := os.ReadFile(cfg.examples); err == nil {
@@ -563,26 +638,49 @@ func main() {
 	} else {
 		log.Printf("no examples file: %v", err)
 	}
-	if err := os.MkdirAll(cfg.logDir, 0o755); err != nil {
-		log.Fatalf("log dir: %v", err)
+	bank, err := loadAnswerBank(cfg.answers)
+	if err != nil {
+		return nil, err
 	}
-	g := &gateway{
+	if err := os.MkdirAll(cfg.logDir, 0o755); err != nil {
+		return nil, fmt.Errorf("log dir: %w", err)
+	}
+	return &gateway{
 		cfg:    cfg,
 		system: system,
 		links:  newLinkFilter(system),
+		picker: newPicker(bank, cfg.embedURL, cfg.embedModel),
 		lim:    newLimiter(),
 		qlog:   &qlog{dir: cfg.logDir},
 		met:    &metrics{},
 		slot:   make(chan struct{}, 1),
 		client: &http.Client{Timeout: 10 * time.Minute},
-	}
-	go g.warmUp()
+	}, nil
+}
 
+// start runs the background work that makes the gateway ready; it never blocks and never crashes the process.
+func (g *gateway) start() {
+	go g.warmUp()
+	go g.picker.run(g.cfg.pickRetry)
+}
+
+func (g *gateway) routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", g.health)
 	mux.HandleFunc("/ask", g.ask)
+	mux.HandleFunc("/pick", g.pickHandler)
 	mux.HandleFunc("/metrics", g.metricsHandler)
-	srv := &http.Server{Addr: cfg.listen, Handler: mux, ReadHeaderTimeout: 10 * time.Second}
+	return mux
+}
+
+func main() {
+	cfg := loadConfig()
+	g, err := newGateway(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	g.start()
+	srv := &http.Server{Addr: cfg.listen, Handler: g.routes(), ReadHeaderTimeout: 10 * time.Second}
 	log.Printf("portfolio-ask listening on %s, upstream %s, model %s, origins %v", cfg.listen, cfg.upstream, cfg.modelName, cfg.origins)
 	log.Fatal(srv.ListenAndServe())
 }

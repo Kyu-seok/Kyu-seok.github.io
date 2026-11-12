@@ -1,4 +1,4 @@
-# Compose project "portfolio-ask": the Qwen3 server and the gateway, on the CodeBite mini PC.
+# Compose project "portfolio-ask": the Qwen3 server, the bge-m3 embedding server and the gateway, on the CodeBite mini PC.
 # Separate from CodeBite's Compose project on purpose (ADR 0001): a bad deploy here cannot touch CodeBite.
 # Model file: download once into ./models (see README.md). Logs: ./log, never deleted.
 name: portfolio-ask
@@ -28,15 +28,44 @@ services:
       start_period: 60s
     networks: [ask]
 
+  # The embedding model (bge-m3) that picks Korean replies from answers.ko.md (docs/adr/0002). It never writes
+  # text. Same CPU limits and low share as llama; about 140 MiB resident at idle. The file is placed by hand in
+  # ./models like the Qwen3 file; the prototype downloaded it as PROTOTYPE-bge-m3-q8_0.gguf.
+  embed:
+    image: ghcr.io/ggml-org/llama.cpp:server
+    restart: unless-stopped
+    command: >
+      -m /models/${EMBED_MODEL_FILE:-PROTOTYPE-bge-m3-q8_0.gguf}
+      --embedding --pooling cls -c 512 -b 512 -ub 512 -np 1 -t 4 --no-webui --metrics
+      --host 0.0.0.0 --port 8080
+    volumes:
+      - ./models:/models:ro
+    # Metrics only, bound like llama's: the Docker bridge IP in .env, never public.
+    ports:
+      - "${LLAMA_BIND:-127.0.0.1}:8096:8080"
+    cpus: 4
+    cpu_shares: 128
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    networks: [ask]
+
   gateway:
     build: .
     image: portfolio-ask-gateway
     restart: unless-stopped
+    # No dependency on embed: the gateway starts without it and /pick answers 503 until it is ready.
     depends_on:
       llama:
         condition: service_healthy
     environment:
       LLAMA_URL: http://llama:8080
+      EMBED_URL: http://embed:8080
+      EMBED_MODEL_NAME: bge-m3
       MODEL_NAME: ${MODEL_NAME:-Qwen3-1.7B}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://kyu-seok.github.io}
       LOG_DIR: /log
