@@ -25,6 +25,9 @@ interface Rule {
   kind: ReplyKind;
   weight: number;
   keywords: string[];
+  // Words that point to this intent only when no rule's keywords matched: bare "talk" / "얘기" ask to talk
+  // ("I want to talk", "얘기해요") unless the question names a subject ("홈서버 얘기 해 주세요" is about the server).
+  fallback?: string[];
 }
 
 const PROJECT_FOCUS: { id: ProjectId; keywords: string[] }[] = [
@@ -47,7 +50,8 @@ const RULES: Rule[] = [
   {
     kind: 'contact',
     weight: 5,
-    keywords: ['contact', 'email', 'e-mail', 'mail', 'reach', 'linkedin', 'github', 'hire', 'hiring', 'resume', 'cv', "let's talk", 'talk to you', 'talk with you', 'can we talk', '연락', '이메일', '메일', '링크드인', '깃허브', '채용', '이력서', '연락처', '얘기 나누', '얘기하고 싶', '이야기 나누'],
+    keywords: ['contact', 'email', 'e-mail', 'mail', 'reach', 'linkedin', 'github', 'hire', 'hiring', 'resume', 'cv', "let's talk", 'let’s talk', 'talk to', 'talk with', 'can we talk', 'could we talk', 'want to talk', 'love to talk', 'should talk', '연락', '이메일', '메일', '링크드인', '깃허브', '채용', '이력서', '연락처', '얘기 나', '이야기 나', '얘기하고 싶', '얘기 하고 싶', '이야기하고 싶', '이야기 하고 싶'],
+    fallback: ['talk', '얘기', '이야기'],
   },
   {
     kind: 'skills',
@@ -117,6 +121,9 @@ export function resolve(text: string): Resolution {
     if (!best || score > best.score) best = { kind: rule.kind, score };
   }
   if (best) return { kind: best.kind };
+
+  const fallback = RULES.find((rule) => rule.fallback?.some((k) => matches(q, k)));
+  if (fallback) return { kind: fallback.kind };
 
   return { kind: 'unknown' };
 }

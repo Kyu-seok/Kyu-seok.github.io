@@ -12,7 +12,7 @@ What an intent (Me, Projects, Skills, Fun, Contact) is about is stated in seven 
 - The Korean answer bank, `server/answers.ko.md`: the reply of every entry with that card (and a gate run if its example questions change).
 - `PRODUCT.md`, "Capabilities and Constraints".
 
-Reviewer: for a diff that changes one of these for an intent, check the other six and name the ones left stale. Fun moved from kyu-rious to the N100 mini PC on 2026-11-16 (#22) and touched all seven.
+Reviewer: for a diff that changes one of these for an intent, check the other six and name the ones left stale. A change to a card id also reaches `src/content/types.ts` and the gateway ("Page and gateway agree on every cap").
 
 ## The page and its documents tell one story
 
