@@ -1023,3 +1023,41 @@
 .notes-toggle[aria-expanded='true'] .pcard-toggle-icon {
   transform: rotate(180deg);
 }
+
+/* ---------- hero backdrop: graph-paper dots around the pointer ---------- */
+
+.backdrop {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .backdrop {
+    --px: 50vw;
+    --py: 50vh;
+    --pa: 0;
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(15, 20, 25, 0.26) 1px, transparent 1.6px);
+    background-size: 22px 22px;
+    background-position: 50% 0;
+    -webkit-mask-image: radial-gradient(circle 220px at var(--px) var(--py), #000 0%, rgba(0, 0, 0, 0.45) 45%, transparent 100%);
+    mask-image: radial-gradient(circle 220px at var(--px) var(--py), #000 0%, rgba(0, 0, 0, 0.45) 45%, transparent 100%);
+    opacity: var(--pa);
+    transition: opacity var(--dur) var(--ease-out);
+  }
+  .is-chat .backdrop {
+    opacity: 0;
+  }
+  .stage {
+    position: relative;
+    z-index: 1;
+  }
+  /* the top bar and the dock's ground fade would cut bands through the dots; in hero mode nothing scrolls under them */
+  .app:not(.is-chat) .topbar,
+  .app:not(.is-chat) .dock {
+    background: transparent;
+  }
+}
