@@ -1,26 +1,32 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 
 // Graph-paper dots that show only around the pointer, on the hero. CSS draws the dots and masks them
-// to a circle at --px/--py; this eases those vars toward the pointer and --pa (presence) in and out.
+// to a circle at --px/--py; this eases those vars toward the pointer and --presence in and out.
 // Mouse and trackpad only, never under reduced motion; the loop stops once it settles.
+// The easing is continuous pointer following, not a transition, so it is the one place that does not
+// use the ease-out curve (DESIGN.md, Pointer Dots).
 const FOLLOW_MS = 110; // time constant of the position easing
 const PRESENCE_MS = 260;
 
-function canHover() {
-  return (
-    window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
-    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
+// Must match the @media around .backdrop in app.css.
+const DOTS_QUERY = '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)';
+
+function subscribeDots(onChange: () => void) {
+  const mq = window.matchMedia(DOTS_QUERY);
+  mq.addEventListener('change', onChange);
+  return () => mq.removeEventListener('change', onChange);
 }
+const wantsDots = () => window.matchMedia(DOTS_QUERY).matches;
 
 export function Backdrop({ active }: { active: boolean }) {
   const root = useRef<HTMLDivElement>(null);
+  const enabled = useSyncExternalStore(subscribeDots, wantsDots, () => false);
 
   useEffect(() => {
     const el = root.current;
-    if (!el || !active || !canHover()) return;
+    if (!el || !active || !enabled) return;
 
-    const target = { x: innerWidth / 2, y: innerHeight / 2, in: 0 };
+    const target = { x: window.innerWidth / 2, y: window.innerHeight / 2, presence: 0 };
     const cur = { ...target };
     let raf = 0;
     let last = 0;
@@ -28,7 +34,7 @@ export function Backdrop({ active }: { active: boolean }) {
     const write = () => {
       el.style.setProperty('--px', `${cur.x}px`);
       el.style.setProperty('--py', `${cur.y}px`);
-      el.style.setProperty('--pa', cur.in.toFixed(3));
+      el.style.setProperty('--presence', cur.presence.toFixed(3));
     };
     const frame = (now: number) => {
       const dt = last ? Math.min(now - last, 64) : 16;
@@ -36,9 +42,11 @@ export function Backdrop({ active }: { active: boolean }) {
       const k = 1 - Math.exp(-dt / FOLLOW_MS);
       cur.x += (target.x - cur.x) * k;
       cur.y += (target.y - cur.y) * k;
-      cur.in += (target.in - cur.in) * (1 - Math.exp(-dt / PRESENCE_MS));
+      cur.presence += (target.presence - cur.presence) * (1 - Math.exp(-dt / PRESENCE_MS));
       const settled =
-        Math.abs(target.x - cur.x) < 0.3 && Math.abs(target.y - cur.y) < 0.3 && Math.abs(target.in - cur.in) < 0.002;
+        Math.abs(target.x - cur.x) < 0.3 &&
+        Math.abs(target.y - cur.y) < 0.3 &&
+        Math.abs(target.presence - cur.presence) < 0.002;
       if (settled) {
         Object.assign(cur, target);
         raf = 0;
@@ -52,21 +60,22 @@ export function Backdrop({ active }: { active: boolean }) {
 
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse') return;
-      if (target.in === 0 && cur.in < 0.01) {
+      if (target.presence === 0 && cur.presence < 0.01) {
         // arriving from outside: appear where the pointer is instead of sliding in from the old spot
         cur.x = e.clientX;
         cur.y = e.clientY;
       }
       target.x = e.clientX;
       target.y = e.clientY;
-      target.in = 1;
+      target.presence = 1;
       kick();
     };
     const onLeave = () => {
-      target.in = 0;
+      target.presence = 0;
       kick();
     };
 
+    write(); // start hidden: a restart from chat must not bring back the circle from before the fold
     window.addEventListener('pointermove', onMove, { passive: true });
     document.documentElement.addEventListener('pointerleave', onLeave);
     window.addEventListener('blur', onLeave);
@@ -76,7 +85,7 @@ export function Backdrop({ active }: { active: boolean }) {
       document.documentElement.removeEventListener('pointerleave', onLeave);
       window.removeEventListener('blur', onLeave);
     };
-  }, [active]);
+  }, [active, enabled]);
 
   return <div ref={root} className="backdrop" aria-hidden="true" />;
 }

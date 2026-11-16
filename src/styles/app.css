@@ -1030,23 +1030,30 @@
   display: none;
 }
 
+/* keep in step with DOTS_QUERY in Backdrop.tsx */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* the layer only fades out on the fold; --presence (set every frame by Backdrop.tsx) drives the dots */
   .backdrop {
     --px: 50vw;
     --py: 50vh;
-    --pa: 0;
+    --presence: 0;
     display: block;
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background-image: radial-gradient(circle, rgba(15, 20, 25, 0.26) 1px, transparent 1.6px);
+    transition: opacity var(--dur) var(--ease-out);
+  }
+  .backdrop::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--ink) 26%, transparent) 1px, transparent 1.6px);
     background-size: 22px 22px;
     background-position: 50% 0;
-    -webkit-mask-image: radial-gradient(circle 220px at var(--px) var(--py), #000 0%, rgba(0, 0, 0, 0.45) 45%, transparent 100%);
-    mask-image: radial-gradient(circle 220px at var(--px) var(--py), #000 0%, rgba(0, 0, 0, 0.45) 45%, transparent 100%);
-    opacity: var(--pa);
-    transition: opacity var(--dur) var(--ease-out);
+    -webkit-mask-image: radial-gradient(circle 220px at var(--px) var(--py), #000 0%, rgb(0 0 0 / 0.45) 45%, transparent 100%);
+    mask-image: radial-gradient(circle 220px at var(--px) var(--py), #000 0%, rgb(0 0 0 / 0.45) 45%, transparent 100%);
+    opacity: var(--presence);
   }
   .is-chat .backdrop {
     opacity: 0;
@@ -1055,8 +1062,11 @@
     position: relative;
     z-index: 1;
   }
-  /* the top bar and the dock's ground fade would cut bands through the dots; in hero mode nothing scrolls under them */
-  .app:not(.is-chat) .topbar,
+}
+
+/* the dock's ground fade would cut a band through the dots. Drop it only where the hero and dock fit the
+   window (about 660px at full padding), so nothing can scroll under a see-through dock. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (min-height: 720px) {
   .app:not(.is-chat) .dock {
     background: transparent;
   }
