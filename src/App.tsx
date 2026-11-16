@@ -140,7 +140,7 @@ export function App() {
     <div className={`app${isChat ? ' is-chat' : ''}`}>
       <Backdrop active={!isChat} />
       <TopBar t={t} lang={lang} avatarSrc={AVATAR_SRC} onToggleLang={toggleLang} onRestart={restart} isChat={isChat} />
-      <div className="stage">
+      <main className="stage">
         <Hero t={t} avatarSrc={AVATAR_SRC} />
         <Thread t={t} messages={messages} typing={typing} avatarSrc={AVATAR_SRC} onAskChip={askChip} onAskHow={askHow} />
         <div className="dock">
@@ -150,7 +150,7 @@ export function App() {
             <p className="dock-note">{t.ui.scriptedNote}</p>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
