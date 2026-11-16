@@ -52,7 +52,7 @@ export function App() {
     if (timer.current) window.clearTimeout(timer.current);
   }, []);
 
-  // missed: a generated reply was tried and the model did not answer within the time budget (or was down).
+  // missed: a generated reply was tried and got no first token: down, busy, or past the time budget.
   const reply = useCallback((lang: Lang, kind: ReplyKind, focus?: ProjectId, study?: KeyedStudyTopic, missed?: boolean) => {
     const push = () => {
       setMessages((m) => [...m, { id: nextId.current++, role: 'assistant', lang, kind, focus, study, missed }]);
