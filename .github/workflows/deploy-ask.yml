@@ -75,7 +75,9 @@ jobs:
               -d "{\"question\":\"$MARK: which editor do you use?\",\"lang\":\"en\",\"intent\":\"skills\"}" \
               localhost:8090/ask || true)
             printf '%s' "$out" | grep -q '"outcome":"ok"' || {
-              echo "smoke question failed: $(printf '%s' "$out" | grep -o '"outcome":"[a-z_]*"' | tail -1)" >&2; exit 1; }
+              o=$(printf '%s' "$out" | grep -o '"outcome":"[a-z_]*"' | tail -1 || true)
+              echo "smoke question failed: ${o:-no done event (timeout or HTTP error)}" >&2
+              docker compose logs --tail 30 gateway llama; exit 1; }
             tail -n 1 log/questions-*.jsonl | grep -qF "$MARK" || { echo "smoke question not in the log" >&2; exit 1; }
             # Korean is never generated (ADR 0001, 2026-11-12): /ask must refuse it before the model or the log.
             code=$(curl -s -o /dev/null -w '%{http_code}' -m 10 -H 'Content-Type: application/json' \
