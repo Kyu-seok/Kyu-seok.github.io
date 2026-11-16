@@ -254,7 +254,7 @@
   color: var(--ink-3);
 }
 
-.missed-note {
+.fallback-note {
   margin-bottom: 6px;
   font-size: 0.8125rem;
   color: var(--ink-3);

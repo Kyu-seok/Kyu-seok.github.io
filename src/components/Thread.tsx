@@ -146,7 +146,7 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow, on
               <span className="sr-only">{t.ui.assistantName}: </span>
               {/* The English miss reply already says the model is busy or asleep. */}
               {m.fellBack && m.kind !== 'unknown' && (
-                <p className="fellBack-note" lang={t.lang}>
+                <p className="fallback-note" lang={t.lang}>
                   {t.ui.modelMissed}
                 </p>
               )}
