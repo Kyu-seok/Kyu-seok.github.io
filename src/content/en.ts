@@ -47,7 +47,7 @@ export const en: Content = {
   },
   replies: {
     hello: [
-      "Hi! Pick a question below, or type one and a small model running on my mini PC will answer from facts I wrote.",
+      "Hi! Pick a question below, or type one in English and a small model running on my mini PC will answer from facts I wrote.",
     ],
     unknown: [
       "I can't answer that one right now. The model on my mini PC is busy or asleep, and the scripted part of me only knows a handful of questions.",
@@ -71,7 +71,7 @@ export const en: Content = {
       'This is what I work with day to day. The list matters less to me than knowing what each tool is actually doing for the system.',
     ],
     fun: [
-      'Outside shipping code, I run my own server at home: one Intel N100 mini PC under my desk. All of CodeBite runs on it in Docker Compose, and so does the model that answers questions typed on this page.',
+      'Outside shipping code, I run my own server at home: one Intel N100 mini PC under my desk. All of CodeBite runs on it in Docker Compose, and so does the model that answers questions typed here in English.',
       'Four cores, shared by a code grader and a chat. Grading gets the CPU first.',
     ],
     contact: [

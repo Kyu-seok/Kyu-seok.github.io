@@ -49,7 +49,8 @@ func hasHangul(s string) bool {
 	return false
 }
 
-// generated reports whether a question goes to the model: English page, no Hangul. Korean free text was
+// generated reports whether a question goes to the model: lang "en" and no Hangul. lang is the reply's
+// language, which follows the question on either page since #24 (2026-11-16), not the page's. Korean free text was
 // generated from 2026-11-08 and reverted on 2026-11-12 because real answers stayed below the bar
 // (docs/adr/0001, 2026-11-12 amendment); the page answers it with scripted replies.
 func generated(lang, question string) bool {

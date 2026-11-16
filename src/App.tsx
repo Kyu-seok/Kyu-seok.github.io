@@ -23,6 +23,7 @@ function prefersReducedMotion() {
 // (unicode.Hangul in server/main.go), which refuses Hangul and generates only for lang "en".
 // Greetings and "how does this work" stay scripted.
 const HANGUL = /\p{Script=Hangul}/u;
+const GENERATED_LANG: Lang = 'en'; // the only language the gateway generates
 const LATIN = /\p{Script=Latin}/u;
 function questionLang(text: string, page: Lang): Lang {
   if (HANGUL.test(text)) return 'ko';
@@ -30,7 +31,7 @@ function questionLang(text: string, page: Lang): Lang {
   return page;
 }
 function wantsGeneration(lang: Lang, r: Resolution): boolean {
-  return lang === 'en' && r.kind !== 'hello' && r.kind !== 'how';
+  return lang === GENERATED_LANG && r.kind !== 'hello' && r.kind !== 'how';
 }
 
 export function App() {
@@ -75,13 +76,13 @@ export function App() {
       setTyping(true);
       const patch = (f: (g: Generated) => Generated) =>
         setMessages((m) => m.map((x) => (x.id === id && x.role === 'assistant' && x.gen ? { ...x, gen: f(x.gen) } : x)));
-      const outcome = await askGateway(text, r.kind, 'en', {
+      const outcome = await askGateway(text, r.kind, GENERATED_LANG, {
         onToken(tok) {
           if (session.current !== mine) return;
           if (!added) {
             added = true;
             setTyping(false);
-            setMessages((m) => [...m, { id, role: 'assistant', lang: 'en', kind: r.kind, focus: r.focus, study, gen: { text: tok, done: false } }]);
+            setMessages((m) => [...m, { id, role: 'assistant', lang: GENERATED_LANG, kind: r.kind, focus: r.focus, study, gen: { text: tok, done: false } }]);
           } else {
             patch((g) => ({ ...g, text: g.text + tok }));
           }
@@ -95,7 +96,7 @@ export function App() {
       if (outcome === 'generated') {
         patch((g) => (g.done ? g : { ...g, done: true })); // cut mid-stream: keep what arrived, no stamp
       } else {
-        reply('en', r.kind, r.focus, study);
+        reply(GENERATED_LANG, r.kind, r.focus, study);
       }
     },
     [reply],

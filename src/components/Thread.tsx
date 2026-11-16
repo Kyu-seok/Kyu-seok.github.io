@@ -30,25 +30,25 @@ interface Props {
 
 interface CardProps {
   t: Content; // the page's language: buttons
-  c: Content; // the reply's language: the card itself
+  said: Content; // the reply's language: the card itself
   kind: ReplyKind;
   focus?: ProjectId;
   onAskChip: (i: Intent) => void;
   onAsk: (text: string) => void;
 }
 
-function Card({ t, c, kind, focus, onAskChip, onAsk }: CardProps) {
+function Card({ t, said, kind, focus, onAskChip, onAsk }: CardProps) {
   switch (kind) {
     case 'me':
-      return <MeCard t={c} />;
+      return <MeCard t={said} />;
     case 'projects':
-      return <ProjectCarousel t={c} focus={focus} />;
+      return <ProjectCarousel t={said} focus={focus} />;
     case 'skills':
-      return <SkillsCard t={c} />;
+      return <SkillsCard t={said} />;
     case 'fun':
-      return <FunCard t={c} />;
+      return <FunCard t={said} />;
     case 'contact':
-      return <ContactCard t={c} />;
+      return <ContactCard t={said} />;
     case 'how':
       return null;
     case 'hello':
@@ -57,11 +57,11 @@ function Card({ t, c, kind, focus, onAskChip, onAsk }: CardProps) {
         <div className="suggest" lang={t.lang}>
           <p className="suggest-lead">{t.ui.suggestionsLead}</p>
           <Chips t={t} compact onPick={onAskChip} className="chips-inline" />
-          {kind === 'unknown' && c.askInEnglish && (
-            <p className="suggest-english" lang={c.lang}>
-              <span className="suggest-lead">{c.askInEnglish.lead}</span>{' '}
-              <button type="button" className="suggest-english-q" lang="en" onClick={() => onAsk(c.askInEnglish!.question)}>
-                {c.askInEnglish.question}
+          {kind === 'unknown' && said.askInEnglish && (
+            <p className="suggest-english" lang={said.lang}>
+              <span className="suggest-lead">{said.askInEnglish.lead}</span>{' '}
+              <button type="button" className="suggest-english-q" lang="en" onClick={() => onAsk(said.askInEnglish!.question)}>
+                {said.askInEnglish.question}
               </button>
             </p>
           )}
@@ -125,7 +125,7 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow, on
             </div>
           );
         }
-        const c = content[m.lang];
+        const said = content[m.lang];
         let lead: string[];
         let tail: string[];
         if (m.gen) {
@@ -133,7 +133,7 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow, on
           if (lead.length === 0) lead = [''];
           tail = [];
         } else {
-          const paras = c.replies[m.kind];
+          const paras = said.replies[m.kind];
           // For project-focused answers the first paragraph is enough before the carousel.
           lead = paras.slice(0, 1);
           tail = m.kind === 'projects' && m.focus ? [] : paras.slice(1);
@@ -149,11 +149,11 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow, on
                   {p}
                 </p>
               ))}
-              {showCard && <Card t={t} c={c} kind={m.kind} focus={m.focus} onAskChip={onAskChip} onAsk={onAsk} />}
+              {showCard && <Card t={t} said={said} kind={m.kind} focus={m.focus} onAskChip={onAskChip} onAsk={onAsk} />}
               {tail.map((p, i) => (
                 <p key={`t${i}`}>{p}</p>
               ))}
-              {m.study && <NotesCard t={c} slug={m.study} />}
+              {m.study && <NotesCard t={said} slug={m.study} />}
               <StampLine t={t} gen={m.gen} onAskHow={onAskHow} />
             </div>
           </div>
