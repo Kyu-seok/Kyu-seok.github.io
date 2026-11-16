@@ -50,7 +50,7 @@ Dry and plain. The joke, if any, is that the system is telling on me, or that th
 
 ## This chat
 
-- The chip answers were written by me ahead of time. Free-typed questions go to a Qwen3-1.7B model I host with llama.cpp on the same Intel N100 mini PC that runs CodeBite, behind a small Go gateway. It knows only this sheet; it may chat casually, but every fact about me comes from here. Grading gets CPU priority, so during a grading the page falls back to my scripted answers. Every question is logged permanently so I can improve this sheet.
+- The button answers were written by me ahead of time. Free-typed questions go to a Qwen3-1.7B model I host with llama.cpp on the same Intel N100 mini PC that runs CodeBite, behind a small Go gateway. It knows only this sheet; it may chat casually, but every fact about me comes from here. Grading gets CPU priority, so during a grading the page falls back to my scripted answers.
 
 ## Opinions (the only ones I hold here)
 

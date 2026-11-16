@@ -24,7 +24,7 @@ export const en: Content = {
     },
     toggleLabel: 'Switch to Korean',
     thinking: 'Kyu is typing',
-    scriptedNote: 'Chips are scripted. Typed questions are answered live by Qwen3 on Kyu’s mini PC, from facts he wrote, and logged.',
+    scriptedNote: 'Buttons are scripted. Typed questions are answered live by Qwen3 on Kyu’s mini PC, from facts he wrote.',
     suggestionsLead: 'Try one of these:',
     prev: 'Previous project',
     next: 'Next project',
@@ -53,9 +53,9 @@ export const en: Content = {
       'For anything else, email Kyu directly. He reads it.',
     ],
     how: [
-      'The chips are scripted: I wrote them ahead of time. When you type a question it goes to a Qwen3-1.7B model I run with llama.cpp on the same Intel N100 mini PC that grades CodeBite submissions, behind a small Go gateway.',
-      "The model only knows a fact sheet I wrote, every generated answer is labeled with its speed, and if the first word does not arrive within 4 seconds you get my scripted answer instead. That happens while a Java submission is grading, because grading gets the CPU first. It is allowed to make small talk in a voice I wrote, but every fact it states about me comes from that sheet, and it is told not to write code, translate, or give opinions I did not write down. I measured that too and it missed my bar; it is on so I can see how it does with real questions, and it goes back to work-only if the log says so.",
-      'I measured Qwen3-4B and 1.7B before shipping. 4B managed 3.8 tokens a second on this CPU, too slow to feel like a chat; 1.7B does about 9. Korean answers are all scripted. I measured 1.7B’s Korean twice and it missed my bar both times; I turned it on anyway to see real questions, and the real answers were worse: wrong register, invented stories, example lines pasted onto the wrong question. So on 12 November 2026 Korean went back to answers I wrote. Every question is logged so I can improve the fact sheet.',
+      'The buttons are scripted: I wrote them ahead of time. When you type a question it goes to a Qwen3-1.7B model I run with llama.cpp on the same Intel N100 mini PC that grades CodeBite submissions, behind a small Go gateway.',
+      "The model only knows a fact sheet I wrote, every generated answer is labeled with its speed, and if the first word does not arrive within 4 seconds you get my scripted answer instead. That happens while a Java submission is grading, because grading gets the CPU first. It is allowed to make small talk in a voice I wrote, but every fact it states about me comes from that sheet, and it is told not to write code, translate, or give opinions I did not write down. I measured that too and it missed my bar; it is on so I can see how it does with real questions, and it goes back to work-only if it does badly.",
+      'I measured Qwen3-4B and 1.7B before shipping. 4B managed 3.8 tokens a second on this CPU, too slow to feel like a chat; 1.7B does about 9. Korean answers are all scripted. I measured 1.7B’s Korean twice and it missed my bar both times; I turned it on anyway to see real questions, and the real answers were worse: wrong register, invented stories, example lines pasted onto the wrong question. So on 12 November 2026 Korean went back to answers I wrote.',
     ],
     me: [
       "I'm Kyu-seok, a backend engineer in Seoul. I believe every slow system is telling you something; you just have to know where to listen.",
