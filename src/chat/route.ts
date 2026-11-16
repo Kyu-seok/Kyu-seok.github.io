@@ -12,7 +12,7 @@ import type { Resolution } from './answer';
 const HANGUL = /\p{Script=Hangul}/u;
 const LATIN = /\p{Script=Latin}/u;
 
-export const GENERATED_LANG: Lang = 'en'; // the only language the gateway generates
+export const GENERATED_LANG: Lang = 'en'; // generated() in server/main.go: lang == "en" and no Hangul
 
 export function questionLang(text: string, page: Lang): Lang {
   if (HANGUL.test(text)) return 'ko';
