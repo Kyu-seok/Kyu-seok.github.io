@@ -200,8 +200,8 @@ A blue-gray paper ground, pure white surfaces, near-black ink with two blue-gray
 ### Neutral
 - **Cool Paper** (`ground`): page background, top bar background, and the bottom of the dock's fade. The hero sits on a radial lift of pure white (60% x 40% at 50% 18%) over it.
 - **Paper White** (`surface`): every card, chip, composer, solid icon button, and lang toggle. Also the text color on ink and accent fills.
-- **Paper Shade** (`surface-2`): tags, project and fun cover backdrops, hover wash on wordmark, icon buttons, and contact rows.
-- **Hairline** (`line`): 1px border on every surface; row dividers inside the facts, skills, fun-topics, and contact lists; the top bar's bottom edge in chat mode.
+- **Paper Shade** (`surface-2`): tags, project covers and the edge of the fun card's radial backdrop, hover wash on wordmark, icon buttons, and contact rows.
+- **Hairline** (`line`): 1px border on every surface; row dividers inside the facts, skills, and contact lists; the top bar's bottom edge in chat mode.
 - **Hairline Strong** (`line-strong`): hover border for chips, composer focus-within, solid icon buttons, and lang toggle; the lang toggle separator; scrollbar thumb.
 - **Ink** (`ink`): body text, titles, primary button background, `.btn` fill.
 - **Ink Secondary** (`ink-2`): hero greeting, resting chip label, tag text, project description, icon buttons at rest.
@@ -213,7 +213,7 @@ A blue-gray paper ground, pure white surfaces, near-black ink with two blue-gray
 - **Blue** (`chip-blue`): Skills chip icon.
 - **Violet** (`chip-violet`): Fun chip icon.
 - **Red** (`chip-red`): Contact chip icon.
-The same five values (with the accent as the sixth) color the 10px topic dots in the kyu-rious fun card, as data from that project. Active chips drop their hue and inherit `accent-ink`.
+Active chips drop their hue and inherit `accent-ink`.
 
 ### Named Rules
 **The One Orange Rule.** Every device that points, selects, or confirms is CodeBite orange or one of its three derivatives. No second accent exists; the chip hues are icon-only and die on activation.
@@ -234,8 +234,8 @@ The same five values (with the accent as the sixth) color the 10px topic dots in
 - **Title** (700, 1.125rem, -0.02em): wordmark "Kyu" and the fun card title.
 - **Stat** (700, 1.5rem, 1.1, -0.02em, tabular-nums): the three kyu-rious numbers.
 - **Body** (400, 1rem, 1.6): thread paragraphs (max 62ch), composer input, contact values (600), user bubble (500), hero greeting (500, 1.125rem, ink-2).
-- **Body Small** (400 or 500, 0.875rem to 0.9375rem, 1.5 to 1.55): project tagline (500, 0.9375rem), project description (0.875rem, ink-2), fact values (600, 0.9375rem), fun topic names (600, 0.9375rem).
-- **Label** (600, 0.8125rem): chip labels, large tags, skills group names, suggestion lead, project "more" toggle, fun topic meta.
+- **Body Small** (400 or 500, 0.875rem to 0.9375rem, 1.5 to 1.55): project tagline (500, 0.9375rem), project description (0.875rem, ink-2), fact values (600, 0.9375rem), the fun card hint (0.875rem, ink-2).
+- **Label** (600, 0.8125rem): chip labels, large tags, skills group names, suggestion lead, project "more" toggle.
 - **Caption** (600, 0.75rem): tags, fact and stat and contact labels, dock note; lang toggle and status badge go to 700 (status at 0.6875rem).
 
 ### Named Rules
@@ -301,7 +301,7 @@ Paper on paper.
 - **Background:** surface with a 1px hairline
 - **Shadow Strategy:** card shadow at rest (see Elevation); project cards only change border color (to accent-soft-2) when focused by a question, never shadow.
 - **Internal Padding:** 14px 16px 16px for project bodies; 16px 18px 18px for skills and fun; 4px outer with 12px 14px per cell for facts and 10px 12px per row for contact.
-- **Covers:** 16/10 aspect for projects, 16/7 for the fun card, surface-2 backdrop, hairline below.
+- **Covers:** 16/10 aspect for projects, surface-2 backdrop, hairline below. The fun card's cover is the N100 drawing (max 420px wide, 8px 24px 4px padding) on a radial backdrop from surface at its centre to surface-2, hairline below.
 - **Tags:** surface-2 pills, ink-2, 0.75rem/600, 3px 9px (0.8125rem and 4px 11px in the skills card).
 - **Status badge:** accent-soft pill, accent-ink, 0.6875rem/700, 2px 8px.
 
@@ -316,6 +316,9 @@ Paper on paper.
 - Lang toggle: 32px surface pill, hairline, "KO | EN" at 0.75rem/700 with +0.02em, ink-3 with the active language in ink, a 1px x 12px line-strong separator.
 - GitHub and LinkedIn are icon buttons; a restart icon button fades in beside the wordmark in chat mode.
 - Mobile: no collapse; the same five controls fit at 390px.
+
+### Fun Card: the N100 drawing
+The Fun answer's card is an isometric drawing of the Intel N100 mini PC this site runs on, lid lifted over the board: blower fan and fin stack, copper cold plate on the CPU, one RAM stick, an M.2 SSD, ports on the front, vent slots on the side. `scripts/n100/build.mjs` draws it with the anatomy kit (`scripts/n100/iso-kit.mjs`) into `src/components/n100/figure.ts`; `src/styles/n100.css` maps the kit's tokens to this palette (paper `#fcfcfd`, four cool shades, `ink` for hi, blue-gray mid, lo and faint). The power LED is the only accent in it and breathes on a 3.2s ease-in-out loop; the fan blades turn once every 7s. Both stop under reduced motion. Three part dots (8px `ink-2` with a 2.5px surface ring, accent on hover, focus or tap) each show an ink pill with one fact: CPU, the model, CodeBite. They are buttons, so keyboard and screen readers reach them.
 
 ### Thread (signature)
 Assistant messages: 32px circular avatar left, body right, paragraphs max 62ch, cards stacked with 12px gap. User messages: accent-soft bubble with accent-soft-2 hairline, 20px radius with a 6px bottom-right corner, 500 weight, right-aligned. Typing indicator: a surface pill (20px with 6px bottom-left) holding three 7px ink-3 dots blinking on a 1.1s stagger; it shows for 520ms before an answer unless reduced motion is on. Each message enters with the rise animation (12px up, fade, 420ms, ease-out expo).

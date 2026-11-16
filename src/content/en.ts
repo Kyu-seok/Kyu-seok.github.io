@@ -70,8 +70,8 @@ export const en: Content = {
       'This is what I work with day to day. The list matters less to me than knowing what each tool is actually doing for the system.',
     ],
     fun: [
-      'Outside shipping code, I keep a public second brain. Every topic I study gets written up as lessons, connected to what it requires and extends, and quizzed on a spaced-repetition schedule.',
-      "Here's what is in it right now.",
+      'Outside shipping code, I run my own server at home: one Intel N100 mini PC under my desk. All of CodeBite runs on it in Docker Compose, and so does the model that answers questions typed on this page.',
+      'Four cores, shared by a code grader and a chat. Grading gets the CPU first.',
     ],
     contact: [
       "Email is the fastest way to reach me. I'm also on GitHub and LinkedIn.",
@@ -160,10 +160,14 @@ export const en: Content = {
     ],
   },
   fun: {
-    title: 'kyu-rious, a public second brain',
-    stats: { topics: 'Topics', lessons: 'Lessons', reviewCards: 'Review cards' },
-    link: { label: 'Open the graph', href: 'https://kyu-seok.github.io/kyu-rious/' },
-    coverAlt: 'kyu-rious knowledge graph',
+    title: 'The box under my desk',
+    alt: 'The Intel N100 mini PC this site runs on, with its lid lifted: blower fan, CPU, RAM and SSD.',
+    parts: {
+      cpu: 'Intel N100 · 4 cores · 16 GB',
+      ram: 'Qwen3-1.7B · ~9 tok/s',
+      ssd: 'CodeBite · 16 containers',
+    },
+    hint: 'Hover or tap a dot to see what each part runs.',
   },
   contact: {
     items: [

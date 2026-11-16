@@ -38,8 +38,8 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 - The gateway holds the fact sheet, caps input/output/concurrency, rate-limits per IP, and keeps a permanent question log (disclosed on the page).
 - Language toggle KO/EN; initial language from the browser, remembered in localStorage.
 - No analytics, no cookies, no external scripts on the page. The only network call is to ask.code-bite.com, made on the visitor's first interaction, never on page load.
-- Avatar: the user's own memoji with transparent background at `public/avatar.png` (served as `public/avatar.webp`), shown inside a peach circle.
-- Fun = kyu-rious second brain only (user decision). Book reviews from the old blog are not included.
+- Avatar: the user's own memoji with transparent background at `public/avatar.png`, shown inside a peach circle.
+- Fun = the Intel N100 mini PC at home that runs CodeBite and this chat, shown as an isometric drawing (`scripts/n100/build.mjs`) whose part labels are facts from the fact sheet and the spike results (user decision, 2026-11-16; it used to be kyu-rious, which repeated its project card). Typed questions about studying, notes or books open the kyu-rious project card. Book reviews from the old blog are not included.
 
 ## Brand Commitments
 

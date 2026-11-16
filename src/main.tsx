@@ -4,6 +4,7 @@ import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/app.css';
+import './styles/n100.css';
 import { App } from './App';
 
 createRoot(document.getElementById('root')!).render(

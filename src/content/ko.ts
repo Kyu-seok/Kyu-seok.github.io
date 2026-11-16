@@ -70,8 +70,8 @@ export const ko: Content = {
       '매일 쓰는 도구들입니다. 목록 자체보다, 각 도구가 시스템에서 실제로 무슨 일을 해 주는지 아는 걸 더 중요하게 생각해요.',
     ],
     fun: [
-      '코드를 배포하는 일 말고는, 공개 세컨드 브레인을 가꿉니다. 공부한 주제마다 레슨으로 정리하고, 선행·확장 관계로 연결하고, 간격 반복으로 퀴즈를 풉니다.',
-      '지금 들어 있는 내용은 이렇습니다.',
+      '코드를 배포하는 일 말고는, 집에서 서버를 직접 운영합니다. 책상 밑에 있는 Intel N100 미니 PC 한 대에서 CodeBite 전체가 Docker Compose로 돌아가고, 이 페이지에 입력한 질문에 답하는 모델도 같이 돌아갑니다.',
+      '코어 네 개를 채점기와 채팅이 나눠 씁니다. CPU는 채점이 먼저입니다.',
     ],
     contact: [
       '이메일이 가장 빠릅니다. GitHub과 LinkedIn에도 있어요.',
@@ -160,10 +160,14 @@ export const ko: Content = {
     ],
   },
   fun: {
-    title: 'kyu-rious, 공개 세컨드 브레인',
-    stats: { topics: '토픽', lessons: '레슨', reviewCards: '복습 카드' },
-    link: { label: '그래프 열기', href: 'https://kyu-seok.github.io/kyu-rious/' },
-    coverAlt: 'kyu-rious 지식 그래프',
+    title: '책상 밑의 서버',
+    alt: '이 사이트가 돌아가는 Intel N100 미니 PC. 뚜껑을 열어 블로어 팬, CPU, 메모리, SSD가 보입니다.',
+    parts: {
+      cpu: 'Intel N100 · 4코어 · 16 GB',
+      ram: 'Qwen3-1.7B · 초당 약 9토큰',
+      ssd: 'CodeBite · 컨테이너 16개',
+    },
+    hint: '점에 마우스를 올리거나 눌러서 각 부품이 맡은 일을 보세요.',
   },
   contact: {
     items: [

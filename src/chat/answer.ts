@@ -29,7 +29,11 @@ interface Rule {
 
 const PROJECT_FOCUS: { id: ProjectId; keywords: string[] }[] = [
   { id: 'codebite', keywords: ['codebite', 'code-bite', 'code bite', '코드바이트', '코드 바이트'] },
-  { id: 'kyu-rious', keywords: ['kyu-rious', 'kyurious', 'kyu rious', '큐리어스', 'second brain', '세컨드 브레인', '세컨드브레인'] },
+  // Studying and notes are kyu-rious, so they open its project card (the Fun chip is the home server since 2026-11-16).
+  {
+    id: 'kyu-rious',
+    keywords: ['kyu-rious', 'kyurious', 'kyu rious', '큐리어스', 'second brain', '세컨드 브레인', '세컨드브레인', 'learn', 'learning', 'study', 'studying', 'read', 'reading', 'book', 'books', 'note', 'notes', '공부', '배우', '독서', '책', '노트'],
+  },
   { id: 'vimtext', keywords: ['vimtext', 'vim text', 'vim', '빔텍스트'] },
   { id: 'wedding-ledger', keywords: ['ledger', 'wedding', '축의금', '결혼', '장부'] },
 ];
@@ -53,7 +57,7 @@ const RULES: Rule[] = [
   {
     kind: 'fun',
     weight: 4,
-    keywords: ['fun', 'hobby', 'hobbies', 'outside', 'free time', 'learn', 'learning', 'study', 'studying', 'read', 'reading', 'book', 'books', 'note', 'notes', 'brain', '취미', '재미', '공부', '배우', '독서', '책', '노트', '여가', '일 말고'],
+    keywords: ['fun', 'hobby', 'hobbies', 'outside', 'free time', 'home server', 'homelab', 'home lab', 'mini pc', 'mini-pc', 'n100', 'hardware', '취미', '재미', '여가', '일 말고', '홈서버', '홈 서버', '홈랩', '미니 pc', '미니pc', '하드웨어'],
   },
   {
     kind: 'projects',

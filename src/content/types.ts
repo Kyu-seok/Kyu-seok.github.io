@@ -76,11 +76,13 @@ export interface Content {
   skills: {
     groups: SkillGroup[];
   };
+  /** The Fun card: the N100 mini PC at home, drawn by scripts/n100/build.mjs. Part labels are facts from
+   *  server/facts.en.md and server/spike/RESULTS.md. */
   fun: {
     title: string;
-    stats: { topics: string; lessons: string; reviewCards: string };
-    link: Link;
-    coverAlt: string;
+    alt: string;
+    parts: { cpu: string; ram: string; ssd: string };
+    hint: string;
   };
   contact: {
     items: ContactItem[];
