@@ -12,6 +12,10 @@ Portfolio chat page (Vite + React, GitHub Pages) plus `server/`, the Go gateway 
 
 ## Agent skills
 
+### Review before the PR
+
+Run `/code-review` against `main` before `gh pr create`; fix its findings or list the ones left in the PR body. The reviewer reads `CODING_STANDARDS.md`.
+
 ### Issue tracker
 
 Issues and specs live in this repo's GitHub Issues (`gh` CLI). See `docs/agents/issue-tracker.md`.
