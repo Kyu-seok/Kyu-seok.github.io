@@ -3,6 +3,7 @@ import { AVATAR_SRC, content, initialLang, rememberLang } from './content';
 import type { Intent, Lang, ProjectId, ReplyKind } from './content/types';
 import { resolve, studyTopic, type KeyedStudyTopic, type Resolution } from './chat/answer';
 import { askGateway } from './chat/gateway';
+import { GENERATED_LANG, questionLang, wantsGeneration } from './chat/route';
 import { TopBar } from './components/TopBar';
 import { Hero } from './components/Hero';
 import { Composer } from './components/Composer';
@@ -14,24 +15,6 @@ const REPLY_DELAY_MS = 520;
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
-// The reply follows the question; the UI follows the page (#24). A question with Hangul gets a Korean reply,
-// a question with Latin letters an English one, on either page; anything else ("?", an emoji) takes the page's
-// language. Only English free text is generated: Korean was generated from 2026-11-08 and reverted on
-// 2026-11-12 when real answers stayed below the bar (ADR 0001). HANGUL matches the gateway's hasHangul
-// (unicode.Hangul in server/main.go), which refuses Hangul and generates only for lang "en".
-// Greetings and "how does this work" stay scripted.
-const HANGUL = /\p{Script=Hangul}/u;
-const GENERATED_LANG: Lang = 'en'; // the only language the gateway generates
-const LATIN = /\p{Script=Latin}/u;
-function questionLang(text: string, page: Lang): Lang {
-  if (HANGUL.test(text)) return 'ko';
-  if (LATIN.test(text)) return 'en';
-  return page;
-}
-function wantsGeneration(lang: Lang, r: Resolution): boolean {
-  return lang === GENERATED_LANG && r.kind !== 'hello' && r.kind !== 'how';
 }
 
 export function App() {
