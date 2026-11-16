@@ -39,6 +39,7 @@ export const ko: Content = {
     avatarAlt: '염규석',
     newChat: '처음으로',
     howQuestion: '이 채팅은 어떻게 동작하나요?',
+    modelMissed: '지금은 미니 PC의 모델이 답하지 못해서, 제가 미리 써 둔 답변을 보여 드립니다.',
     stamp: {
       generated: '규석의 미니 PC에서 {model}이 생성',
       scripted: '규석이 직접 쓴 답변',

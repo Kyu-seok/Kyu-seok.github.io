@@ -52,9 +52,10 @@ export function App() {
     if (timer.current) window.clearTimeout(timer.current);
   }, []);
 
-  const reply = useCallback((lang: Lang, kind: ReplyKind, focus?: ProjectId, study?: KeyedStudyTopic) => {
+  // fellBack: a generated reply was tried and got no first token: down, busy, or past the time budget.
+  const reply = useCallback((lang: Lang, kind: ReplyKind, focus?: ProjectId, study?: KeyedStudyTopic, fellBack?: boolean) => {
     const push = () => {
-      setMessages((m) => [...m, { id: nextId.current++, role: 'assistant', lang, kind, focus, study }]);
+      setMessages((m) => [...m, { id: nextId.current++, role: 'assistant', lang, kind, focus, study, fellBack }]);
       setTyping(false);
     };
     if (prefersReducedMotion()) {
@@ -96,7 +97,7 @@ export function App() {
       if (outcome === 'generated') {
         patch((g) => (g.done ? g : { ...g, done: true })); // cut mid-stream: keep what arrived, no stamp
       } else {
-        reply(GENERATED_LANG, r.kind, r.focus, study);
+        reply(GENERATED_LANG, r.kind, r.focus, study, true);
       }
     },
     [reply],
