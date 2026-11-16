@@ -8,6 +8,7 @@ import { Hero } from './components/Hero';
 import { Composer } from './components/Composer';
 import { Chips } from './components/Chips';
 import { Thread, type Generated, type Message } from './components/Thread';
+import { Backdrop } from './components/Backdrop';
 
 const REPLY_DELAY_MS = 520;
 
@@ -137,6 +138,7 @@ export function App() {
 
   return (
     <div className={`app${isChat ? ' is-chat' : ''}`}>
+      <Backdrop active={!isChat} />
       <TopBar t={t} lang={lang} avatarSrc={AVATAR_SRC} onToggleLang={toggleLang} onRestart={restart} isChat={isChat} />
       <div className="stage">
         <Hero t={t} avatarSrc={AVATAR_SRC} />

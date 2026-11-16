@@ -176,7 +176,7 @@ The whole site is one chat with Kyu on a sheet of cool paper. There is no page c
 
 The system is light-only and quiet. Pretendard Variable carries Latin and Hangul in one voice; the display title is heavy and tightly tracked, body copy is regular at 1.6 line-height, and numerals are tabular everywhere. One accent, CodeBite orange (#ea6a12), does all the pointing: the send disc, the active chip, the user's bubble, link underlines, caret, selection, and focus rings. The only other hues on the page are the five resting chip icons (amber, green, blue, violet, red), and those give the single accent back the moment a chip is active.
 
-Motion is one grammar used once per transition: ease-out expo, 12px rise, 420ms. The signature move is the fold, where the hero collapses into the top bar on the first question and the composer becomes a sticky dock. Nothing is glass, nothing is blurred, nothing is a gradient except the ground lift and the dock's fade into the ground.
+Motion is one grammar used once per transition: ease-out expo, 12px rise, 420ms. The signature move is the fold, where the hero collapses into the top bar on the first question and the composer becomes a sticky dock. Nothing is glass, nothing is blurred, nothing is a gradient except the ground lift, the dock's fade into the ground, and the graph-paper dots that show around the pointer on the hero.
 
 **Key Characteristics:**
 - Single centered column, max 640px, same width for top bar, hero, thread, and dock.
@@ -247,7 +247,7 @@ The same five values (with the accent as the sixth) color the 10px topic dots in
 
 One centered column: `max-width: 640px + 2 x 16px gutter`, identical for the top bar inner, the stage, and the dock, so the composer, chips, cards, and header all share edges. The app is a full-height flex column (`min-height: 100dvh`); in hero mode the hero takes `margin-top: auto` and the dock `margin-bottom: auto`, centering the hero-plus-dock block vertically. In chat mode (`.is-chat`) the hero collapses to a 0fr grid row, the thread takes `flex: 1`, and the dock becomes `position: sticky; bottom: 0` with a ground-colored fade above it and `env(safe-area-inset-bottom)` padding.
 
-Top bar: 56px, sticky, opaque ground, a transparent bottom hairline that becomes `line` in chat mode. Left: a 36px avatar that is width 0 and hidden in hero mode, wordmark, and a restart icon button in chat; right: lang toggle, GitHub, LinkedIn.
+Top bar: 56px, sticky, opaque ground (transparent in hero mode on mouse and trackpad, so the pointer dots run under it), a transparent bottom hairline that becomes `line` in chat mode. Left: a 36px avatar that is width 0 and hidden in hero mode, wordmark, and a restart icon button in chat; right: lang toggle, GitHub, LinkedIn.
 
 Hero: centered stack with `clamp(24px, 6vh, 56px)` top padding, 4px between greeting and title, `clamp(20px, 4vh, 36px)` above a 200px circular avatar (160px under 480px).
 
@@ -311,7 +311,7 @@ Paper on paper.
 - **Disabled:** only the send disc disables (0.4 opacity) while the input is empty.
 
 ### Navigation
-- Top bar is sticky, 56px, opaque ground; its bottom hairline is transparent in hero mode and `line` in chat mode (420ms transition).
+- Top bar is sticky, 56px, opaque ground (transparent in hero mode where the pointer dots run); its bottom hairline is transparent in hero mode and `line` in chat mode (420ms transition).
 - Wordmark "Kyu" at 1.125rem/700, -0.02em, 6px 8px padding, 8px radius, surface-2 wash on hover; it restarts the chat.
 - Lang toggle: 32px surface pill, hairline, "KO | EN" at 0.75rem/700 with +0.02em, ink-3 with the active language in ink, a 1px x 12px line-strong separator.
 - GitHub and LinkedIn are icon buttons; a restart icon button fades in beside the wordmark in chat mode.
@@ -319,6 +319,9 @@ Paper on paper.
 
 ### Thread (signature)
 Assistant messages: 32px circular avatar left, body right, paragraphs max 62ch, cards stacked with 12px gap. User messages: accent-soft bubble with accent-soft-2 hairline, 20px radius with a 6px bottom-right corner, 500 weight, right-aligned. Typing indicator: a surface pill (20px with 6px bottom-left) holding three 7px ink-3 dots blinking on a 1.1s stagger; it shows for 520ms before an answer unless reduced motion is on. Each message enters with the rise animation (12px up, fade, 420ms, ease-out expo).
+
+### Pointer Dots (hero only)
+On the hero, on mouse and trackpad (`(hover: hover) and (pointer: fine)`), a fixed layer behind the stage holds a 22px grid of 1px ink dots (`rgba(15, 20, 25, 0.26)`), masked to a 220px circle around the pointer that fades out from its center. The circle eases toward the pointer (110ms time constant) and fades in and out with the pointer's presence (260ms); arriving from outside the window, it appears where the pointer is. The top bar and the dock drop their ground fill in hero mode so the dots are not cut by bands. On the fold the layer fades out over 420ms and stops listening; the chat stays still. Touch devices and reduced motion get no layer at all, only the static lift. The loop runs only while the circle is moving.
 
 ### The Fold (signature interaction)
 On the first message `.is-chat` is set: the hero's grid row goes from 1fr to 0fr over 560ms while its inner block fades and shrinks (`translateY(-24px) scale(0.94)`); the top bar avatar grows from `scale(0.4)` and width 0 to 36px with a 120ms delay; the dock's chips reorder above the composer and go compact; the thread takes the freed height. All of it runs on the one ease-out curve; reduced motion collapses transitions to 0.01ms and skips the typing pause.
@@ -337,7 +340,7 @@ On the first message `.is-chat` is set: the hero's grid row goes from 1fr to 0fr
 
 ### Don't:
 - **Don't** add a second accent. The five chip hues belong to resting chip icons and the kyu-rious topic dots only; any active or interactive state is orange.
-- **Don't** use blur, backdrop-filter, glass, or gradient text. The only gradients are the hero's radial white lift and the dock's fade into the ground.
+- **Don't** use blur, backdrop-filter, glass, or gradient text. The only gradients are the hero's radial white lift, the dock's fade into the ground, and the hero's pointer dots. Nothing in chat mode moves with the pointer.
 - **Don't** ship a dark theme or a second color-scheme; the site is light-only by scene (`color-scheme: light`).
 - **Don't** uppercase or track-out labels; shrink and embolden instead.
 - **Don't** float anything at rest except the hero avatar; resting shadows are the card shadow, compact chips and tags carry none.
