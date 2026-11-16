@@ -63,6 +63,8 @@ export interface Content {
     avatarAlt: string;
     newChat: string;
     howQuestion: string;
+    /** Above a scripted reply shown because the model did not answer in time. In the page's language. */
+    modelMissed: string;
     stamp: {
       generated: string; // '{model}' is replaced with the model name
       scripted: string;

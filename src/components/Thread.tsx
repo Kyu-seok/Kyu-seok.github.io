@@ -16,7 +16,7 @@ export interface Generated {
 export type Message =
   | { id: number; role: 'user'; text: string }
   // lang is the reply's language, which follows the question; t (the page's language) dresses the chrome.
-  | { id: number; role: 'assistant'; lang: Lang; kind: ReplyKind; focus?: ProjectId; study?: KeyedStudyTopic; gen?: Generated };
+  | { id: number; role: 'assistant'; lang: Lang; kind: ReplyKind; focus?: ProjectId; study?: KeyedStudyTopic; gen?: Generated; missed?: boolean };
 
 interface Props {
   t: Content;
@@ -144,6 +144,12 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow, on
             <img className="msg-avatar" src={avatarSrc} alt="" width={32} height={32} aria-hidden="true" />
             <div className="msg-body" lang={m.lang}>
               <span className="sr-only">{t.ui.assistantName}: </span>
+              {/* The English miss reply already says the model is busy or asleep. */}
+              {m.missed && m.kind !== 'unknown' && (
+                <p className="missed-note" lang={t.lang}>
+                  {t.ui.modelMissed}
+                </p>
+              )}
               {lead.map((p, i) => (
                 <p key={i} className={m.gen && !m.gen.done && i === lead.length - 1 ? 'gen-cursor' : undefined}>
                   {p}
