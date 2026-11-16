@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import type { Content, Intent, ProjectId, ReplyKind } from '../content/types';
+import type { Content, Intent, Lang, ProjectId, ReplyKind } from '../content/types';
+import { content } from '../content';
 import type { Stamp } from '../chat/gateway';
 import { Chips } from './Chips';
 import type { KeyedStudyTopic } from '../chat/answer';
@@ -14,7 +15,8 @@ export interface Generated {
 
 export type Message =
   | { id: number; role: 'user'; text: string }
-  | { id: number; role: 'assistant'; kind: ReplyKind; focus?: ProjectId; study?: KeyedStudyTopic; gen?: Generated };
+  // lang is the reply's language, which follows the question; t (the page's language) dresses the chrome.
+  | { id: number; role: 'assistant'; lang: Lang; kind: ReplyKind; focus?: ProjectId; study?: KeyedStudyTopic; gen?: Generated };
 
 interface Props {
   t: Content;
@@ -23,28 +25,46 @@ interface Props {
   avatarSrc: string;
   onAskChip: (intent: Intent) => void;
   onAskHow: () => void;
+  onAsk: (text: string) => void;
 }
 
-function Card({ t, kind, focus, onAskChip }: { t: Content; kind: ReplyKind; focus?: ProjectId; onAskChip: (i: Intent) => void }) {
+interface CardProps {
+  t: Content; // the page's language: buttons
+  c: Content; // the reply's language: the card itself
+  kind: ReplyKind;
+  focus?: ProjectId;
+  onAskChip: (i: Intent) => void;
+  onAsk: (text: string) => void;
+}
+
+function Card({ t, c, kind, focus, onAskChip, onAsk }: CardProps) {
   switch (kind) {
     case 'me':
-      return <MeCard t={t} />;
+      return <MeCard t={c} />;
     case 'projects':
-      return <ProjectCarousel t={t} focus={focus} />;
+      return <ProjectCarousel t={c} focus={focus} />;
     case 'skills':
-      return <SkillsCard t={t} />;
+      return <SkillsCard t={c} />;
     case 'fun':
-      return <FunCard t={t} />;
+      return <FunCard t={c} />;
     case 'contact':
-      return <ContactCard t={t} />;
+      return <ContactCard t={c} />;
     case 'how':
       return null;
     case 'hello':
     case 'unknown':
       return (
-        <div className="suggest">
+        <div className="suggest" lang={t.lang}>
           <p className="suggest-lead">{t.ui.suggestionsLead}</p>
           <Chips t={t} compact onPick={onAskChip} className="chips-inline" />
+          {kind === 'unknown' && c.askInEnglish && (
+            <p className="suggest-english" lang={c.lang}>
+              <span className="suggest-lead">{c.askInEnglish.lead}</span>{' '}
+              <button type="button" className="suggest-english-q" lang="en" onClick={() => onAsk(c.askInEnglish!.question)}>
+                {c.askInEnglish.question}
+              </button>
+            </p>
+          )}
         </div>
       );
   }
@@ -57,7 +77,7 @@ function StampLine({ t, gen, onAskHow }: { t: Content; gen?: Generated; onAskHow
     const label = t.ui.stamp.generated.replace('{model}', s?.model ?? 'Qwen3');
     const speed = s ? ` · ${s.tokS.toFixed(1)} tok/s · ${s.seconds.toFixed(1)}s` : '';
     return (
-      <p className="stamp">
+      <p className="stamp" lang={t.lang}>
         {label}
         {speed}
         <button type="button" className="stamp-link" onClick={onAskHow}>
@@ -66,10 +86,14 @@ function StampLine({ t, gen, onAskHow }: { t: Content; gen?: Generated; onAskHow
       </p>
     );
   }
-  return <p className="stamp">{t.ui.stamp.scripted}</p>;
+  return (
+    <p className="stamp" lang={t.lang}>
+      {t.ui.stamp.scripted}
+    </p>
+  );
 }
 
-export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow }: Props) {
+export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow, onAsk }: Props) {
   const listRef = useRef<HTMLDivElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const count = messages.length;
@@ -101,6 +125,7 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow }: 
             </div>
           );
         }
+        const c = content[m.lang];
         let lead: string[];
         let tail: string[];
         if (m.gen) {
@@ -108,7 +133,7 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow }: 
           if (lead.length === 0) lead = [''];
           tail = [];
         } else {
-          const paras = t.replies[m.kind];
+          const paras = c.replies[m.kind];
           // For project-focused answers the first paragraph is enough before the carousel.
           lead = paras.slice(0, 1);
           tail = m.kind === 'projects' && m.focus ? [] : paras.slice(1);
@@ -117,18 +142,18 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow }: 
         return (
           <div key={m.id} className="msg msg-assistant">
             <img className="msg-avatar" src={avatarSrc} alt="" width={32} height={32} aria-hidden="true" />
-            <div className="msg-body">
+            <div className="msg-body" lang={m.lang}>
               <span className="sr-only">{t.ui.assistantName}: </span>
               {lead.map((p, i) => (
                 <p key={i} className={m.gen && !m.gen.done && i === lead.length - 1 ? 'gen-cursor' : undefined}>
                   {p}
                 </p>
               ))}
-              {showCard && <Card t={t} kind={m.kind} focus={m.focus} onAskChip={onAskChip} />}
+              {showCard && <Card t={t} c={c} kind={m.kind} focus={m.focus} onAskChip={onAskChip} onAsk={onAsk} />}
               {tail.map((p, i) => (
                 <p key={`t${i}`}>{p}</p>
               ))}
-              {m.study && <NotesCard t={t} slug={m.study} />}
+              {m.study && <NotesCard t={c} slug={m.study} />}
               <StampLine t={t} gen={m.gen} onAskHow={onAskHow} />
             </div>
           </div>

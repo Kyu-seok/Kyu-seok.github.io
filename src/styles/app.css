@@ -919,6 +919,31 @@
 .chips-inline .chip {
   box-shadow: var(--shadow-card);
 }
+/* The miss reply's English example: a question the visitor can send with one tap. */
+.suggest-english {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.suggest-english-q {
+  min-height: 44px;
+  padding: 0 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: var(--shadow-card);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent-ink);
+  cursor: pointer;
+  transition: border-color 160ms ease;
+}
+.suggest-english-q:hover {
+  border-color: var(--accent);
+}
 
 /* ---------- small screens ---------- */
 

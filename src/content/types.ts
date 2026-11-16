@@ -38,6 +38,7 @@ export interface ContactItem {
 }
 
 export interface Content {
+  lang: Lang;
   ui: {
     wordmark: string;
     greeting: string;
@@ -69,6 +70,9 @@ export interface Content {
     };
   };
   replies: Record<ReplyKind, string[]>;
+  /** Shown in the miss reply: one English question that, tapped, is sent as-is and answered by the model.
+   *  Korean only; English questions already reach the model. */
+  askInEnglish: { lead: string; question: string } | null;
   me: {
     facts: { label: string; value: string }[];
   };

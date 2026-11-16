@@ -2,6 +2,7 @@ import { KYU_RIOUS } from './kyuRious';
 import type { Content } from './types';
 
 export const en: Content = {
+  lang: 'en',
   ui: {
     wordmark: 'Kyu',
     greeting: "Hey, I'm Kyu-seok 👋",
@@ -24,7 +25,7 @@ export const en: Content = {
     },
     toggleLabel: 'Switch to Korean',
     thinking: 'Kyu is typing',
-    scriptedNote: 'Buttons are scripted. Typed questions are answered live by Qwen3 on Kyu’s mini PC, from facts he wrote.',
+    scriptedNote: 'Buttons are scripted. Questions typed in English are answered live by Qwen3 on Kyu’s mini PC, from facts he wrote; questions in Korean get replies he wrote.',
     suggestionsLead: 'Try one of these:',
     prev: 'Previous project',
     next: 'Next project',
@@ -53,9 +54,9 @@ export const en: Content = {
       'For anything else, email Kyu directly. He reads it.',
     ],
     how: [
-      'The buttons are scripted: I wrote them ahead of time. When you type a question it goes to a Qwen3-1.7B model I run with llama.cpp on the same Intel N100 mini PC that grades CodeBite submissions, behind a small Go gateway.',
+      'The buttons are scripted: I wrote them ahead of time. When you type a question in English, on either page, it goes to a Qwen3-1.7B model I run with llama.cpp on the same Intel N100 mini PC that grades CodeBite submissions, behind a small Go gateway.',
       "The model only knows a fact sheet I wrote, every generated answer is labeled with its speed, and if the first word does not arrive within 4 seconds you get my scripted answer instead. That happens while a Java submission is grading, because grading gets the CPU first. It is allowed to make small talk in a voice I wrote, but every fact it states about me comes from that sheet, and it is told not to write code, translate, or give opinions I did not write down. I measured that too and it missed my bar; it is on so I can see how it does with real questions, and it goes back to work-only if it does badly.",
-      'I measured Qwen3-4B and 1.7B before shipping. 4B managed 3.8 tokens a second on this CPU, too slow to feel like a chat; 1.7B does about 9. Korean answers are all scripted. I measured 1.7B’s Korean twice and it missed my bar both times; I turned it on anyway to see real questions, and the real answers were worse: wrong register, invented stories, example lines pasted onto the wrong question. So on 12 November 2026 Korean went back to answers I wrote.',
+      'I measured Qwen3-4B and 1.7B before shipping. 4B managed 3.8 tokens a second on this CPU, too slow to feel like a chat; 1.7B does about 9. Questions in Korean get answers I wrote. I measured 1.7B’s Korean twice and it missed my bar both times; I turned it on anyway to see real questions, and the real answers were worse: wrong register, invented stories, example lines pasted onto the wrong question. So on 12 November 2026 Korean went back to answers I wrote.',
     ],
     me: [
       "I'm Kyu-seok, a backend engineer in Seoul. I believe every slow system is telling you something; you just have to know where to listen.",
@@ -77,6 +78,7 @@ export const en: Content = {
       "Email is the fastest way to reach me. I'm also on GitHub and LinkedIn.",
     ],
   },
+  askInEnglish: null,
   me: {
     facts: [
       { label: 'Based in', value: 'Seoul, Korea' },
