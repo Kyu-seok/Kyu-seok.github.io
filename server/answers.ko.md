@@ -94,7 +94,7 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 퇴근하고 뭐 해요?
 - 취미 있어요?
 - 주말엔 뭐 해요?
-> 공부한 주제를 kyu-rious에 레슨으로 정리하고 퀴즈로 복습하는 게 취미입니다. 저녁에는 CCDAK 시험 공부도 합니다.
+> 집에서 서버를 직접 운영하는 게 취미입니다. 책상 밑의 Intel N100 미니 PC 한 대에서 CodeBite 컨테이너 16개와 이 채팅의 모델이 같이 돌아갑니다. 저녁에는 CCDAK 시험 공부도 합니다.
 
 ## contact [contact]
 - 이메일 주소 알려 주세요

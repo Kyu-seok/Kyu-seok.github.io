@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import type { ComponentType } from 'react';
 import type { ContactItem, Content, ProjectId } from '../content/types';
 import type { Project } from '../content/types';
 import type { KeyedStudyTopic } from '../chat/answer';
-import { STUDY_TOPICS, type StudyTopicSlug } from '../content/kyu-rious.gen';
-import { KYU_RIOUS, STUDY_TOPIC_COLORS } from '../content/kyuRious';
+import { STUDY_TOPICS } from '../content/kyu-rious.gen';
 import { IconArrowLeft, IconArrowRight, IconChevron, IconExternal, IconGitHub, IconGlobe, IconLinkedIn, IconMail } from './Icons';
 
 function ProjectCard({ t, p, focused }: { t: Content; p: Project; focused: boolean }) {
@@ -136,44 +135,22 @@ export function SkillsCard({ t }: { t: Content }) {
   );
 }
 
+// The Fun card: the mini PC at home that runs CodeBite and this chat, drawn with the anatomy kit. The drawing
+// (about 14 KB gzipped) loads only when the card is first shown, never on page load.
+const N100 = lazy(() => import('./n100/N100').then((m) => ({ default: m.N100 })));
+
 export function FunCard({ t }: { t: Content }) {
   const f = t.fun;
   return (
     <div className="card fun">
       <div className="fun-cover">
-        <img src="/projects/kyu-rious-graph.jpg" alt={f.coverAlt} loading="lazy" />
+        <Suspense fallback={<div className="n100-placeholder" />}>
+          <N100 t={t} />
+        </Suspense>
       </div>
       <div className="fun-body">
         <h3 className="fun-title">{f.title}</h3>
-        <dl className="fun-stats">
-          <div>
-            <dd>{KYU_RIOUS.topics}</dd>
-            <dt>{f.stats.topics}</dt>
-          </div>
-          <div>
-            <dd>{KYU_RIOUS.lessons}</dd>
-            <dt>{f.stats.lessons}</dt>
-          </div>
-          <div>
-            <dd>{KYU_RIOUS.reviewCards}</dd>
-            <dt>{f.stats.reviewCards}</dt>
-          </div>
-        </dl>
-        <ul className="fun-topics">
-          {(Object.entries(STUDY_TOPICS) as [StudyTopicSlug, (typeof STUDY_TOPICS)[StudyTopicSlug]][]).map(([slug, tp]) => (
-            <li key={slug}>
-              <span className="dot" style={{ background: STUDY_TOPIC_COLORS[slug] ?? 'var(--ink-3)' }} aria-hidden="true" />
-              <span className="fun-topic-name">{tp.title}</span>
-              <span className="fun-topic-meta">
-                {tp.lessons.length} {t.ui.lessons} · {tp.refs} {t.ui.refs}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <a className="btn" href={f.link.href} target="_blank" rel="noreferrer">
-          {f.link.label}
-          <IconExternal size={16} />
-        </a>
+        <p className="fun-hint">{f.hint}</p>
       </div>
     </div>
   );
