@@ -24,7 +24,9 @@ rsync -a server/ ~/portfolio-ask/   # excluding models/ and log/
 cd ~/portfolio-ask && docker compose up -d --build
 ```
 
-`.env` next to the compose file sets `ALLOWED_ORIGINS` (comma-separated), `GATEWAY_BIND` (`0.0.0.0` so CodeBite's nginx can reach it through the host), and `LLAMA_BIND` (`172.17.0.1`, the Docker bridge, so only containers on the host can scrape llama-server's metrics).
+`.env` next to the compose file sets `ALLOWED_ORIGINS` (comma-separated; on the box: `https://kyu-seok.github.io,http://localhost:5174`, so `npm run dev` on its fixed port reaches the real model, and every question asked from it lands in the permanent question log), `GATEWAY_BIND` (`0.0.0.0` so CodeBite's nginx can reach it through the host), and `LLAMA_BIND` (`172.17.0.1`, the Docker bridge, so only containers on the host can scrape llama-server's metrics).
+
+Reading the box: `scripts/box-logs.sh [lines]` prints the gateway, embed and llama logs, the last question-log lines, and CPU per container over `ssh mini`; it changes nothing.
 
 Public route: the mini PC's Cloudflare Tunnel (`/etc/cloudflared/config.yml`, root-owned, edited by hand) has an ingress rule `ask.code-bite.com` → `http://localhost:8090`; the DNS record is a proxied CNAME to `code-bite.com`. CodeBite's Prometheus scrapes 8090 and 8091 (CodeBite repo, `infra/`).
 
