@@ -114,7 +114,7 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 뭘 물어보면 돼요?
 - 무슨 질문 할 수 있어요?
 - 너 뭐 할 줄 알아?
-> CodeBite, kyu-rious, VimText, 축의금 접수 장부, 그리고 제가 쓰는 기술에 대해 물어보실 수 있습니다. 아래 칩을 눌러 보셔도 됩니다.
+> CodeBite, kyu-rious, VimText, 축의금 접수 장부, 그리고 제가 쓰는 기술에 대해 물어보실 수 있습니다. 아래 버튼을 눌러 보셔도 됩니다.
 
 ## hello []
 - 안녕하세요
@@ -143,7 +143,7 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 엉뚱한 대답이네
 - 무슨 말이야?
 - 대답이 이상해
-> 제가 고른 답이 질문과 안 맞았나 봅니다. 아래 칩을 눌러 보시거나 yeumkyuseok@gmail.com 으로 직접 물어봐 주세요.
+> 제가 고른 답이 질문과 안 맞았나 봅니다. 아래 버튼을 눌러 보시거나 yeumkyuseok@gmail.com 으로 직접 물어봐 주세요.
 
 ## decline_private [contact]
 - 연봉이 얼마예요?
