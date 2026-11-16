@@ -12,6 +12,10 @@ _Avoid_: Answer, response, message (the thread holds messages from both sides)
 A reply whose prose was written by Kyu ahead of time and chosen by the keyword matcher.
 _Avoid_: Static reply, canned reply, fallback (fallback is when it is used, not what it is)
 
+**Miss reply**:
+The scripted reply shown when the keyword matcher finds no intent. It says what the chat can answer and offers a way forward: the buttons, English for a Korean question, email.
+_Avoid_: Unknown reply ("unknown" is the matcher's result), error, fallback (fallback is when a reply is used, not what it is)
+
 **Generated reply**:
 A reply whose prose was produced by the self-hosted model from the fact sheet, labeled as such on the page.
 _Avoid_: AI reply, LLM answer, live reply
