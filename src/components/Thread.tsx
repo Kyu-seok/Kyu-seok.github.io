@@ -16,7 +16,7 @@ export interface Generated {
 export type Message =
   | { id: number; role: 'user'; text: string }
   // lang is the reply's language, which follows the question; t (the page's language) dresses the chrome.
-  | { id: number; role: 'assistant'; lang: Lang; kind: ReplyKind; focus?: ProjectId; study?: KeyedStudyTopic; gen?: Generated; missed?: boolean };
+  | { id: number; role: 'assistant'; lang: Lang; kind: ReplyKind; focus?: ProjectId; study?: KeyedStudyTopic; gen?: Generated; fellBack?: boolean };
 
 interface Props {
   t: Content;
@@ -145,8 +145,8 @@ export function Thread({ t, messages, typing, avatarSrc, onAskChip, onAskHow, on
             <div className="msg-body" lang={m.lang}>
               <span className="sr-only">{t.ui.assistantName}: </span>
               {/* The English miss reply already says the model is busy or asleep. */}
-              {m.missed && m.kind !== 'unknown' && (
-                <p className="missed-note" lang={t.lang}>
+              {m.fellBack && m.kind !== 'unknown' && (
+                <p className="fellBack-note" lang={t.lang}>
                   {t.ui.modelMissed}
                 </p>
               )}

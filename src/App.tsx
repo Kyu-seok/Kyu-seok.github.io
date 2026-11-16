@@ -52,10 +52,10 @@ export function App() {
     if (timer.current) window.clearTimeout(timer.current);
   }, []);
 
-  // missed: a generated reply was tried and got no first token: down, busy, or past the time budget.
-  const reply = useCallback((lang: Lang, kind: ReplyKind, focus?: ProjectId, study?: KeyedStudyTopic, missed?: boolean) => {
+  // fellBack: a generated reply was tried and got no first token: down, busy, or past the time budget.
+  const reply = useCallback((lang: Lang, kind: ReplyKind, focus?: ProjectId, study?: KeyedStudyTopic, fellBack?: boolean) => {
     const push = () => {
-      setMessages((m) => [...m, { id: nextId.current++, role: 'assistant', lang, kind, focus, study, missed }]);
+      setMessages((m) => [...m, { id: nextId.current++, role: 'assistant', lang, kind, focus, study, fellBack }]);
       setTyping(false);
     };
     if (prefersReducedMotion()) {
