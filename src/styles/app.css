@@ -309,6 +309,11 @@
   border-color: var(--line-strong);
   box-shadow: var(--shadow-float);
 }
+/* the input itself has no outline, so the pill carries the global focus ring */
+.composer:has(.composer-input:focus-visible) {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 2px;
+}
 
 .composer-input {
   flex: 1;
@@ -1069,5 +1074,24 @@
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (min-height: 720px) {
   .app:not(.is-chat) .dock {
     background: transparent;
+  }
+}
+
+/* touch: top-bar controls keep their look but get a 44px hit area */
+@media (pointer: coarse) {
+  .topbar .iconbtn,
+  .topbar .langtoggle,
+  .topbar .wordmark {
+    position: relative;
+  }
+  .topbar .iconbtn::after,
+  .topbar .langtoggle::after,
+  .topbar .wordmark::after {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: max(100%, 44px);
+    height: 44px;
+    transform: translate(-50%, -50%);
   }
 }

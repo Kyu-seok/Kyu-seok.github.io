@@ -21,8 +21,8 @@ Pushing to `main` runs `.github/workflows/pages.yml`, which builds and deploys `
 ## Replace the avatar
 
 1. Export a memoji sticker (Messages → memoji → long-press → Save as image) or pick a square photo.
-2. Save it as `public/avatar.png` with a transparent background (at least 400px on the short side); it sits inside the peach circle.
-3. `AVATAR_SRC` in `src/content/index.ts` already points at `/avatar.png`.
+2. Save it as `public/avatar.png` with a transparent background, 400px on the short side (it shows at 200px; larger only adds weight); it sits inside the peach circle.
+3. Make the file the page serves: `cwebp -q 85 -alpha_q 100 public/avatar.png -o public/avatar.webp` (about 15 KB, against 190 KB for the PNG). `AVATAR_SRC` in `src/content/index.ts` points at `/avatar.webp`.
 
 ## Edit the answers
 
