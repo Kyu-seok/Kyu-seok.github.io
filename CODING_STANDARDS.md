@@ -1,6 +1,18 @@
 # Coding standards
 
-Read during code review, not implementation. Mechanical rules live in the checks (`npm run build` runs tsc and oxlint; `server/` has gofmt, vet, tests, shellcheck in CI). What follows are judgement calls no check can make.
+Read during code review, not implementation. Mechanical rules live in the checks (`npm run build` runs tsc, oxlint and the matcher tests in `src/chat/answer.test.mjs`; `server/` has gofmt, vet, tests, shellcheck in CI). What follows are judgement calls no check can make.
+
+## An intent means one thing everywhere
+
+What an intent (Me, Projects, Skills, Fun, Contact) is about is stated in seven places. A change to what one means updates all of them in the same commit:
+
+- The reply and its card: `src/content/en.ts`, `src/content/ko.ts`, and the card in `src/components/Cards.tsx`.
+- The keyword matcher, `src/chat/answer.ts`, with a case in `src/chat/answer.test.mjs` for each keyword moved.
+- What the model knows, `server/facts.en.md` (held to its token ceiling, `server/scripts/check-prompt-tokens.py`).
+- The Korean answer bank, `server/answers.ko.md`: the reply of every entry with that card (and a gate run if its example questions change).
+- `PRODUCT.md`, "Capabilities and Constraints".
+
+Reviewer: for a diff that changes one of these for an intent, check the other six and name the ones left stale. Fun moved from kyu-rious to the N100 mini PC on 2026-11-16 (#22) and touched all seven.
 
 ## The page and its documents tell one story
 

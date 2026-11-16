@@ -47,7 +47,7 @@ const RULES: Rule[] = [
   {
     kind: 'contact',
     weight: 5,
-    keywords: ['contact', 'email', 'e-mail', 'mail', 'reach', 'linkedin', 'github', 'hire', 'hiring', 'resume', 'cv', 'talk', '연락', '이메일', '메일', '링크드인', '깃허브', '채용', '이력서', '연락처', '얘기'],
+    keywords: ['contact', 'email', 'e-mail', 'mail', 'reach', 'linkedin', 'github', 'hire', 'hiring', 'resume', 'cv', "let's talk", 'talk to you', 'talk with you', 'can we talk', '연락', '이메일', '메일', '링크드인', '깃허브', '채용', '이력서', '연락처', '얘기 나누', '얘기하고 싶', '이야기 나누'],
   },
   {
     kind: 'skills',
