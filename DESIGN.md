@@ -229,7 +229,7 @@ Active chips drop their hue and inherit `accent-ink`.
 **Character:** One family at variable weights carries both Korean and English, so the KO/EN toggle changes words but not voice. Heavy, tightly tracked titles against relaxed 1.6 body; `word-break: keep-all` keeps Hangul words intact and `text-wrap: balance` on the display title.
 
 ### Hierarchy
-- **Display** (700, clamp(2.25rem, 7vw, 3rem), 1.1, -0.03em): the hero title only ("Backend Engineer" / "백엔드 엔지니어").
+- **Display** (700, clamp(2.25rem, 7vw, 3rem), 1.1, -0.03em): the hero title only ("Software Engineer" / "소프트웨어 엔지니어").
 - **Headline** (700, 1.25rem, 1.2, -0.02em): project card names.
 - **Title** (700, 1.125rem, -0.02em): wordmark "Kyu" and the fun card title.
 - **Stat** (700, 1.5rem, 1.1, -0.02em, tabular-nums): the three kyu-rious numbers.

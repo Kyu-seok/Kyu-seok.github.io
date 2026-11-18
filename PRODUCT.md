@@ -16,7 +16,7 @@ Recruiters, hiring managers, and fellow engineers who land on kyu-seok.github.io
 
 ## Product Purpose
 
-A single-page portfolio for 염규석 (Kyu-seok Yeum), a backend engineer in Seoul. It replaces a dormant Jekyll blog. Success: a visitor learns who Kyu is, sees CodeBite and kyu-rious as real, running work, and reaches GitHub, LinkedIn, or email without hunting.
+A single-page portfolio for 염규석 (Kyu-seok Yeum), a software engineer in Seoul. It replaces a dormant Jekyll blog. Success: a visitor learns who Kyu is, sees CodeBite and kyu-rious as real, running work, and reaches GitHub, LinkedIn, or email without hunting.
 
 ## Positioning
 

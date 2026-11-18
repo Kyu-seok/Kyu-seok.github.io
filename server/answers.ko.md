@@ -32,7 +32,7 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 최근에 관심 있는 거 있어요?
 - 요즘 공부하는 거 있어요?
 - 요새 빠져 있는 거 있어요?
-> 요즘은 CodeBite를 운영하면서, 공부한 내용을 kyu-rious에 정리하고 있습니다.
+> 요즘은 AI 에이전트가 구현하고 테스트와 자동화가 검증하는 개발 워크플로우를 만드는 데 관심이 많습니다. CodeBite를 운영하면서 공부한 내용은 kyu-rious에 정리하고 있습니다.
 
 ## codebite [project:codebite]
 - CodeBite는 뭐 하는 곳이에요?
@@ -171,7 +171,7 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 본인 강점이 뭐예요?
 - 어떤 개발자예요?
 - 장점이 뭐예요?
-> REST API 설계, 데이터베이스 튜닝, 성능 최적화 경험을 갖춘 백엔드 엔지니어로, 트레이드오프를 이해하고 상황에 맞는 실용적인 선택을 합니다. AI 에이전트 기반 개발 워크플로를 적극적으로 쓰며 새로운 기술과 방식에 빠르게 적응합니다.
+> REST API 설계, 데이터베이스 튜닝, 성능 최적화 경험을 갖춘 소프트웨어 엔지니어로, 트레이드오프를 이해하고 상황에 맞는 실용적인 선택을 합니다. AI 에이전트 기반 개발 워크플로를 적극적으로 쓰며 새로운 기술과 방식에 빠르게 적응합니다.
 
 ## ai_workflow [skills]
 - AI 도구 써요?
