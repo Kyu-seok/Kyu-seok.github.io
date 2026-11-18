@@ -65,7 +65,7 @@ export const en: Content = {
       "Lately I've been building and operating CodeBite end to end on a mini PC at home, and writing up what I study in kyu-rious.",
     ],
     projects: [
-      'Two of these are running in production right now. Swipe through:',
+      'All three are live right now. Swipe through:',
       'The one I am proudest of is CodeBite. The hardest part was cutting submission-to-result latency from over 30 seconds to 1.9 seconds: batching test cases, reusing connections, and replacing polling with push.',
     ],
     skills: [
@@ -131,7 +131,10 @@ export const en: Content = {
         'Plain JavaScript modules bundled by a tiny dependency-free script. Zero npm dependencies.',
       ],
       stack: ['JavaScript', 'Chrome MV3'],
-      links: [{ label: 'GitHub', href: 'https://github.com/Kyu-seok/VimText' }],
+      links: [
+        { label: 'Chrome Web Store', href: 'https://chromewebstore.google.com/detail/vimtext/egfolppakllammjdjnpbajpioigchbkp' },
+        { label: 'GitHub', href: 'https://github.com/Kyu-seok/VimText' },
+      ],
       cover: '/projects/vimtext.svg',
       coverAlt: 'A web textarea in Vim normal mode',
       status: 'MVP',

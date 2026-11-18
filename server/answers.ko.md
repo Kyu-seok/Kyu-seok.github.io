@@ -69,7 +69,7 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 빔텍스트가 뭐예요?
 - 크롬 확장 프로그램 만든 거 있어요?
 - 웹에서 Vim 쓸 수 있어요?
-> VimText는 웹의 모든 textarea에 Vim 편집 모드를 넣는 Chrome 확장 프로그램입니다. 의존성 없이 순수 JavaScript로 만들었습니다.
+> VimText는 웹의 모든 textarea에 Vim 편집 모드를 넣는 Chrome 확장 프로그램입니다. 의존성 없이 순수 JavaScript로 만들었고, Chrome 웹 스토어에 배포되어 있어 바로 설치해 쓸 수 있습니다.
 
 ## stack [skills]
 - 어떤 언어 쓰세요?

@@ -55,7 +55,7 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 - Social: https://www.linkedin.com/in/kyuseok/ , https://github.com/Kyu-seok , yeumkyuseok@gmail.com
 - CodeBite README (Kyu-seok/CodeBite) with screenshots in docs/screenshots/: product facts, architecture, latency work (30s to 1.9s), runs on a home mini PC. Live at https://code-bite.com
 - kyu-rious site: 5 topics, 28 lessons (as of 2026-11-10; the page reads the live count at build time), 232 review cards; Astro; graph + spaced review. The page no longer mentions CCDAK (removed 2026-11-18 at Kyu's request).
-- VimText README (Chrome MV3 Vim extension, no npm deps).
+- VimText README (Chrome MV3 Vim extension, no npm deps); published on the Chrome Web Store: https://chromewebstore.google.com/detail/vimtext/egfolppakllammjdjnpbajpioigchbkp
 - Career and education: from Kyu's resume (2026-11-18): JinJin System 2023.04–2025.03, MediaPlus Digital internship, Curtin University Malaysia; born 1997 (Kyu).
 - Absent: a photo or memoji (placeholder shipped), the phone number and military service (IT 병역특례) from the resume, anything personal beyond the fact sheet.
 

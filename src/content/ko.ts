@@ -65,7 +65,7 @@ export const ko: Content = {
       '기술 자체보다 그 기술이 사용자에게 무엇을 바꾸는지를 먼저 생각하는 product-minded 엔지니어가 되려고 노력하고 있습니다. 공부한 내용은 kyu-rious에 정리합니다.',
     ],
     projects: [
-      '이 중 둘은 지금도 실제로 돌아가고 있어요. 넘겨 보세요:',
+      '셋 다 지금 바로 써 볼 수 있어요. 넘겨 보세요:',
       '가장 자신 있는 건 CodeBite입니다. 제일 어려웠던 건 제출 후 결과까지 30초가 넘던 지연을 1.9초로 줄이는 일이었어요. 테스트케이스를 묶어서 보내고, 연결을 재사용하고, 폴링을 푸시로 바꿨습니다.',
     ],
     skills: [
@@ -134,7 +134,10 @@ export const ko: Content = {
         '순수 JavaScript 모듈을 의존성 없는 작은 스크립트로 번들합니다. npm 의존성 0개.',
       ],
       stack: ['JavaScript', 'Chrome MV3'],
-      links: [{ label: 'GitHub', href: 'https://github.com/Kyu-seok/VimText' }],
+      links: [
+        { label: 'Chrome 웹 스토어', href: 'https://chromewebstore.google.com/detail/vimtext/egfolppakllammjdjnpbajpioigchbkp' },
+        { label: 'GitHub', href: 'https://github.com/Kyu-seok/VimText' },
+      ],
       cover: '/projects/vimtext.svg',
       coverAlt: 'Vim normal 모드 상태의 웹 textarea',
       status: 'MVP',
