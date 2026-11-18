@@ -53,10 +53,10 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 - GitHub profile README (Kyu-seok/Kyu-seok): bio, "How I build" philosophy, stack list, email.
 - Social: https://www.linkedin.com/in/kyuseok/ , https://github.com/Kyu-seok , yeumkyuseok@gmail.com
 - CodeBite README (Kyu-seok/CodeBite) with screenshots in docs/screenshots/: product facts, architecture, latency work (30s to 1.9s), runs on a home mini PC. Live at https://code-bite.com
-- kyu-rious site: 5 topics, 28 lessons (as of 2026-11-10; the page reads the live count at build time), 232 review cards; Astro; graph + spaced review. Its Kafka topic is described as "in preparation for the CCDAK exam", which is the source for the CCDAK claim.
+- kyu-rious site: 5 topics, 28 lessons (as of 2026-11-10; the page reads the live count at build time), 232 review cards; Astro; graph + spaced review. The page no longer mentions CCDAK (removed 2026-11-18 at Kyu's request).
 - VimText README (Chrome MV3 Vim extension, no npm deps).
 - wedding-ledger README with docs/01-main.png.
-- Absent: a photo or memoji (placeholder shipped), employer or years-of-experience claims (not stated anywhere; do not invent), education claims (GitHub "company" says Curtin University but role is unconfirmed; omitted).
+- Absent: a photo or memoji (placeholder shipped), anything personal beyond the fact sheet. Career, employer, and education facts come from Kyu's resume (added 2026-11-18): JinJin System 2023.04–2025.03, MediaPlus Digital internship, Curtin University Malaysia. Born 1997 (Kyu, 2026-11-18). Military service (IT 병역특례), phone, and photo stay off the page.
 
 ## Product Principles
 

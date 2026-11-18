@@ -62,7 +62,7 @@ export const en: Content = {
     me: [
       "I'm Kyu-seok, a backend engineer in Seoul. I believe every slow system is telling you something; you just have to know where to listen.",
       "A queue doesn't just move messages, it buys you time when traffic spikes. A cache protects the database from questions it already answered. An index changes which questions are cheap to ask. I design systems by understanding what each part is really doing, then putting the right ones in the right places.",
-      "Lately I've been building and operating CodeBite end to end on a mini PC at home, and studying for the Confluent Kafka developer certification (CCDAK).",
+      "Lately I've been building and operating CodeBite end to end on a mini PC at home, and writing up what I study in kyu-rious.",
     ],
     projects: [
       'Two of these are running in production right now. Swipe through:',
@@ -84,7 +84,7 @@ export const en: Content = {
     facts: [
       { label: 'Based in', value: 'Seoul, Korea' },
       { label: 'Focus', value: 'Java · Spring Boot · Kafka' },
-      { label: 'Right now', value: 'Running CodeBite, prepping CCDAK' },
+      { label: 'Right now', value: 'Running CodeBite' },
     ],
   },
   projects: [
