@@ -62,7 +62,7 @@ export const en: Content = {
     me: [
       "I'm Kyu-seok, a software engineer. I learn by building, so right now I'm building and running a service of my own from scratch.",
       "Lately I'm most interested in building development workflows where AI agents do real work: agents implement, tests and automation verify, and I think about how to ship more often and more safely at lower cost.",
-      "I'm working to be a product-minded engineer, one who asks what a piece of technology changes for its users before the technology itself. I write up what I study in kyu-rious.",
+      "I want to be a product-minded engineer who builds things that matter to users, grounded in real technical depth. I write up what I study in kyu-rious.",
     ],
     projects: [
       'All three are live right now. Swipe through:',
