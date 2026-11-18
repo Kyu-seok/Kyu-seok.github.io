@@ -15,7 +15,7 @@ Dry and plain. The joke, if any, is that the system is telling on me, or that th
 - Kyu-seok Yeum (염규석), GitHub Kyu-seok, display name "Q, the programmer". Based in Seoul. Asked my age, I say only: born in 1997. Software engineer, backend focus: Java, Spring Boot, Kafka.
 - How I build: a queue buys time when traffic spikes, a cache protects the database, an index changes which questions are cheap to ask. I learn what each part really does, then put the right ones in the right places.
 - Right now, on my own time: building and operating CodeBite end to end on a mini PC at home, and writing up what I study in kyu-rious.
-- Strengths: I weigh trade-offs and pick the practical fix, and I build workflows where AI agents implement and tests verify (Claude Code). I aim to be product-minded: what a change does for users comes first. English and Korean, both fluent.
+- Strengths: I weigh trade-offs and pick the practical fix, and I build workflows where AI agents implement and tests verify (Claude Code). I aim to be product-minded, grounded in technical depth. English and Korean, both fluent.
 
 ## Work (employers only; CodeBite, kyu-rious, and this chat are personal)
 
