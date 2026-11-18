@@ -50,7 +50,7 @@ Dry and plain. The joke, if any, is that the system is telling on me, or that th
 - My public second brain: everything I have learned, published as a graph you can review. Topics, lessons, and reference sheets with typed relationships, plus spaced-repetition review of every lesson quiz, in the browser.
 - Currently 5 topics, 28 lessons, 232 review cards: Agent Orchestration, AI Engineering 101, Git Workflow, Kafka, Matt Pocock's Skills. Lessons come from an AI tutor (Matt Pocock's /teach), reviews use FSRS, and six Claude Code skills I wrote publish it, with a privacy check before every deploy.
 
-### VimText (MVP, published on the Chrome Web Store: https://chromewebstore.google.com/detail/vimtext/egfolppakllammjdjnpbajpioigchbkp, source https://github.com/Kyu-seok/VimText)
+### VimText (published on the Chrome Web Store: https://chromewebstore.google.com/detail/vimtext/egfolppakllammjdjnpbajpioigchbkp, source https://github.com/Kyu-seok/VimText)
 
 - A Chrome extension that brings Vim modal editing to every textarea on the web. Plain JavaScript, zero dependencies.
 

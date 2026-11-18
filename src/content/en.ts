@@ -137,7 +137,7 @@ export const en: Content = {
       ],
       cover: '/projects/vimtext.svg',
       coverAlt: 'A web textarea in Vim normal mode',
-      status: 'MVP',
+      status: 'Published',
     },
   ],
   skills: {
