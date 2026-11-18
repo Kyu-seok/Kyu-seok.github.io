@@ -16,7 +16,7 @@ Recruiters, hiring managers, and fellow engineers who land on kyu-seok.github.io
 
 ## Product Purpose
 
-A single-page portfolio for 염규석 (Kyu-seok Yeum), a backend engineer in Seoul. It replaces a dormant Jekyll blog. Success: a visitor learns who Kyu is, sees CodeBite and kyu-rious as real, running work, and reaches GitHub, LinkedIn, or email without hunting.
+A single-page portfolio for 염규석 (Kyu-seok Yeum), a software engineer in Seoul. It replaces a dormant Jekyll blog. Success: a visitor learns who Kyu is, sees CodeBite and kyu-rious as real, running work, and reaches GitHub, LinkedIn, or email without hunting.
 
 ## Positioning
 
@@ -45,7 +45,7 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 ## Brand Commitments
 
 - Name: 염규석 / Kyu-seok Yeum. GitHub handle Kyu-seok. GitHub display name "Q, the programmer".
-- Voice (from GitHub profile README): plain, systems-minded, "every slow system is telling you something".
+- Voice (from GitHub profile README): plain, systems-minded.
 - Existing favicons, now in `public/icons/`.
 - Visual direction pinned by the user: the Toukoum-style AI-chat portfolio (centered greeting, title, large avatar, pill input, quick-action chips, chat view with cards such as a project carousel).
 
@@ -55,8 +55,7 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 - Social: https://www.linkedin.com/in/kyuseok/ , https://github.com/Kyu-seok , yeumkyuseok@gmail.com
 - CodeBite README (Kyu-seok/CodeBite) with screenshots in docs/screenshots/: product facts, architecture, latency work (30s to 1.9s), runs on a home mini PC. Live at https://code-bite.com
 - kyu-rious site: 5 topics, 28 lessons (as of 2026-11-10; the page reads the live count at build time), 232 review cards; Astro; graph + spaced review. The page no longer mentions CCDAK (removed 2026-11-18 at Kyu's request).
-- VimText README (Chrome MV3 Vim extension, no npm deps).
-- wedding-ledger README with docs/01-main.png.
+- VimText README (Chrome MV3 Vim extension, no npm deps); published on the Chrome Web Store: https://chromewebstore.google.com/detail/vimtext/egfolppakllammjdjnpbajpioigchbkp
 - Career and education: from Kyu's resume (2026-11-18): JinJin System 2023.04–2025.03, MediaPlus Digital internship, Curtin University Malaysia; born 1997 (Kyu).
 - Absent: a photo or memoji (placeholder shipped), the phone number and military service (IT 병역특례) from the resume, anything personal beyond the fact sheet.
 

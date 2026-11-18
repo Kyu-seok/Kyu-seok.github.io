@@ -350,7 +350,7 @@ var (
 	headingRe  = regexp.MustCompile(`^## ([a-z0-9_]+) \[([^\]]*)\]$`)
 	knownCards = map[string]bool{
 		"": true, "me": true, "skills": true, "fun": true, "contact": true, "how": true,
-		"project:codebite": true, "project:kyu-rious": true, "project:vimtext": true, "project:wedding-ledger": true,
+		"project:codebite": true, "project:kyu-rious": true, "project:vimtext": true,
 	}
 )
 

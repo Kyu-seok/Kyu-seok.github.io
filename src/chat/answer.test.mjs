@@ -15,7 +15,6 @@ const CASES = [
   ['tell me about codebite', 'projects', 'codebite'],
   ['코드바이트가 뭐예요?', 'projects', 'codebite'],
   ['what is vimtext', 'projects', 'vimtext'],
-  ['축의금 장부는 뭐예요?', 'projects', 'wedding-ledger'],
   ['what tech stack do you use?', 'skills'],
   ['어떤 기술을 쓰나요?', 'skills'],
   // Fun is the home server (2026-11-16); studying and notes are kyu-rious's project card

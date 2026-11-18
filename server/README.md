@@ -34,7 +34,7 @@ Log mirror: `scripts/mirror-log.sh` pushes `log/` to a private repo nightly from
 
 ## The gate: run it whenever the answer bank's example questions change
 
-`scripts/gate.py` checks a bank change against the live bge-m3, picking exactly as `/pick` does. It runs the 15 held-out gate questions (`scripts/gate/gate.json`, written by an agent that never saw the bank; never edit them to fit it) and the 28 practice questions the bank was tuned on (`scripts/gate/dev.json`, shown for information only). It prints each pick with its score and runner-up, then the verdict: **PASS at 13 of 15 or better with every trap**, exit 0; FAIL, exit 1. If a fixture accepts an id the bank no longer has, it says which; in the gate set that means no verdict (exit 2) until the bank keeps the id. Not in CI: it needs the live model.
+`scripts/gate.py` checks a bank change against the live bge-m3, picking exactly as `/pick` does. It runs the 15 held-out gate questions (`scripts/gate/gate.json`, written by an agent that never saw the bank; never edit them to fit it) and the 27 practice questions the bank was tuned on (`scripts/gate/dev.json`, shown for information only). It prints each pick with its score and runner-up, then the verdict: **PASS at 13 of 15 or better with every trap**, exit 0; FAIL, exit 1. If a fixture accepts an id the bank no longer has, it says which; in the gate set that means no verdict (exit 2) until the bank keeps the id. Not in CI: it needs the live model.
 
 ```bash
 # from a laptop, through an SSH tunnel to the embed container's port on the box:

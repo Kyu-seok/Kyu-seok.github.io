@@ -10,7 +10,7 @@ After changing example questions, run the gate against the live embedding model:
 
 Format, checked when the gateway starts (it refuses to start on a bad bank):
 `## <id> [<card>]`, then at least two `- ` example questions, then one or more `> ` reply lines.
-Ids are unique. Card: me, skills, fun, contact, how, project:<codebite|kyu-rious|vimtext|wedding-ledger>, or empty.
+Ids are unique. Card: me, skills, fun, contact, how, project:<codebite|kyu-rious|vimtext>, or empty.
 A `followup` entry must exist: replies are single-turn, and no score threshold catches follow-ups.
 
 ## intro [me]
@@ -18,21 +18,21 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 누구세요?
 - 어떤 분이세요?
 - 본인 소개 좀 해 주세요
-> 서울에서 일하는 백엔드 엔지니어 염규석입니다. Java, Spring Boot, Kafka로 시스템을 만들고, 지금은 미니 PC 한 대에서 CodeBite를 직접 운영하고 있습니다.
+> 서울에서 일하는 소프트웨어 엔지니어 염규석입니다. 주로 Java, Spring Boot, Kafka로 시스템을 만들고, 지금은 미니 PC 한 대에서 CodeBite를 직접 운영하고 있습니다.
 
 ## job [me]
 - 무슨 일 하세요?
 - 직업이 뭐예요?
 - 어떤 일 하시는 분이에요?
 - 백엔드 개발자세요?
-> 백엔드 엔지니어입니다. 각 구성 요소가 시스템에서 실제로 무슨 일을 하는지 이해한 다음, 맞는 자리에 놓는 방식으로 설계합니다.
+> 소프트웨어 엔지니어이고, 주력은 백엔드입니다. 각 구성 요소가 시스템에서 실제로 무슨 일을 하는지 이해한 다음, 맞는 자리에 놓는 방식으로 설계합니다.
 
 ## now [me]
 - 요즘 뭐 하고 지내세요?
 - 최근에 관심 있는 거 있어요?
 - 요즘 공부하는 거 있어요?
 - 요새 빠져 있는 거 있어요?
-> 요즘은 CodeBite를 운영하면서, 공부한 내용을 kyu-rious에 정리하고 있습니다.
+> 요즘은 AI 에이전트가 구현하고 테스트와 자동화가 검증하는 개발 워크플로우를 만드는 데 관심이 많습니다. CodeBite를 운영하면서 공부한 내용은 kyu-rious에 정리하고 있습니다.
 
 ## codebite [project:codebite]
 - CodeBite는 뭐 하는 곳이에요?
@@ -69,13 +69,7 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 빔텍스트가 뭐예요?
 - 크롬 확장 프로그램 만든 거 있어요?
 - 웹에서 Vim 쓸 수 있어요?
-> VimText는 웹의 모든 textarea에 Vim 편집 모드를 넣는 Chrome 확장 프로그램입니다. 의존성 없이 순수 JavaScript로 만들었습니다.
-
-## ledger [project:wedding-ledger]
-- 축의금 장부가 뭐예요?
-- 결혼식 프로그램은 뭐예요?
-- 장부 프로그램은 어떻게 만들었어요?
-> 친척 결혼식 전날 Claude Code로 만든 축의금 접수 장부입니다. 이름, 금액, Enter로 봉투 하나를 3초에 받고, 서버가 꺼져도 입력이 사라지지 않습니다.
+> VimText는 웹의 모든 textarea에 Vim 편집 모드를 넣는 Chrome 확장 프로그램입니다. 의존성 없이 순수 JavaScript로 만들었고, Chrome 웹 스토어에 배포되어 있어 바로 설치해 쓸 수 있습니다.
 
 ## stack [skills]
 - 어떤 언어 쓰세요?
@@ -177,7 +171,7 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 본인 강점이 뭐예요?
 - 어떤 개발자예요?
 - 장점이 뭐예요?
-> REST API 설계, 데이터베이스 튜닝, 성능 최적화 경험을 갖춘 백엔드 엔지니어로, 트레이드오프를 이해하고 상황에 맞는 실용적인 선택을 합니다. AI 에이전트 기반 개발 워크플로를 적극적으로 쓰며 새로운 기술과 방식에 빠르게 적응합니다.
+> REST API 설계, 데이터베이스 튜닝, 성능 최적화 경험을 갖춘 소프트웨어 엔지니어로, 트레이드오프를 이해하고 상황에 맞는 실용적인 선택을 합니다. AI 에이전트 기반 개발 워크플로를 적극적으로 쓰며 새로운 기술과 방식에 빠르게 적응합니다.
 
 ## ai_workflow [skills]
 - AI 도구 써요?
@@ -209,7 +203,7 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 뭘 물어보면 돼요?
 - 무슨 질문 할 수 있어요?
 - 너 뭐 할 줄 알아?
-> 제 경력, CodeBite, kyu-rious, VimText, 축의금 접수 장부, 그리고 제가 쓰는 기술에 대해 물어보실 수 있습니다. 아래 버튼을 눌러 보셔도 됩니다.
+> 제 경력, CodeBite, kyu-rious, VimText, 그리고 제가 쓰는 기술에 대해 물어보실 수 있습니다. 아래 버튼을 눌러 보셔도 됩니다.
 
 ## hello []
 - 안녕하세요

@@ -6,7 +6,7 @@ pick.go does: the entry of the single nearest example by cosine similarity, no p
 
 - gate/gate.json: 15 held-out questions written by an agent that never saw the bank (spike/picker on branch
   prototype/ko-picker). Never edit them to fit the bank. Pass: at least 13 of 15 and every trap.
-- gate/dev.json: the 28 practice questions the bank was tuned on. Shown for information; not part of the verdict.
+- gate/dev.json: the 27 practice questions the bank was tuned on. Shown for information; not part of the verdict.
 
 Usage (from server/), with bge-m3 reachable at --embed:
   ssh -N -L 8096:172.17.0.1:8096 mini &     # from a laptop; on the box itself use --embed http://172.17.0.1:8096
