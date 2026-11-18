@@ -44,7 +44,7 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          command_timeout: 15m
+          command_timeout: 20m
           script: |
             set -e
             # models/ and log/ live only on the box; .env is written by hand there.
@@ -55,20 +55,20 @@ jobs:
             # Warm-up embeds the bank and caches the fact sheet together on 4 cores: 4m21s with 142 example
             # questions (2026-11-18, #29), so wait up to 8 minutes.
             for i in $(seq 1 96); do
-              curl -sf localhost:8090/health | grep -q '"ready":true' && break
+              curl -sf -m 5 localhost:8090/health | grep -q '"ready":true' && break
               sleep 5
             done
-            curl -sf localhost:8090/health | grep -q '"ready":true' || {
+            curl -sf -m 5 localhost:8090/health | grep -q '"ready":true' || {
               echo "gateway did not become ready" >&2; docker compose logs --tail 50 gateway; exit 1; }
             echo ready
             # Wait for the picker before any smoke question: at start the embedding model embeds the whole
             # answer bank (about 4 min on the N100 with 142 questions) while the fact sheet warms, and the language model drops to
             # about 0.5 tok/s until it is done, so an /ask sent on "ready" alone times out (2026-11-16, #25).
             for i in $(seq 1 40); do
-              curl -sf localhost:8090/health | grep -q '"pick_ready":true' && break
+              curl -sf -m 5 localhost:8090/health | grep -q '"pick_ready":true' && break
               sleep 5
             done
-            curl -sf localhost:8090/health | grep -q '"pick_ready":true' || {
+            curl -sf -m 5 localhost:8090/health | grep -q '"pick_ready":true' || {
               echo "picker did not become ready" >&2; docker compose logs --tail 50 embed gateway; exit 1; }
             echo pick ready
             # Smoke: one real question must stream and land in the question log.

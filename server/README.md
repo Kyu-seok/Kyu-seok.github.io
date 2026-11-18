@@ -47,7 +47,7 @@ cd server && python3 scripts/gate.py
 
 ## API
 
-`GET /health` → `{"ready":true,"model":"Qwen3-1.7B","busy":0,"queued":0,"pick_ready":true,"pick_model":"bge-m3"}`. `ready` is false until the fact sheet prefix is cached after a restart (about a minute). `pick_ready` is false until every answer bank example question is embedded, and false again from the first failed pick or probe after bge-m3 goes down until a probe gets an answer.
+`GET /health` → `{"ready":true,"model":"Qwen3-1.7B","busy":0,"queued":0,"pick_ready":true,"pick_model":"bge-m3"}`. `ready` is false until the fact sheet prefix is cached after a restart (about a minute alone; 4m21s on 2026-11-18, while bge-m3 embedded the 142 example questions on the same cores). `pick_ready` is false until every answer bank example question is embedded, and false again from the first failed pick or probe after bge-m3 goes down until a probe gets an answer.
 
 `POST /ask` `{"question":"...","lang":"en","intent":"projects"}` → `text/event-stream` with events `meta`, `token` (`{"text":"..."}`), `done` (`{"outcome","tokens","seconds","tok_s","first_token_s","model"}`). Only English is generated: `lang` must be `en` and the question must contain no Hangul. `lang` is the reply's language, which follows the question on either page (#24, 2026-11-16), so the question log's `lang` no longer records which page a question came from (Korean was generated from 2026-11-08 to 2026-11-12, `../docs/adr/0001-self-hosted-qwen3-with-scripted-fallback.md`). Non-200 responses: 400 bad input, 422 not English, 429 rate limited, 503 busy or warming up.
 
