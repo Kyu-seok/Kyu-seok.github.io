@@ -35,6 +35,7 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 - Small talk (greetings, jokes, boredom, questions about the chat) is answered by the model in a voice section Kyu wrote; out-of-scope questions are declined by the model. Both go through the same prompt; the matcher still owns intent and card. The model has no tools, so the harms guarded against are reputational and CPU on the production box, not system damage. Shipped 2026-11-08 by decision over a failed small-talk bench (`server/spike/RESULTS.md`, docs/adr/0001); reviewed against the question log by 2026-11-22 or after 50 unknown-intent questions, revert if the replies are a problem.
 - Free text that touches a study topic (Kafka, AI Engineering 101, …) also gets a notes card linking Kyu's kyu-rious lessons on it, beside the intent's card. It is matched in the browser on keywords Kyu wrote, in both languages, never by the model; chips don't get it. The lesson list comes from kyu-rious's graph.json at build time (rebuilt daily), never fetched by the page.
 - Generated replies carry a stamp: model name, tokens per second, total time, and a link to a "how does this chat work?" scripted reply.
+- What the chat will say about Kyu: everything on his resume (employers, career, projects, education, awards, languages) and his birth year, since 2026-11-18. It still declines salary, availability, visa or relocation, and personal life beyond the fact sheet; his phone number and military service are never on the page.
 - The gateway holds the fact sheet, caps input/output/concurrency, rate-limits per IP, and keeps a permanent question log (disclosed on the page).
 - Language toggle KO/EN; initial language from the browser, remembered in localStorage.
 - No analytics, no cookies, no external scripts on the page. The only network call is to ask.code-bite.com, made on the visitor's first interaction, never on page load.
@@ -53,10 +54,11 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 - GitHub profile README (Kyu-seok/Kyu-seok): bio, "How I build" philosophy, stack list, email.
 - Social: https://www.linkedin.com/in/kyuseok/ , https://github.com/Kyu-seok , yeumkyuseok@gmail.com
 - CodeBite README (Kyu-seok/CodeBite) with screenshots in docs/screenshots/: product facts, architecture, latency work (30s to 1.9s), runs on a home mini PC. Live at https://code-bite.com
-- kyu-rious site: 5 topics, 28 lessons (as of 2026-11-10; the page reads the live count at build time), 232 review cards; Astro; graph + spaced review. Its Kafka topic is described as "in preparation for the CCDAK exam", which is the source for the CCDAK claim.
+- kyu-rious site: 5 topics, 28 lessons (as of 2026-11-10; the page reads the live count at build time), 232 review cards; Astro; graph + spaced review. The page no longer mentions CCDAK (removed 2026-11-18 at Kyu's request).
 - VimText README (Chrome MV3 Vim extension, no npm deps).
 - wedding-ledger README with docs/01-main.png.
-- Absent: a photo or memoji (placeholder shipped), employer or years-of-experience claims (not stated anywhere; do not invent), education claims (GitHub "company" says Curtin University but role is unconfirmed; omitted).
+- Career and education: from Kyu's resume (2026-11-18): JinJin System 2023.04–2025.03, MediaPlus Digital internship, Curtin University Malaysia; born 1997 (Kyu).
+- Absent: a photo or memoji (placeholder shipped), the phone number and military service (IT 병역특례) from the resume, anything personal beyond the fact sheet.
 
 ## Product Principles
 

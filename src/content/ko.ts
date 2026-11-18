@@ -62,7 +62,7 @@ export const ko: Content = {
     me: [
       '서울에서 일하는 백엔드 엔지니어 염규석입니다. 느린 시스템은 항상 무언가를 말하고 있다고 믿습니다. 어디서 들어야 하는지만 알면 됩니다.',
       '큐는 메시지를 옮기는 게 아니라, 트래픽이 몰릴 때 시간을 벌어 줍니다. 캐시는 데이터베이스가 이미 답한 질문을 다시 받지 않게 지켜 줍니다. 인덱스는 어떤 질문이 싼 질문인지를 바꿉니다. 각 구성 요소가 실제로 무슨 일을 해 주는지 이해한 다음 맞는 자리에 놓는 방식으로 시스템을 설계합니다.',
-      '요즘은 집에 있는 미니 PC 한 대에서 CodeBite를 처음부터 끝까지 직접 만들고 운영하고 있고, CCDAK(Confluent Kafka 개발자 자격) 시험을 준비하고 있습니다.',
+      '요즘은 집에 있는 미니 PC 한 대에서 CodeBite를 처음부터 끝까지 직접 만들고 운영하고 있고, 공부한 내용은 kyu-rious에 정리하고 있습니다.',
     ],
     projects: [
       '이 중 둘은 지금도 실제로 돌아가고 있어요. 넘겨 보세요:',
@@ -87,7 +87,7 @@ export const ko: Content = {
     facts: [
       { label: '위치', value: '서울' },
       { label: '주력', value: 'Java · Spring Boot · Kafka' },
-      { label: '지금', value: 'CodeBite 운영, CCDAK 준비' },
+      { label: '지금', value: 'CodeBite 운영' },
     ],
   },
   projects: [
@@ -202,7 +202,7 @@ export const ko: Content = {
       },
       kafka: {
         title: 'Kafka',
-        summary: 'Kafka가 이벤트를 파티션과 컨슈머로 보내는 방식. CCDAK 시험을 준비하며 정리했습니다.',
+        summary: 'Kafka가 이벤트를 파티션과 컨슈머로 보내는 방식.',
       },
       'matt-pocock-skills': {
         title: 'Matt Pocock의 스킬',
