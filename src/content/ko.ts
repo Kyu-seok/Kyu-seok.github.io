@@ -140,7 +140,7 @@ export const ko: Content = {
       ],
       cover: '/projects/vimtext.svg',
       coverAlt: 'Vim normal 모드 상태의 웹 textarea',
-      status: '배포 중',
+      status: '스토어 등록',
     },
   ],
   skills: {

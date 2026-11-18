@@ -45,7 +45,7 @@ The portfolio is a conversation, modeled on the "ask me anything" chat portfolio
 ## Brand Commitments
 
 - Name: 염규석 / Kyu-seok Yeum. GitHub handle Kyu-seok. GitHub display name "Q, the programmer".
-- Voice (from GitHub profile README): plain, systems-minded, "every slow system is telling you something".
+- Voice (from GitHub profile README): plain, systems-minded.
 - Existing favicons, now in `public/icons/`.
 - Visual direction pinned by the user: the Toukoum-style AI-chat portfolio (centered greeting, title, large avatar, pill input, quick-action chips, chat view with cards such as a project carousel).
 
