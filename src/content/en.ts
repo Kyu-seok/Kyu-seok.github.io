@@ -136,20 +136,6 @@ export const en: Content = {
       coverAlt: 'A web textarea in Vim normal mode',
       status: 'MVP',
     },
-    {
-      id: 'wedding-ledger',
-      name: 'Wedding Gift Ledger',
-      tagline: 'A keyboard-only ledger for a wedding reception desk.',
-      description: [
-        'Built the day before a relative’s wedding with Claude Code. Name, amount, Enter: one envelope in three seconds, running only on the local machine, exported to Excel at the end.',
-        'Records are protected four ways. Unsaved entries queue in the browser and sync when the server comes back; tested by killing the server mid-entry.',
-      ],
-      stack: ['JavaScript', 'Two dependencies', 'No build tool'],
-      links: [{ label: 'GitHub', href: 'https://github.com/Kyu-seok/wedding-ledger' }],
-      cover: '/projects/wedding-ledger.png',
-      coverAlt: 'Wedding gift ledger entry screen',
-      status: 'Used once, worked',
-    },
   ],
   skills: {
     groups: [

@@ -30,4 +30,4 @@ All copy lives in `src/content/en.ts` and `src/content/ko.ts`. Both files share 
 
 Free-text questions are matched by keyword in `src/chat/answer.ts`. Add synonyms there when a question you expect falls through to the "I can't answer that" reply.
 
-Project covers are in `public/projects/` (CodeBite and wedding-ledger screenshots come from their repos' `docs/` folders; kyu-rious is a screenshot of the live site; VimText is an authored SVG).
+Project covers are in `public/projects/` (the CodeBite screenshot comes from its repo's `docs/` folder; kyu-rious is a screenshot of the live site; VimText is an authored SVG).

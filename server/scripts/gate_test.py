@@ -206,7 +206,7 @@ class Gate(unittest.TestCase):
         dev = (SCRIPTS / "gate/dev.json").read_text()
         code, out = self.run_gate(bank, gate, dev, {}, hashed=True)
         self.assertIn(code, (0, 1), out)
-        self.assertIn("Dev (28 practice questions", out)
+        self.assertIn("Dev (27 practice questions", out)
         self.assertIn("Gate (15 held-out questions)", out)
         # The prototype's bank had a `none` entry; the real bank dropped it (docs/adr/0002).
         self.assertIn("dev.json: 오늘 서울 날씨 어때요? accepts `none`, which is not in the bank; scored on the rest", out)

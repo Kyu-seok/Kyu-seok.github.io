@@ -6,7 +6,7 @@ export type Intent = 'me' | 'projects' | 'skills' | 'fun' | 'contact';
 export type ChipIntent = Intent;
 export type ReplyKind = Intent | 'hello' | 'unknown' | 'how';
 
-export type ProjectId = 'codebite' | 'kyu-rious' | 'vimtext' | 'wedding-ledger';
+export type ProjectId = 'codebite' | 'kyu-rious' | 'vimtext';
 
 export interface Link {
   label: string;

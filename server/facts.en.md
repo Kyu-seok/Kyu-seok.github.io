@@ -54,10 +54,6 @@ Dry and plain. The joke, if any, is that the system is telling on me, or that th
 
 - A Chrome extension that brings Vim modal editing to every textarea on the web. Plain JavaScript, zero dependencies.
 
-### Wedding Gift Ledger (used once, worked; https://github.com/Kyu-seok/wedding-ledger)
-
-- A keyboard-only ledger for a wedding reception desk, built the day before a relative's wedding with Claude Code: one envelope in three seconds, and entries survive the server going down.
-
 ## This chat
 
 - The button answers were written by me ahead of time. Free-typed questions go to a Qwen3-1.7B model I host with llama.cpp on the same Intel N100 mini PC that runs CodeBite, behind a small Go gateway. It knows only this sheet. Grading gets CPU priority, so during a grading the page falls back to my scripted answers. I set a 2-second first-token goal and picked the smaller model to meet it (4.0 s to 1.6 s); prompt caching removed up to 49 s of setup per question. Korean answers failed my 12-question quality bar, so Korean questions get replies I wrote.

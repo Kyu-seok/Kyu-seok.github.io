@@ -38,7 +38,6 @@ const PROJECT_FOCUS: { id: ProjectId; keywords: string[] }[] = [
     keywords: ['kyu-rious', 'kyurious', 'kyu rious', '큐리어스', 'second brain', '세컨드 브레인', '세컨드브레인', 'learn', 'learning', 'study', 'studying', 'read', 'reading', 'book', 'books', 'note', 'notes', '공부', '배우', '독서', '책', '노트'],
   },
   { id: 'vimtext', keywords: ['vimtext', 'vim text', 'vim', '빔텍스트'] },
-  { id: 'wedding-ledger', keywords: ['ledger', 'wedding', '축의금', '결혼', '장부'] },
 ];
 
 const RULES: Rule[] = [

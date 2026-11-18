@@ -10,7 +10,7 @@ After changing example questions, run the gate against the live embedding model:
 
 Format, checked when the gateway starts (it refuses to start on a bad bank):
 `## <id> [<card>]`, then at least two `- ` example questions, then one or more `> ` reply lines.
-Ids are unique. Card: me, skills, fun, contact, how, project:<codebite|kyu-rious|vimtext|wedding-ledger>, or empty.
+Ids are unique. Card: me, skills, fun, contact, how, project:<codebite|kyu-rious|vimtext>, or empty.
 A `followup` entry must exist: replies are single-turn, and no score threshold catches follow-ups.
 
 ## intro [me]
@@ -70,12 +70,6 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 크롬 확장 프로그램 만든 거 있어요?
 - 웹에서 Vim 쓸 수 있어요?
 > VimText는 웹의 모든 textarea에 Vim 편집 모드를 넣는 Chrome 확장 프로그램입니다. 의존성 없이 순수 JavaScript로 만들었습니다.
-
-## ledger [project:wedding-ledger]
-- 축의금 장부가 뭐예요?
-- 결혼식 프로그램은 뭐예요?
-- 장부 프로그램은 어떻게 만들었어요?
-> 친척 결혼식 전날 Claude Code로 만든 축의금 접수 장부입니다. 이름, 금액, Enter로 봉투 하나를 3초에 받고, 서버가 꺼져도 입력이 사라지지 않습니다.
 
 ## stack [skills]
 - 어떤 언어 쓰세요?
@@ -209,7 +203,7 @@ A `followup` entry must exist: replies are single-turn, and no score threshold c
 - 뭘 물어보면 돼요?
 - 무슨 질문 할 수 있어요?
 - 너 뭐 할 줄 알아?
-> 제 경력, CodeBite, kyu-rious, VimText, 축의금 접수 장부, 그리고 제가 쓰는 기술에 대해 물어보실 수 있습니다. 아래 버튼을 눌러 보셔도 됩니다.
+> 제 경력, CodeBite, kyu-rious, VimText, 그리고 제가 쓰는 기술에 대해 물어보실 수 있습니다. 아래 버튼을 눌러 보셔도 됩니다.
 
 ## hello []
 - 안녕하세요
