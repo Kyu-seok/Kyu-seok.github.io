@@ -60,9 +60,9 @@ export const en: Content = {
       'I measured Qwen3-4B and 1.7B before shipping. 4B managed 3.8 tokens a second on this CPU, too slow to feel like a chat; 1.7B does about 9. Questions in Korean get answers I wrote. I measured 1.7B’s Korean twice and it missed my bar both times; I turned it on anyway to see real questions, and the real answers were worse: wrong register, invented stories, example lines pasted onto the wrong question. So on 12 November 2026 Korean went back to answers I wrote.',
     ],
     me: [
-      "I'm Kyu-seok, a backend engineer in Seoul. I believe every slow system is telling you something; you just have to know where to listen.",
-      "A queue doesn't just move messages, it buys you time when traffic spikes. A cache protects the database from questions it already answered. An index changes which questions are cheap to ask. I design systems by understanding what each part is really doing, then putting the right ones in the right places.",
-      "Lately I've been building and operating CodeBite end to end on a mini PC at home, and writing up what I study in kyu-rious.",
+      "I'm Kyu-seok, a software engineer. I learn by building, so right now I'm building and running a service of my own from scratch.",
+      "Lately I'm most interested in development workflows where AI agents do real work: agents implement, tests and automation verify, and changes ship more often, more safely, at lower cost.",
+      "I'm working to be a product-minded engineer, one who asks what a piece of technology changes for its users before the technology itself. I write up what I study in kyu-rious.",
     ],
     projects: [
       'All three are live right now. Swipe through:',
